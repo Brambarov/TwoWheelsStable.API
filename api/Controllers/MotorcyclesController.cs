@@ -32,7 +32,7 @@ namespace api.Controllers
         {
             var model = await _context.Motorcycles.FindAsync(id);
 
-            return model != null ? Ok(model.ToGetDTO()) : NotFound();
+            return model == null ? NotFound() : Ok(model.ToGetDTO());
         }
 
         [HttpPost]
@@ -60,6 +60,19 @@ namespace api.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(model.ToGetDTO());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var model = await _context.Motorcycles.FindAsync(id);
+
+            if (model == null) return NotFound();
+
+            _context.Motorcycles.Remove(model);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
