@@ -42,7 +42,9 @@ namespace api.Repositories
                 }
             }
 
-            return await models.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Motorcycle?> GetByIdAsync(int? id)
