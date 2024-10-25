@@ -22,5 +22,11 @@ namespace api.Helpers.Mappers
                 Model = dto.Model
             };
         }
+
+        public static void FromPutDTO(this Motorcycle model, MotorcyclePutDTO dto)
+        {
+            model.Make = dto.Make;
+            model.Model = dto.Model;
+        }
     }
 }

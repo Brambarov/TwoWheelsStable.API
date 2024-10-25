@@ -32,11 +32,7 @@ namespace api.Controllers
         {
             var model = await _context.Motorcycles.FindAsync(id);
 
-            if (model == null) return NotFound();
-
-            var dto = model.ToGetDTO();
-
-            return Ok(dto);
+            return model != null ? Ok(model.ToGetDTO()) : NotFound();
         }
 
         [HttpPost]
@@ -44,11 +40,26 @@ namespace api.Controllers
         {
             var model = dto.FromPostDTO();
 
-            await _context.AddAsync(model);
-
+            await _context.Motorcycles.AddAsync(model);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = model.Id }, model.ToGetDTO());
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id,
+                                                [FromBody] MotorcyclePutDTO dto)
+        {
+            var model = await _context.Motorcycles.FindAsync(id);
+
+            if (model == null) return NotFound();
+
+            model.FromPutDTO(dto);
+
+            _context.Motorcycles.Update(model);
+            await _context.SaveChangesAsync();
+
+            return Ok(model.ToGetDTO());
         }
     }
 }
