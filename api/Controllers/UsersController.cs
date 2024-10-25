@@ -22,7 +22,7 @@ namespace api.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterPostDTO dto)
         {
             try
@@ -57,7 +57,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginPostDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -70,14 +70,14 @@ namespace api.Controllers
 
             if (!result.Succeeded) return Unauthorized("Username/password is incorrect!");
 
-            return Ok(
-                    new UserGetDTO
-                    {
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Token = _usersService.CreateToken(user)
-                    }
-                );
+            var loggedUser = new UserGetDTO
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = _usersService.CreateToken(user)
+            };
+
+            return Ok(loggedUser);
         }
     }
 }
