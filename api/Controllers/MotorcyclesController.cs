@@ -1,5 +1,5 @@
 ﻿using api.Data;
-using Microsoft.AspNetCore.Http;
+using api.Helpers.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +19,11 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var models = await _context.Motorcycles.ToListAsync();
+            var dtos = await _context.Motorcycles
+                .Select(m => m.ToGetDTO())
+                .ToListAsync();
 
-            return Ok(models);
+            return Ok(dtos);
         }
 
         [HttpGet("{id}")]
@@ -29,9 +31,11 @@ namespace api.Controllers
         {
             var model = await _context.Motorcycles.FindAsync(id);
 
-            if(model == null) return NotFound();
+            if (model == null) return NotFound();
 
-            return Ok(model);
+            var dto = model.ToGetDTO();
+
+            return Ok(dto);
         }
     }
 }
