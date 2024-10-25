@@ -40,7 +40,9 @@ namespace api
             });
 
             builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
+            builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
+            builder.Services.AddScoped<ICommentsService, CommentsService>();
 
             var app = builder.Build();
 
