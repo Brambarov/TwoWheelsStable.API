@@ -22,9 +22,7 @@ namespace api.Repositories
 
         public async Task<Motorcycle?> GetByIdAsync(int id)
         {
-            var model = await _context.Motorcycles.FindAsync(id);
-
-            return model;
+            return await _context.Motorcycles.FindAsync(id);
         }
 
         public async Task CreateAsync(Motorcycle model)
