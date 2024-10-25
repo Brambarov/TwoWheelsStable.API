@@ -44,14 +44,16 @@ namespace api.Repositories
             return model;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Motorcycle?> DeleteAsync(int id)
         {
             var model = await _context.Motorcycles.FindAsync(id);
 
-            if (model == null) return;
+            if (model == null) return null;
 
             _context.Motorcycles.Remove(model);
             await _context.SaveChangesAsync();
+
+            return model;
         }
     }
 }

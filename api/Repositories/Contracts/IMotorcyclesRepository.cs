@@ -9,6 +9,6 @@ namespace api.Repositories.Contracts
         Task<Motorcycle?> GetByIdAsync(int id);
         Task CreateAsync(Motorcycle model);
         Task<Motorcycle?> UpdateAsync(int id, MotorcyclePutDTO dto);
-        Task DeleteAsync(int id);
+        Task<Motorcycle?> DeleteAsync(int id);
     }
 }

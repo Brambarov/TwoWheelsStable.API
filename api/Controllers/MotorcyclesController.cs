@@ -59,7 +59,9 @@ namespace api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            await _motorcyclesRepository.DeleteAsync(id);
+            var model = await _motorcyclesRepository.DeleteAsync(id);
+
+            if (model == null) return NotFound();
 
             return NoContent();
         }
