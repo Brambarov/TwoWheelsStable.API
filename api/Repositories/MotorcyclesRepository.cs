@@ -30,6 +30,18 @@ namespace api.Repositories
                 models = models.Where(m => m.Make.Contains(query.Model));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Make", StringComparison.OrdinalIgnoreCase))
+                {
+                    models = query.IsDescending ? models.OrderByDescending(m => m.Make) : models.OrderBy(m => m.Id);
+                }
+                if (query.SortBy.Equals("Model", StringComparison.OrdinalIgnoreCase))
+                {
+                    models = query.IsDescending ? models.OrderByDescending(m => m.Model) : models.OrderBy(m => m.Id);
+                }
+            }
+
             return await models.ToListAsync();
         }
 
