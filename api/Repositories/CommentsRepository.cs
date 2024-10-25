@@ -26,17 +26,25 @@ namespace api.Repositories
 
         public async Task<int?> CreateAsync(Comment model)
         {
-            throw new NotImplementedException();
+            await _context.Comments.AddAsync(model);
+            await _context.SaveChangesAsync();
+
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+
+            return id;
         }
 
         public async Task UpdateAsync(Comment model, Comment update)
         {
-            throw new NotImplementedException();
+            _context.Entry(model).CurrentValues
+                    .SetValues(update);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Comment model)
         {
-            throw new NotImplementedException();
+            _context.Comments.Remove(model);
+            await _context.SaveChangesAsync();
         }
     }
 }

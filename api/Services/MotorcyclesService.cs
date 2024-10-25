@@ -1,5 +1,6 @@
 ﻿using api.DTOs.Motorcycle;
 using api.Helpers.Mappers;
+using api.Helpers.Queries;
 using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
@@ -15,9 +16,9 @@ namespace api.Services
             _motorcyclesRepository = motorcyclesRepository;
         }
 
-        public async Task<IEnumerable<MotorcycleGetDTO>> GetAllAsync()
+        public async Task<IEnumerable<MotorcycleGetDTO>> GetAllAsync(MotorcycleQuery query)
         {
-            var models = await _motorcyclesRepository.GetAllAsync();
+            var models = await _motorcyclesRepository.GetAllAsync(query);
 
             return models.Select(m => m.ToGetDTO());
         }

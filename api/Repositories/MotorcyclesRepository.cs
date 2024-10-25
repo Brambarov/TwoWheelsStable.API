@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Helpers.Queries;
 using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,22 @@ namespace api.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Motorcycle>> GetAllAsync()
+        public async Task<IEnumerable<Motorcycle>> GetAllAsync(MotorcycleQuery query)
         {
-            return await _context.Motorcycles.Include(m => m.Comments)
-                                             .ToListAsync();
+            var models = _context.Motorcycles.Include(m => m.Comments)
+                                             .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Make))
+            {
+                models = models.Where(m => m.Make.Contains(query.Make));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Model))
+            {
+                models = models.Where(m => m.Make.Contains(query.Model));
+            }
+
+            return await models.ToListAsync();
         }
 
         public async Task<Motorcycle?> GetByIdAsync(int? id)

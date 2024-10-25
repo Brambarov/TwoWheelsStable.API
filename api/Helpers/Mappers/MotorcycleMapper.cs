@@ -10,7 +10,8 @@ namespace api.Helpers.Mappers
             return new MotorcycleGetDTO
             {
                 Make = model.Make,
-                Model = model.Model
+                Model = model.Model,
+                Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }
 
