@@ -2,6 +2,8 @@
 using api.Data;
 using api.Repositories;
 using api.Repositories.Contracts;
+using api.Services;
+using api.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace api
@@ -10,10 +12,24 @@ namespace api
     {
         public static void Main(string[] args)
         {
+            var myCorsPolicy = "myCorsPolicy";
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: myCorsPolicy,
+                                policy =>
+                                {
+                                    policy.AllowAnyOrigin();
+                                    policy.AllowAnyMethod();
+                                    policy.AllowAnyHeader();
+                                });
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -24,6 +40,7 @@ namespace api
             });
 
             builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
+            builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
 
             var app = builder.Build();
 
@@ -35,6 +52,9 @@ namespace api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(myCorsPolicy);
+
             app.UseAuthorization();
             app.MapControllers();
 

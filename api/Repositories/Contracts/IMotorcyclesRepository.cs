@@ -1,14 +1,13 @@
-﻿using api.DTOs.Motorcycle;
-using api.Models;
+﻿using api.Models;
 
 namespace api.Repositories.Contracts
 {
     public interface IMotorcyclesRepository
     {
-        Task<List<Motorcycle>> GetAllAsync();
-        Task<Motorcycle?> GetByIdAsync(int id);
-        Task CreateAsync(Motorcycle model);
-        Task<Motorcycle?> UpdateAsync(int id, MotorcyclePutDTO dto);
-        Task<Motorcycle?> DeleteAsync(int id);
+        Task<IEnumerable<Motorcycle>> GetAllAsync();
+        Task<Motorcycle?> GetByIdAsync(int? id);
+        Task<int?> CreateAsync(Motorcycle model);
+        Task UpdateAsync(Motorcycle model, Motorcycle update);
+        Task DeleteAsync(Motorcycle model);
     }
 }

@@ -23,10 +23,13 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static void FromPutDTO(this Motorcycle model, MotorcyclePutDTO dto)
+        public static Motorcycle FromPutDTO(this Motorcycle model, int id, MotorcyclePutDTO dto)
         {
+            model.Id = id;
             model.Make = dto.Make;
             model.Model = dto.Model;
+
+            return model;
         }
     }
 }

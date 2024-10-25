@@ -1,7 +1,5 @@
-﻿using api.Data;
-using api.DTOs.Motorcycle;
-using api.Helpers.Mappers;
-using api.Repositories.Contracts;
+﻿using api.DTOs.Motorcycle;
+using api.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -10,60 +8,52 @@ namespace api.Controllers
     [ApiController]
     public class MotorcyclesController : ControllerBase
     {
-        private readonly IMotorcyclesRepository _motorcyclesRepository;
+        private readonly IMotorcyclesService _motorcyclesService;
 
-        public MotorcyclesController(IMotorcyclesRepository motorcyclesRepository)
+        public MotorcyclesController(IMotorcyclesService motorcyclesService)
         {
-            _motorcyclesRepository = motorcyclesRepository;
+            _motorcyclesService = motorcyclesService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var models = await _motorcyclesRepository.GetAllAsync();
+            var getDtos = await _motorcyclesService.GetAllAsync();
 
-            var dtos = models.Select(m => m.ToGetDTO());
-
-            return Ok(dtos);
+            return Ok(getDtos);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
+            var getDto = await _motorcyclesService.GetByIdAsync(id);
 
-            return model == null ? NotFound() : Ok(model.ToGetDTO());
+            return getDto == null ? NotFound() : Ok(getDto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] MotorcyclePostDTO dto)
+        public async Task<IActionResult> Create([FromBody] MotorcyclePostDTO postDto)
         {
-            var model = dto.FromPostDTO();
+            var getDto = await _motorcyclesService.CreateAsync(postDto);
 
-            await _motorcyclesRepository.CreateAsync(model);
-
-            return CreatedAtAction(nameof(GetById), new { id = model.Id }, model.ToGetDTO());
+            return getDto == null ? NotFound() : Ok(getDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id,
-                                                [FromBody] MotorcyclePutDTO dto)
+                                                [FromBody] MotorcyclePutDTO putDto)
         {
-            var model = await _motorcyclesRepository.UpdateAsync(id, dto);
+            var getDto = await _motorcyclesService.UpdateAsync(id, putDto);
 
-            if (model == null) return NotFound();
-
-            return Ok(model.ToGetDTO());
+            return getDto == null ? NotFound() : Ok(getDto);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var model = await _motorcyclesRepository.DeleteAsync(id);
+            var getDto = await _motorcyclesService.DeleteAsync(id);
 
-            if (model == null) return NotFound();
-
-            return NoContent();
+            return getDto == null ? NotFound() : NoContent();
         }
     }
 }

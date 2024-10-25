@@ -1,5 +1,4 @@
 ﻿using api.Data;
-using api.DTOs.Motorcycle;
 using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -15,45 +14,37 @@ namespace api.Repositories
             _context = context;
         }
 
-        public async Task<List<Motorcycle>> GetAllAsync()
+        public async Task<IEnumerable<Motorcycle>> GetAllAsync()
         {
             return await _context.Motorcycles.ToListAsync();
         }
 
-        public async Task<Motorcycle?> GetByIdAsync(int id)
+        public async Task<Motorcycle?> GetByIdAsync(int? id)
         {
             return await _context.Motorcycles.FindAsync(id);
         }
 
-        public async Task CreateAsync(Motorcycle model)
+        public async Task<int?> CreateAsync(Motorcycle model)
         {
             await _context.Motorcycles.AddAsync(model);
             await _context.SaveChangesAsync();
+
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+
+            return id;
         }
 
-        public async Task<Motorcycle?> UpdateAsync(int id, MotorcyclePutDTO dto)
+        public async Task UpdateAsync(Motorcycle model, Motorcycle update)
         {
-            var model = await _context.Motorcycles.FindAsync(id);
-
-            if (model == null) return null;
-
             _context.Entry(model).CurrentValues
-                    .SetValues(dto);
+                    .SetValues(update);
             await _context.SaveChangesAsync();
-
-            return model;
         }
 
-        public async Task<Motorcycle?> DeleteAsync(int id)
+        public async Task DeleteAsync(Motorcycle model)
         {
-            var model = await _context.Motorcycles.FindAsync(id);
-
-            if (model == null) return null;
-
             _context.Motorcycles.Remove(model);
             await _context.SaveChangesAsync();
-
-            return model;
         }
     }
 }
