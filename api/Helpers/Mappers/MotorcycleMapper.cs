@@ -13,5 +13,14 @@ namespace api.Helpers.Mappers
                 Model = model.Model
             };
         }
+
+        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto)
+        {
+            return new Motorcycle
+            {
+                Make = dto.Make,
+                Model = dto.Model
+            };
+        }
     }
 }

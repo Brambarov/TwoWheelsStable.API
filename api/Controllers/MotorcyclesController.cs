@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.DTOs.Motorcycle;
 using api.Helpers.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,18 @@ namespace api.Controllers
             var dto = model.ToGetDTO();
 
             return Ok(dto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] MotorcyclePostDTO dto)
+        {
+            var model = dto.FromPostDTO();
+
+            await _context.AddAsync(model);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new { id = model.Id }, model.ToGetDTO());
         }
     }
 }
