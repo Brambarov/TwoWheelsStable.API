@@ -16,12 +16,14 @@ namespace api.Repositories
 
         public async Task<IEnumerable<Motorcycle>> GetAllAsync()
         {
-            return await _context.Motorcycles.ToListAsync();
+            return await _context.Motorcycles.Include(m => m.Comments)
+                                             .ToListAsync();
         }
 
         public async Task<Motorcycle?> GetByIdAsync(int? id)
         {
-            return await _context.Motorcycles.FindAsync(id);
+            return await _context.Motorcycles.Include(m => m.Comments)
+                                             .FirstOrDefaultAsync(m => m.Id.Equals(id));
         }
 
         public async Task<int?> CreateAsync(Motorcycle model)
@@ -45,6 +47,11 @@ namespace api.Repositories
         {
             _context.Motorcycles.Remove(model);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> Exists(int id)
+        {
+            return await _context.Motorcycles.AnyAsync(m => m.Id.Equals(id));
         }
     }
 }

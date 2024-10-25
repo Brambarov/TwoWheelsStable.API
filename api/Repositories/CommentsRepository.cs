@@ -18,5 +18,25 @@ namespace api.Repositories
         {
             return await _context.Comments.ToListAsync();
         }
+
+        public async Task<Comment?> GetByIdAsync(int? id)
+        {
+            return await _context.Comments.FindAsync(id);
+        }
+
+        public async Task<int?> CreateAsync(Comment model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAsync(Comment model, Comment update)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task DeleteAsync(Comment model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
