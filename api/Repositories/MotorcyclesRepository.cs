@@ -33,15 +33,25 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(int id, Motorcycle model, MotorcyclePutDTO dto)
+        public async Task<Motorcycle?> UpdateAsync(int id, MotorcyclePutDTO dto)
         {
+            var model = await _context.Motorcycles.FindAsync(id);
+
+            if (model == null) return null;
+
             _context.Entry(model).CurrentValues
                     .SetValues(dto);
             await _context.SaveChangesAsync();
+
+            return model;
         }
 
-        public async Task DeleteAsync(Motorcycle model)
+        public async Task DeleteAsync(int id)
         {
+            var model = await _context.Motorcycles.FindAsync(id);
+
+            if (model == null) return;
+
             _context.Motorcycles.Remove(model);
             await _context.SaveChangesAsync();
         }

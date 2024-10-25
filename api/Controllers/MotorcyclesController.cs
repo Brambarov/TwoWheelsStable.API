@@ -11,13 +11,10 @@ namespace api.Controllers
     public class MotorcyclesController : ControllerBase
     {
         private readonly IMotorcyclesRepository _motorcyclesRepository;
-        private readonly ApplicationDbContext _context;
 
-        public MotorcyclesController(IMotorcyclesRepository motorcyclesRepository,
-            ApplicationDbContext context)
+        public MotorcyclesController(IMotorcyclesRepository motorcyclesRepository)
         {
             _motorcyclesRepository = motorcyclesRepository;
-            _context = context;
         }
 
         [HttpGet]
@@ -52,11 +49,9 @@ namespace api.Controllers
         public async Task<IActionResult> Update([FromRoute] int id,
                                                 [FromBody] MotorcyclePutDTO dto)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
+            var model = await _motorcyclesRepository.UpdateAsync(id, dto);
 
             if (model == null) return NotFound();
-
-            await _motorcyclesRepository.UpdateAsync(id, model, dto);
 
             return Ok(model.ToGetDTO());
         }
@@ -64,11 +59,7 @@ namespace api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
-
-            if (model == null) return NotFound();
-
-            await _motorcyclesRepository.DeleteAsync(model);
+            await _motorcyclesRepository.DeleteAsync(id);
 
             return NoContent();
         }
