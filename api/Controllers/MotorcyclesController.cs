@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.DTOs.Motorcycle;
 using api.Helpers.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,9 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var dtos = await _context.Motorcycles
-                .Select(m => m.ToGetDTO())
-                .ToListAsync();
+            var models = await _context.Motorcycles.ToListAsync();
+
+            var dtos = models.Select(m => m.ToGetDTO());
 
             return Ok(dtos);
         }
@@ -54,9 +55,7 @@ namespace api.Controllers
 
             if (model == null) return NotFound();
 
-            model.FromPutDTO(dto);
-
-            _context.Motorcycles.Update(model);
+            _context.Entry(model).CurrentValues.SetValues(dto);
             await _context.SaveChangesAsync();
 
             return Ok(model.ToGetDTO());
