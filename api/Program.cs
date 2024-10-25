@@ -80,6 +80,7 @@ namespace api
             builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
             builder.Services.AddScoped<ICommentsService, CommentsService>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
 
             var app = builder.Build();
 

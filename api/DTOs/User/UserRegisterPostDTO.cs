@@ -2,7 +2,7 @@
 
 namespace api.DTOs.User
 {
-    public class UserPostDTO
+    public class UserRegisterPostDTO
     {
         [Required]
         public string? UserName { get; set; }
