@@ -1,5 +1,7 @@
 
 using api.Data;
+using api.Repositories;
+using api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace api
@@ -20,6 +22,8 @@ namespace api
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
 
             var app = builder.Build();
 

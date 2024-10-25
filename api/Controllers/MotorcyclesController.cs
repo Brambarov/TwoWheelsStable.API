@@ -1,9 +1,8 @@
 ﻿using api.Data;
 using api.DTOs.Motorcycle;
 using api.Helpers.Mappers;
-using api.Models;
+using api.Repositories.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -11,17 +10,20 @@ namespace api.Controllers
     [ApiController]
     public class MotorcyclesController : ControllerBase
     {
+        private readonly IMotorcyclesRepository _motorcyclesRepository;
         private readonly ApplicationDbContext _context;
 
-        public MotorcyclesController(ApplicationDbContext context)
+        public MotorcyclesController(IMotorcyclesRepository motorcyclesRepository,
+            ApplicationDbContext context)
         {
+            _motorcyclesRepository = motorcyclesRepository;
             _context = context;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var models = await _context.Motorcycles.ToListAsync();
+            var models = await _motorcyclesRepository.GetAllAsync();
 
             var dtos = models.Select(m => m.ToGetDTO());
 
@@ -31,7 +33,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var model = await _context.Motorcycles.FindAsync(id);
+            var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             return model == null ? NotFound() : Ok(model.ToGetDTO());
         }
@@ -41,8 +43,7 @@ namespace api.Controllers
         {
             var model = dto.FromPostDTO();
 
-            await _context.Motorcycles.AddAsync(model);
-            await _context.SaveChangesAsync();
+            await _motorcyclesRepository.CreateAsync(model);
 
             return CreatedAtAction(nameof(GetById), new { id = model.Id }, model.ToGetDTO());
         }
@@ -51,12 +52,11 @@ namespace api.Controllers
         public async Task<IActionResult> Update([FromRoute] int id,
                                                 [FromBody] MotorcyclePutDTO dto)
         {
-            var model = await _context.Motorcycles.FindAsync(id);
+            var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             if (model == null) return NotFound();
 
-            _context.Entry(model).CurrentValues.SetValues(dto);
-            await _context.SaveChangesAsync();
+            await _motorcyclesRepository.UpdateAsync(id, model, dto);
 
             return Ok(model.ToGetDTO());
         }
@@ -64,12 +64,11 @@ namespace api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var model = await _context.Motorcycles.FindAsync(id);
+            var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             if (model == null) return NotFound();
 
-            _context.Motorcycles.Remove(model);
-            await _context.SaveChangesAsync();
+            await _motorcyclesRepository.DeleteAsync(model);
 
             return NoContent();
         }
