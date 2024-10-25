@@ -12,6 +12,10 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Models\Enums\" />
+    <Folder Include="Repositories\Contracts\" />
+    <Folder Include="Services\Contracts\" />
   </ItemGroup>
 
 </Project>
