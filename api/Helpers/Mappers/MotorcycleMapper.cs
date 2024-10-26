@@ -9,6 +9,7 @@ namespace api.Helpers.Mappers
         {
             return new MotorcycleGetDTO
             {
+                Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
@@ -19,6 +20,7 @@ namespace api.Helpers.Mappers
         {
             return new Motorcycle
             {
+                Name = dto.Name,
                 Make = dto.Make,
                 Model = dto.Model
             };
@@ -27,6 +29,7 @@ namespace api.Helpers.Mappers
         public static Motorcycle FromPutDTO(this Motorcycle model, int id, MotorcyclePutDTO dto)
         {
             model.Id = id;
+            model.Name = dto.Name;
             model.Make = dto.Make;
             model.Model = dto.Model;
 
