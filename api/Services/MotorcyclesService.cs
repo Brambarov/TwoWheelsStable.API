@@ -1,7 +1,6 @@
 ﻿using api.DTOs.Motorcycle;
 using api.Helpers.Mappers;
 using api.Helpers.Queries;
-using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
 

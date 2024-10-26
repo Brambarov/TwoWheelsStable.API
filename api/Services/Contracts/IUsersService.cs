@@ -1,9 +1,10 @@
-﻿using api.Models;
+﻿using api.DTOs.User;
 
 namespace api.Services.Contracts
 {
     public interface IUsersService
     {
-        string CreateToken(User user);
+        Task<UserGetDTO> RegisterAsync(UserRegisterPostDTO dto);
+        Task<UserGetDTO> LoginAsync(UserLoginPostDTO dto);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace api.DTOs.User
+﻿namespace api.DTOs.User
 {
     public class UserGetDTO
     {
