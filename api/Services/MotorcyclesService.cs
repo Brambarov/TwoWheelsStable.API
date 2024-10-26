@@ -50,7 +50,7 @@ namespace api.Services
             if (model == null) return null;
 
             // TODO: validate model input data
-            var update = new Motorcycle().FromPutDTO(id, dto);
+            var update = dto.FromPutDTO(id);
 
             await _motorcyclesRepository.UpdateAsync(model, update);
 
