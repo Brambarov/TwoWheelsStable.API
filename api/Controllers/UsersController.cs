@@ -33,9 +33,17 @@ namespace api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginPostDTO dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.LoginAsync(dto));
+                return Ok(await _usersService.LoginAsync(dto));
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
