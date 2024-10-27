@@ -1,19 +1,27 @@
 ﻿using api.DTOs.Comment;
+using api.Helpers.Extensions;
 using api.Helpers.Mappers;
 using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace api.Services
 {
     public class CommentsService : ICommentsService
     {
+        private readonly UserManager<User> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICommentsRepository _commentsRepository;
         private readonly IMotorcyclesRepository _motorcyclesRepository;
 
-        public CommentsService(ICommentsRepository commentsRepository,
+        public CommentsService(UserManager<User> userManager,
+                               IHttpContextAccessor httpContextAccessor,
+                               ICommentsRepository commentsRepository,
                                IMotorcyclesRepository motorcyclesRepository)
         {
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
             _commentsRepository = commentsRepository;
             _motorcyclesRepository = motorcyclesRepository;
         }
@@ -38,10 +46,14 @@ namespace api.Services
         {
             if (!await _motorcyclesRepository.Exists(motorcycleId)) throw new ApplicationException($"Motorcycle with Id {motorcycleId} does not exist!");
 
-            var id = await _commentsRepository.CreateAsync(dto.FromPostDTO(motorcycleId));
+            var userName = _httpContextAccessor.HttpContext.User.GetUsername();
+            var userId = (await _userManager.FindByNameAsync(userName)).Id;
 
-            var model = await _commentsRepository.GetByIdAsync(id);
+            var model = dto.FromPostDTO(userId, motorcycleId);
 
+            var id = await _commentsRepository.CreateAsync(model);
+
+            model = await _commentsRepository.GetByIdAsync(id);
             if (model == null) return null;
 
             return model.ToGetDTO();
