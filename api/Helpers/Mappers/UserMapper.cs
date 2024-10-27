@@ -15,7 +15,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static User FromPostDTO(this UserRegisterPostDTO dto)
+        public static User FromRegisterPostDTO(this UserRegisterPostDTO dto)
         {
             return new User
             {
