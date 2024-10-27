@@ -18,6 +18,7 @@ namespace api.Repositories
         public async Task<IEnumerable<Motorcycle>> GetAllAsync(MotorcycleQuery query)
         {
             var models = _context.Motorcycles.Include(m => m.Comments)
+                                             .ThenInclude(c => c.User)
                                              .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Make))
@@ -50,6 +51,7 @@ namespace api.Repositories
         public async Task<Motorcycle?> GetByIdAsync(int? id)
         {
             return await _context.Motorcycles.Include(m => m.Comments)
+                                             .ThenInclude(c => c.User)
                                              .FirstOrDefaultAsync(m => m.Id.Equals(id));
         }
 
