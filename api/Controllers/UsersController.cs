@@ -31,7 +31,7 @@ namespace api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginPostDTO dto)
+        public async Task<IActionResult> Login([FromBody] UserLoginPostDTO dto)
         {
             try
             {
