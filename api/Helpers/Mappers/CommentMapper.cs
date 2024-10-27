@@ -11,16 +11,19 @@ namespace api.Helpers.Mappers
             {
                 Title = model.Title,
                 Content = model.Content,
-                CreatedOn = model.CreatedOn
+                MotorcycleId = model.MotorcycleId,
+                CreatedOn = model.CreatedOn,
+                CreatedBy = model.User?.UserName
             };
         }
 
-        public static Comment FromPostDTO(this CommentPostDTO dto, int motorcycleId)
+        public static Comment FromPostDTO(this CommentPostDTO dto, string userId, int motorcycleId)
         {
             return new Comment
             {
                 Title = dto.Title,
                 Content = dto.Content,
+                UserId = userId,
                 MotorcycleId = motorcycleId,
                 CreatedOn = DateTime.Now
             };
