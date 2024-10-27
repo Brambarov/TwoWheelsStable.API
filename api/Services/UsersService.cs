@@ -30,7 +30,7 @@ namespace api.Services
 
         public async Task<UserGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
-            var user = dto.FromPostDTO();
+            var user = dto.FromRegisterPostDTO();
 
             var createdUser = await _userManager.CreateAsync(user, dto.Password);
 
