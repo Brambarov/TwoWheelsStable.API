@@ -31,7 +31,7 @@ namespace api.Services
 
             if (model == null) return null;
 
-            var techSpecs = await _aPINinjasService.FindMotorcycleByMakeAndModel(model.Make, model.Model);
+            var techSpecs = await _aPINinjasService.GetSpecsAsync(model.Make, model.Model);
 
             return model.ToGetDTO(techSpecs);
         }
