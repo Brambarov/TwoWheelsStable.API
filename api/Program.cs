@@ -109,9 +109,11 @@ namespace api
 
             builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
             builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
+            builder.Services.AddScoped<ISpecsRepository, SpecsRepository>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
             builder.Services.AddScoped<ICommentsService, CommentsService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<ISpecsService, SpecsService>();
             builder.Services.AddScoped<IAPINinjasService, APINinjasService>();
 
             var app = builder.Build();
