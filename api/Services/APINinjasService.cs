@@ -16,22 +16,34 @@ namespace api.Services
             _configuration = configuration;
         }
 
-        public async Task<Specs?> GetSpecsAsync(string make, string model)
+        public async Task<Specs?> GetAsync(string make, string model, int year)
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _configuration["APINinjasKey"]);
 
-                var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}");
+                var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}&year={year}");
 
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var specs = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
 
-                if (specs == null || !specs.Any()) return null;
+                if (specs == null || specs.Count == 0)
+                {
+                    response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}");
 
-                return specs.FirstOrDefault();
+                    response.EnsureSuccessStatusCode();
+
+                    jsonResponse = await response.Content.ReadAsStringAsync();
+                    specs = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
+
+                    if (specs == null || specs.Count == 0) return null;
+                }
+
+                return specs.Where(s => s.year < year)
+                            .OrderBy(s => s.year)
+                            .LastOrDefault();
             }
             catch (HttpRequestException ex)
             {
