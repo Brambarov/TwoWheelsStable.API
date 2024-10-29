@@ -16,7 +16,7 @@ namespace api.Services
             _configuration = configuration;
         }
 
-        public async Task<string?> FindMotorcycleByMakeAndModel(string make, string model)
+        public async Task<Specs?> GetSpecsAsync(string make, string model)
         {
             try
             {
@@ -27,11 +27,11 @@ namespace api.Services
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var motorcyclesTechSpecs = JsonConvert.DeserializeObject<List<dynamic>>(jsonResponse);
+                var specs = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
 
-                if (motorcyclesTechSpecs == null || !motorcyclesTechSpecs.Any()) return null;
+                if (specs == null || !specs.Any()) return null;
 
-                return JsonConvert.SerializeObject(motorcyclesTechSpecs.FirstOrDefault());
+                return specs.FirstOrDefault();
             }
             catch (HttpRequestException ex)
             {
