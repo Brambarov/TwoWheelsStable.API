@@ -1,19 +1,18 @@
 ﻿using api.DTOs.Motorcycle;
 using api.Models;
-using Newtonsoft.Json;
 
 namespace api.Helpers.Mappers
 {
     public static class MotorcycleMapper
     {
-        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model, string? techSpecs)
+        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model, Specs? specs)
         {
             return new MotorcycleGetDTO
             {
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
-                TechnicalSpecification = techSpecs,
+                Specs = specs,
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }
