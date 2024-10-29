@@ -5,14 +5,13 @@ namespace api.Helpers.Mappers
 {
     public static class MotorcycleMapper
     {
-        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model, Specs? specs)
+        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model)
         {
             return new MotorcycleGetDTO
             {
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
-                Specs = specs,
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }

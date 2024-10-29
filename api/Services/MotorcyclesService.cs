@@ -8,13 +8,13 @@ namespace api.Services
 {
     public class MotorcyclesService : IMotorcyclesService
     {
-        private readonly IAPINinjasService _aPINinjasService;
+        private readonly ISpecsService _specsService;
         private readonly IMotorcyclesRepository _motorcyclesRepository;
 
-        public MotorcyclesService(IAPINinjasService APINinjasService,
+        public MotorcyclesService(ISpecsService specsService,
                                   IMotorcyclesRepository motorcyclesRepository)
         {
-            _aPINinjasService = APINinjasService;
+            _specsService = specsService;
             _motorcyclesRepository = motorcyclesRepository;
         }
 
@@ -22,7 +22,7 @@ namespace api.Services
         {
             var models = await _motorcyclesRepository.GetAllAsync(query);
 
-            return models.Select(m => m.ToGetDTO(null));
+            return models.Select(m => m.ToGetDTO());
         }
 
         public async Task<MotorcycleGetDTO?> GetByIdAsync(int id)
@@ -31,20 +31,20 @@ namespace api.Services
 
             if (model == null) return null;
 
-            var techSpecs = await _aPINinjasService.GetSpecsAsync(model.Make, model.Model);
-
-            return model.ToGetDTO(techSpecs);
+            return model.ToGetDTO();
         }
 
         public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto)
         {
             var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO());
 
+
+
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             if (model == null) return null;
 
-            return model.ToGetDTO(null);
+            return model.ToGetDTO();
         }
 
         public async Task<MotorcycleGetDTO?> UpdateAsync(int id, MotorcyclePutDTO dto)
@@ -62,7 +62,7 @@ namespace api.Services
 
             if (model == null) return null;
 
-            return model.ToGetDTO(null);
+            return model.ToGetDTO();
         }
 
         public async Task<MotorcycleGetDTO?> DeleteAsync(int id)
@@ -73,7 +73,7 @@ namespace api.Services
 
             await _motorcyclesRepository.DeleteAsync(model);
 
-            return model.ToGetDTO(null);
+            return model.ToGetDTO();
         }
     }
 }
