@@ -9,6 +9,7 @@ namespace api.Models
         public string Name { get; set; } = string.Empty;
         public string Make { get; set; } = string.Empty;
         public string Model { get; set; } = string.Empty;
+        public int Year { get; set; }
         //public int? UserId { get; set; }
         //public User? User { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
