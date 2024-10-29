@@ -8,7 +8,7 @@ namespace api.Models
         public int Id { get; set; }
         public string make { get; set; } = string.Empty;
         public string model { get; set; } = string.Empty;
-        public string year { get; set; } = string.Empty;
+        public int year { get; set; }
         public string type { get; set; } = string.Empty;
         public string displacement { get; set; } = string.Empty;
         public string engine { get; set; } = string.Empty;
