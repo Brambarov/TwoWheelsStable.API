@@ -12,6 +12,8 @@ namespace api.Helpers.Mappers
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
+                Year = model.Year,
+                Specs = model.Specs,
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }
@@ -22,7 +24,8 @@ namespace api.Helpers.Mappers
             {
                 Name = dto.Name,
                 Make = dto.Make,
-                Model = dto.Model
+                Model = dto.Model,
+                Year = dto.Year,
             };
         }
 
@@ -33,7 +36,8 @@ namespace api.Helpers.Mappers
                 Id = id,
                 Name = dto.Name,
                 Make = dto.Make,
-                Model = dto.Model
+                Model = dto.Model,
+                Year = dto.Year
             };
         }
     }
