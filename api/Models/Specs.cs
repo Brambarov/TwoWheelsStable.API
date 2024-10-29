@@ -1,7 +1,11 @@
-﻿namespace api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace api.Models
 {
+    [Table("Specs")]
     public class Specs
     {
+        public int Id { get; set; }
         public string make { get; set; } = string.Empty;
         public string model { get; set; } = string.Empty;
         public string year { get; set; } = string.Empty;
