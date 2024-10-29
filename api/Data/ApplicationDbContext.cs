@@ -15,6 +15,7 @@ namespace api.Data
 
         public DbSet<Motorcycle> Motorcycles { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Specs> Specs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
