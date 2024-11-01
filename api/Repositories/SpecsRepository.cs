@@ -1,16 +1,13 @@
 ﻿using api.Data;
 using api.Models;
 using api.Repositories.Contracts;
-using api.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class SpecsRepository(ApplicationDbContext context,
-                                 IAPINinjasService aPINinjasService) : ISpecsRepository
+    public class SpecsRepository(ApplicationDbContext context) : ISpecsRepository
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly IAPINinjasService _aPINinjasService = aPINinjasService;
 
         public async Task<IEnumerable<Specs>> GetAsync(string make, string model)
         {
@@ -18,9 +15,14 @@ namespace api.Repositories
                                        .ToListAsync();
         }
 
-        public Task<Specs> CreateAsync()
+        public async Task<int?> CreateAsync(Specs model)
         {
-            throw new NotImplementedException();
+            await _context.Specs.AddAsync(model);
+            await _context.SaveChangesAsync();
+
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+
+            return id;
         }
     }
 }
