@@ -32,10 +32,12 @@ namespace api.Services
                     jsonResponse = await response.Content.ReadAsStringAsync();
                     specs = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
 
-                    if (specs == null || specs.Count == 0) return null;
+                    if (specs == null || specs.Count == 0) throw new ApplicationException("Specs not found on API Ninja!");
                 }
 
-                return specs.Where(s => s.Year < year)
+                return specs.Where(s => s.Year < year
+                                        && s.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
+                                        && s.Model.Equals(model, StringComparison.OrdinalIgnoreCase))
                             .OrderBy(s => s.Year)
                             .LastOrDefault();
             }
