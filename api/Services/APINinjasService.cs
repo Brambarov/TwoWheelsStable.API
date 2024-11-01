@@ -36,7 +36,7 @@ namespace api.Services
                     if (specsList == null || specsList.Count == 0) throw new ApplicationException("Specs not found on API Ninjas!");
                 }
 
-                var specs = specsList.Where(s => s.Year < year
+                var specs = specsList.Where(s => s.Year <= year
                                         && s.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
                                         && s.Model.Equals(model, StringComparison.OrdinalIgnoreCase))
                             .OrderBy(s => s.Year)
@@ -44,30 +44,14 @@ namespace api.Services
 
                 if (specs != null)
                 {
-                    var unspacedSlashPattern = new Regex(@"(?<!\s)/(?!\s)");
-                    var doubleBracePattern = new Regex(@"\)\)");
-                    var extraSpacesPattern = new Regex(@"\s{2,}");
-                    var middleSemicolonPattern = new Regex(@"(?<=\s*[\)]);\s*(?=[\s\w()])");
+                    return FormatSpecs(specs);
+                }
 
-                    foreach (var property in specs.GetType().GetProperties())
-                    {
-                        if (property.PropertyType == typeof(string))
-                        {
-                            var value = property.GetValue(specs) as string;
+                specs = specsList.Where(s => s.Year <= year).LastOrDefault();
 
-                            if (value != null)
-                            {
-                                var formattedValue = unspacedSlashPattern.Replace(value, " / ");
-                                formattedValue = doubleBracePattern.Replace(formattedValue, ")");
-                                formattedValue = extraSpacesPattern.Replace(formattedValue, " ");
-                                formattedValue = middleSemicolonPattern.Replace(formattedValue, ". ");
-                                formattedValue = formattedValue.Trim();
-                                property.SetValue(specs, formattedValue);
-                            }
-                        }
-                    }
-
-                    return specs;
+                if (specs != null)
+                {
+                    return FormatSpecs(specs);
                 }
 
                 throw new ApplicationException("Specs not found on API Ninjas!");
@@ -80,6 +64,34 @@ namespace api.Services
             {
                 throw new Exception("Unexpected error occurred!", ex);
             }
+        }
+
+        private static Specs FormatSpecs(Specs specs)
+        {
+            var unspacedSlashPattern = new Regex(@"(?<!\s)/(?!\s)");
+            var doubleBracePattern = new Regex(@"\)\)");
+            var extraSpacesPattern = new Regex(@"\s{2,}");
+            var middleSemicolonPattern = new Regex(@"(?<=\s*[\)]);\s*(?=[\s\w()])");
+
+            foreach (var property in specs.GetType().GetProperties())
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = property.GetValue(specs) as string;
+
+                    if (value != null)
+                    {
+                        var formattedValue = unspacedSlashPattern.Replace(value, " / ");
+                        formattedValue = doubleBracePattern.Replace(formattedValue, ")");
+                        formattedValue = extraSpacesPattern.Replace(formattedValue, " ");
+                        formattedValue = middleSemicolonPattern.Replace(formattedValue, ". ");
+                        formattedValue = formattedValue.Trim();
+                        property.SetValue(specs, formattedValue);
+                    }
+                }
+            }
+
+            return specs;
         }
     }
 }
