@@ -57,13 +57,9 @@ namespace api.Services
 
         public async Task<UserGetDTO> LoginAsync(UserLoginPostDTO dto)
         {
-            var dtoUserName = dto.UserName ?? throw new ApplicationException("Username exception!");
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(dto.UserName.ToLower())) ?? throw new ApplicationException("Invalid username!");
 
-            var dtoPassword = dto.Password ?? throw new ApplicationException("Password exception!");
-
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(dtoUserName.ToLower())) ?? throw new ApplicationException("Invalid username!");
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, dtoPassword, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
 
             if (!result.Succeeded) throw new ApplicationException("Username/password is incorrect!");
 
