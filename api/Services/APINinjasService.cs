@@ -33,7 +33,7 @@ namespace api.Services
                     jsonResponse = await response.Content.ReadAsStringAsync();
                     specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
 
-                    if (specsList == null || specsList.Count == 0) throw new ApplicationException("Specs not found on API Ninja!");
+                    if (specsList == null || specsList.Count == 0) throw new ApplicationException("Specs not found on API Ninjas!");
                 }
 
                 var specs = specsList.Where(s => s.Year < year
@@ -70,7 +70,7 @@ namespace api.Services
                     return specs;
                 }
 
-                throw new ApplicationException("Specs not found on API Ninja!");
+                throw new ApplicationException("Specs not found on API Ninjas!");
             }
             catch (HttpRequestException ex)
             {
