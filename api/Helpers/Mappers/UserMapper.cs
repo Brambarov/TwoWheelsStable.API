@@ -7,10 +7,13 @@ namespace api.Helpers.Mappers
     {
         public static UserGetDTO ToGetDTO(this User model, string token)
         {
+            var userName = model.UserName ?? throw new ApplicationException("UserName exception!");
+            var email = model.Email ?? throw new ApplicationException("Email exception!");
+
             return new UserGetDTO
             {
-                UserName = model.UserName,
-                Email = model.Email,
+                UserName = userName,
+                Email = email,
                 Token = token
             };
         }
