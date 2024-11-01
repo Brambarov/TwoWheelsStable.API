@@ -25,20 +25,38 @@ namespace api.Services
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"] ?? throw new ApplicationException("JWT Signing key exception!")));
         }
 
         public async Task<UserGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
             var user = dto.FromRegisterPostDTO();
 
-            var createdUser = await _userManager.CreateAsync(user, dto.Password);
+            var dtoPassword = dto.Password ?? throw new ApplicationException("Password exception!");
 
-            if (!createdUser.Succeeded) throw new ApplicationException(createdUser.Errors.FirstOrDefault().Description);
+            var createdUser = await _userManager.CreateAsync(user, dtoPassword);
+
+            if (!createdUser.Succeeded)
+            {
+                var error = createdUser.Errors.FirstOrDefault() ?? throw new ApplicationException("Registration exception!");
+
+                throw new ApplicationException(error.Description);
+            }
 
             var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
-            if (!createdUser.Succeeded) throw new ApplicationException(roleResult.Errors.FirstOrDefault().Description);
+            if (!createdUser.Succeeded)
+            {
+                var error = roleResult.Errors.FirstOrDefault() ?? null;
+                string? errorMessage = null;
+
+                if (error != null)
+                {
+                    errorMessage = error.Description;
+                }
+
+                throw new ApplicationException(errorMessage ?? "Registration exception!");
+            }
 
             var token = CreateToken(user);
 
@@ -47,11 +65,13 @@ namespace api.Services
 
         public async Task<UserGetDTO> LoginAsync(UserLoginPostDTO dto)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName.Equals(dto.UserName.ToLower()));
+            var dtoUserName = dto.UserName ?? throw new ApplicationException("Username exception!");
 
-            if (user == null) throw new ApplicationException("Invalid username!");
+            var dtoPassword = dto.Password ?? throw new ApplicationException("Password exception!");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(dtoUserName.ToLower())) ?? throw new ApplicationException("Invalid username!");
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, dtoPassword, false);
 
             if (!result.Succeeded) throw new ApplicationException("Username/password is incorrect!");
 
@@ -62,10 +82,13 @@ namespace api.Services
 
         private string CreateToken(User user)
         {
+            var userName = user.UserName ?? throw new ApplicationException("UserName exception!");
+            var email = user.Email ?? throw new ApplicationException("Email exception!");
+
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                new(JwtRegisteredClaimNames.GivenName, userName),
+                new(JwtRegisteredClaimNames.Email, email)
             };
 
             var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

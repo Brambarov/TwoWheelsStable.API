@@ -10,6 +10,6 @@ namespace api.DTOs.Motorcycle
         public string Model { get; set; } = string.Empty;
         public int Year { get; set; }
         public Specs? Specs { get; set; }
-        public List<CommentGetDTO> Comments { get; set; } = new List<CommentGetDTO>();
+        public List<CommentGetDTO> Comments { get; set; } = [];
     }
 }

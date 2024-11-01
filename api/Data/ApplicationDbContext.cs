@@ -15,8 +15,8 @@ namespace api.Data
         {
             base.OnModelCreating(builder);
 
-            List<IdentityRole> roles = new List<IdentityRole>
-            {
+            List<IdentityRole> roles =
+            [
                 new IdentityRole
                 {
                     Name = "Admin",
@@ -27,7 +27,7 @@ namespace api.Data
                     Name = "User",
                     NormalizedName = "USER"
                 }
-            };
+            ];
 
             builder.Entity<IdentityRole>().HasData(roles);
         }

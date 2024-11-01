@@ -6,15 +6,11 @@ namespace api.Helpers.Extensions
     {
         public static string GetUserName(this ClaimsPrincipal user)
         {
-            var claims = user.Claims;
-
-            if (claims == null) throw new ApplicationException("User claims exception!");
+            var claims = user.Claims ?? throw new ApplicationException("User claims exception!");
 
             var userNameClaim = claims.SingleOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"));
 
-            if (userNameClaim == null) throw new ApplicationException("Username claim exception!");
-
-            return userNameClaim.Value;
+            return userNameClaim == null ? throw new ApplicationException("Username claim exception!") : userNameClaim.Value;
         }
     }
 }
