@@ -7,14 +7,9 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MotorcyclesController : ControllerBase
+    public class MotorcyclesController(IMotorcyclesService motorcyclesService) : ControllerBase
     {
-        private readonly IMotorcyclesService _motorcyclesService;
-
-        public MotorcyclesController(IMotorcyclesService motorcyclesService)
-        {
-            _motorcyclesService = motorcyclesService;
-        }
+        private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] MotorcycleQuery query)

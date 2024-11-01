@@ -6,14 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class MotorcyclesRepository : IMotorcyclesRepository
+    public class MotorcyclesRepository(ApplicationDbContext context) : IMotorcyclesRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public MotorcyclesRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<Motorcycle>> GetAllAsync(MotorcycleQuery query)
         {

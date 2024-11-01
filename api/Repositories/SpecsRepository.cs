@@ -6,25 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class SpecsRepository : ISpecsRepository
+    public class SpecsRepository(ApplicationDbContext context,
+                                 IAPINinjasService aPINinjasService) : ISpecsRepository
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IAPINinjasService _aPINinjasService;
+        private readonly ApplicationDbContext _context = context;
+        private readonly IAPINinjasService _aPINinjasService = aPINinjasService;
 
-        public SpecsRepository(ApplicationDbContext context,
-                               IAPINinjasService aPINinjasService)
+        public async Task<IEnumerable<Specs>> GetAsync(string make, string model)
         {
-            _context = context;
-            _aPINinjasService = aPINinjasService;
+            return await _context.Specs.Where(s => s.Make == make && s.Model == model)
+                                       .ToListAsync();
         }
 
-        public async Task<Specs> GetAsync(string make, string model, int year)
+        public Task<Specs> CreateAsync()
         {
-            var specs = await _context.Specs.FirstOrDefaultAsync(s => s.make == make && s.model == model && s.year == year);
-
-            if (specs != null) return specs;
-
-            throw new ApplicationException("Specs not found!");
+            throw new NotImplementedException();
         }
     }
 }

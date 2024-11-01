@@ -6,14 +6,9 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommentsController : ControllerBase
+    public class CommentsController(ICommentsService commentsService) : ControllerBase
     {
-        private readonly ICommentsService _commentsService;
-
-        public CommentsController(ICommentsService commentsService)
-        {
-            _commentsService = commentsService;
-        }
+        private readonly ICommentsService _commentsService = commentsService;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

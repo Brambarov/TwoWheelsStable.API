@@ -6,17 +6,11 @@ using api.Services.Contracts;
 
 namespace api.Services
 {
-    public class MotorcyclesService : IMotorcyclesService
+    public class MotorcyclesService(ISpecsService specsService,
+                                    IMotorcyclesRepository motorcyclesRepository) : IMotorcyclesService
     {
-        private readonly ISpecsService _specsService;
-        private readonly IMotorcyclesRepository _motorcyclesRepository;
-
-        public MotorcyclesService(ISpecsService specsService,
-                                  IMotorcyclesRepository motorcyclesRepository)
-        {
-            _specsService = specsService;
-            _motorcyclesRepository = motorcyclesRepository;
-        }
+        private readonly ISpecsService _specsService = specsService;
+        private readonly IMotorcyclesRepository _motorcyclesRepository = motorcyclesRepository;
 
         public async Task<IEnumerable<MotorcycleGetDTO>> GetAllAsync(MotorcycleQuery query)
         {
@@ -36,9 +30,9 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto)
         {
+            var specs = _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
+
             var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO());
-
-
 
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 

@@ -8,23 +8,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace api.Services
 {
-    public class CommentsService : ICommentsService
+    public class CommentsService(UserManager<User> userManager,
+                                 IHttpContextAccessor httpContextAccessor,
+                                 ICommentsRepository commentsRepository,
+                                 IMotorcyclesRepository motorcyclesRepository) : ICommentsService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ICommentsRepository _commentsRepository;
-        private readonly IMotorcyclesRepository _motorcyclesRepository;
-
-        public CommentsService(UserManager<User> userManager,
-                               IHttpContextAccessor httpContextAccessor,
-                               ICommentsRepository commentsRepository,
-                               IMotorcyclesRepository motorcyclesRepository)
-        {
-            _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
-            _commentsRepository = commentsRepository;
-            _motorcyclesRepository = motorcyclesRepository;
-        }
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly ICommentsRepository _commentsRepository = commentsRepository;
+        private readonly IMotorcyclesRepository _motorcyclesRepository = motorcyclesRepository;
 
         public async Task<IEnumerable<CommentGetDTO>> GetAllAsync()
         {

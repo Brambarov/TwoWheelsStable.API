@@ -5,14 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class CommentsRepository : ICommentsRepository
+    public class CommentsRepository(ApplicationDbContext context) : ICommentsRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public CommentsRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<Comment>> GetAllAsync()
         {

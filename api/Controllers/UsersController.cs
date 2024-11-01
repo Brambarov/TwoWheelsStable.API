@@ -6,14 +6,9 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController(IUsersService usersService) : ControllerBase
     {
-        private readonly IUsersService _usersService;
-
-        public UsersController(IUsersService usersService)
-        {
-            _usersService = usersService;
-        }
+        private readonly IUsersService _usersService = usersService;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterPostDTO dto)

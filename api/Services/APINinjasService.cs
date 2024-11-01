@@ -4,17 +4,11 @@ using Newtonsoft.Json;
 
 namespace api.Services
 {
-    public class APINinjasService : IAPINinjasService
+    public class APINinjasService(HttpClient httpClient,
+                                  IConfiguration configuration) : IAPINinjasService
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-
-        public APINinjasService(HttpClient httpClient,
-                                IConfiguration configuration)
-        {
-            _httpClient = httpClient;
-            _configuration = configuration;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<Specs?> GetAsync(string make, string model, int year)
         {
@@ -41,8 +35,8 @@ namespace api.Services
                     if (specs == null || specs.Count == 0) return null;
                 }
 
-                return specs.Where(s => s.year < year)
-                            .OrderBy(s => s.year)
+                return specs.Where(s => s.Year < year)
+                            .OrderBy(s => s.Year)
                             .LastOrDefault();
             }
             catch (HttpRequestException ex)
