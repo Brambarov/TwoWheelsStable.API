@@ -1,5 +1,4 @@
-﻿using api.Models;
-using api.Repositories.Contracts;
+﻿using api.Repositories.Contracts;
 using api.Services.Contracts;
 
 namespace api.Services
@@ -10,7 +9,7 @@ namespace api.Services
         private readonly ISpecsRepository _specsRepository = specsRepository;
         private readonly IAPINinjasService _apiNinjasService = apiNinjasService;
 
-        public async Task<Specs?> GetOrCreateAsync(string make, string model, int year)
+        public async Task<int?> GetOrCreateAsync(string make, string model, int year)
         {
             var specsDb = (await _specsRepository.GetAsync(make, model)).Where(s => s.Year < year)
                                                                         .OrderBy(s => s.Year)
@@ -18,15 +17,19 @@ namespace api.Services
 
             var specsNinja = await _apiNinjasService.GetAsync(make, model, year);
 
-            if (specsDb != null && specsNinja != null)
+            if (specsNinja != null)
             {
-                if (specsDb.Year == specsNinja.Year)
+                if (specsDb != null && specsDb.Year == specsNinja.Year)
                 {
-                    return specsDb;
+                    return specsDb.Id;
+                }
+                else
+                {
+                    return await _specsRepository.CreateAsync(specsNinja);
                 }
             }
 
-            return await _specsRepository.CreateAsync();
+            throw new ApplicationException("Specs not found!");
         }
     }
 }
