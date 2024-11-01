@@ -13,7 +13,7 @@ namespace api.Helpers.Mappers
                 Make = model.Make,
                 Model = model.Model,
                 Year = model.Year,
-                Specs = model.Specs,
+                Specs = model.Specs.ToGetDTO(),
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }
