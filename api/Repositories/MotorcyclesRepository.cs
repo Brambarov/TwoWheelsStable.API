@@ -12,7 +12,8 @@ namespace api.Repositories
 
         public async Task<IEnumerable<Motorcycle>> GetAllAsync(MotorcycleQuery query)
         {
-            var models = _context.Motorcycles.Include(m => m.Comments)
+            var models = _context.Motorcycles.Include(m => m.Specs)
+                                             .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
                                              .AsQueryable();
 
@@ -45,7 +46,8 @@ namespace api.Repositories
 
         public async Task<Motorcycle?> GetByIdAsync(int? id)
         {
-            return await _context.Motorcycles.Include(m => m.Comments)
+            return await _context.Motorcycles.Include(m => m.Specs)
+                                             .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
                                              .FirstOrDefaultAsync(m => m.Id.Equals(id));
         }
