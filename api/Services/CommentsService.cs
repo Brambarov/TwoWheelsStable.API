@@ -40,7 +40,7 @@ namespace api.Services
 
             var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException("Http connection failed!");
 
-            var userName = httpContext.User.GetUsername();
+            var userName = httpContext.User.GetUserName();
 
             if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException($"Username {userName} is invalid!");
 
