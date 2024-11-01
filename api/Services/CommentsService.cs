@@ -38,8 +38,15 @@ namespace api.Services
         {
             if (!await _motorcyclesRepository.Exists(motorcycleId)) throw new ApplicationException($"Motorcycle with Id {motorcycleId} does not exist!");
 
-            var userName = _httpContextAccessor.HttpContext.User.GetUsername();
-            var userId = (await _userManager.FindByNameAsync(userName)).Id;
+            var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException("Http connection failed!");
+
+            var userName = httpContext.User.GetUsername();
+
+            if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException($"Username {userName} is invalid!");
+
+            var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException($"User with username {userName} does not exist!");
+
+            var userId = user.Id;
 
             var model = dto.FromPostDTO(userId, motorcycleId);
 
