@@ -30,9 +30,9 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto)
         {
-            var specs = _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
+            var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO());
+            var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId));
 
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
