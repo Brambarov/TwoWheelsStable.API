@@ -32,9 +32,7 @@ namespace api.Services
         {
             var user = dto.FromRegisterPostDTO();
 
-            var dtoPassword = dto.Password ?? throw new ApplicationException("Password exception!");
-
-            var createdUser = await _userManager.CreateAsync(user, dtoPassword);
+            var createdUser = await _userManager.CreateAsync(user, dto.Password);
 
             if (!createdUser.Succeeded)
             {
@@ -45,17 +43,11 @@ namespace api.Services
 
             var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
-            if (!createdUser.Succeeded)
+            if (!roleResult.Succeeded)
             {
-                var error = roleResult.Errors.FirstOrDefault() ?? null;
-                string? errorMessage = null;
+                var error = roleResult.Errors.FirstOrDefault() ?? throw new ApplicationException("Registration exception!");
 
-                if (error != null)
-                {
-                    errorMessage = error.Description;
-                }
-
-                throw new ApplicationException(errorMessage ?? "Registration exception!");
+                throw new ApplicationException(error.Description ?? "Registration exception!");
             }
 
             var token = CreateToken(user);
