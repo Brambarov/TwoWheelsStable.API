@@ -18,7 +18,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto)
+        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, int? specsId)
         {
             return new Motorcycle
             {
@@ -26,6 +26,7 @@ namespace api.Helpers.Mappers
                 Make = dto.Make,
                 Model = dto.Model,
                 Year = dto.Year,
+                SpecsId = specsId
             };
         }
 
