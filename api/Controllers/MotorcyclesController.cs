@@ -1,6 +1,7 @@
 ﻿using api.DTOs.Motorcycle;
 using api.Helpers.Queries;
 using api.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -31,6 +32,7 @@ namespace api.Controllers
             return getDto == null ? NotFound() : Ok(getDto);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] MotorcyclePostDTO postDto)
         {
@@ -41,6 +43,7 @@ namespace api.Controllers
             return getDto == null ? NotFound() : Ok(getDto);
         }
 
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id,
                                                 [FromBody] MotorcyclePutDTO putDto)
@@ -52,6 +55,7 @@ namespace api.Controllers
             return getDto == null ? NotFound() : Ok(getDto);
         }
 
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
