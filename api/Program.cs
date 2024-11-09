@@ -94,7 +94,7 @@ namespace api
                 options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                var jwtSigningKey = builder.Configuration["JWT:SigningKey"] ?? throw new ApplicationException("JWT Signing key is missing");
+                var jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key is missing");
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

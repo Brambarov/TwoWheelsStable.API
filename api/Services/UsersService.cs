@@ -25,7 +25,7 @@ namespace api.Services
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"] ?? throw new ApplicationException("JWT Signing key exception!")));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key exception!")));
         }
 
         public async Task<UserGetDTO> RegisterAsync(UserRegisterPostDTO dto)

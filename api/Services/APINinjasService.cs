@@ -5,17 +5,15 @@ using System.Text.RegularExpressions;
 
 namespace api.Services
 {
-    public class APINinjasService(HttpClient httpClient,
-                                  IConfiguration configuration) : IAPINinjasService
+    public class APINinjasService(HttpClient httpClient) : IAPINinjasService
     {
         private readonly HttpClient _httpClient = httpClient;
-        private readonly IConfiguration _configuration = configuration;
 
         public async Task<Specs?> GetAsync(string make, string model, int year)
         {
             try
             {
-                _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _configuration["APINinjasKey"]);
+                _httpClient.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("APININJAS_KEY"));
 
                 var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}&year={year}");
 
