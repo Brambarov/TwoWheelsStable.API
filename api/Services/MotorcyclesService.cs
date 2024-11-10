@@ -47,8 +47,9 @@ namespace api.Services
 
             if (model == null) return null;
 
-            // TODO: validate model input data
-            var update = dto.FromPutDTO(motorcycleId, model.SpecsId);
+            var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
+
+            var update = dto.FromPutDTO(motorcycleId, specsId);
 
             await _motorcyclesRepository.UpdateAsync(model, update);
 
