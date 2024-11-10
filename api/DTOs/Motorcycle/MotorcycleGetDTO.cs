@@ -1,6 +1,5 @@
 ﻿using api.DTOs.Comment;
 using api.DTOs.Specs;
-using api.DTOs.User;
 
 namespace api.DTOs.Motorcycle
 {
