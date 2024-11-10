@@ -14,11 +14,12 @@ namespace api.Helpers.Mappers
                 Model = model.Model,
                 Year = model.Year,
                 Specs = model.Specs?.ToGetDTO(),
+                Owner = model.User?.UserName,
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }
 
-        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, int? specsId)
+        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, int? specsId, string userId)
         {
             return new Motorcycle
             {
@@ -26,7 +27,8 @@ namespace api.Helpers.Mappers
                 Make = dto.Make,
                 Model = dto.Model,
                 Year = dto.Year,
-                SpecsId = specsId
+                SpecsId = specsId,
+                UserId = userId
             };
         }
 
