@@ -1,5 +1,6 @@
 ﻿using api.DTOs.Comment;
 using api.DTOs.Specs;
+using api.DTOs.User;
 
 namespace api.DTOs.Motorcycle
 {
@@ -10,6 +11,7 @@ namespace api.DTOs.Motorcycle
         public string Model { get; set; } = string.Empty;
         public int Year { get; set; }
         public SpecsGetDTO? Specs { get; set; }
+        public string? Owner { get; set; } = string.Empty;
         public List<CommentGetDTO> Comments { get; set; } = [];
     }
 }
