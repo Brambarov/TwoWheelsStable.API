@@ -1,14 +1,21 @@
 ﻿using api.DTOs.Motorcycle;
+using api.Helpers.Extensions;
 using api.Helpers.Mappers;
 using api.Helpers.Queries;
+using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace api.Services
 {
-    public class MotorcyclesService(ISpecsService specsService,
+    public class MotorcyclesService(UserManager<User> userManager,
+                                    IHttpContextAccessor httpContextAccessor,
+                                    ISpecsService specsService,
                                     IMotorcyclesRepository motorcyclesRepository) : IMotorcyclesService
     {
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ISpecsService _specsService = specsService;
         private readonly IMotorcyclesRepository _motorcyclesRepository = motorcyclesRepository;
 
@@ -32,7 +39,15 @@ namespace api.Services
         {
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId));
+            var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException("Http connection failed!");
+
+            var userName = httpContext.User.GetUserName();
+
+            if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException($"Username {userName} is invalid!");
+
+            var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException($"User with username {userName} does not exist!");
+
+            var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, user.Id));
 
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
