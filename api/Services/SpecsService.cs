@@ -11,7 +11,7 @@ namespace api.Services
 
         public async Task<int?> GetOrCreateAsync(string make, string model, int year)
         {
-            var specsDb = (await _specsRepository.GetAsync(make, model)).Where(s => s.Year < year)
+            var specsDb = (await _specsRepository.GetAsync(make, model)).Where(s => s.Year <= year)
                                                                         .OrderBy(s => s.Year)
                                                                         .LastOrDefault();
 

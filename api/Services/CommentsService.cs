@@ -46,9 +46,7 @@ namespace api.Services
 
             var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException($"User with username {userName} does not exist!");
 
-            var userId = user.Id;
-
-            var model = dto.FromPostDTO(userId, motorcycleId);
+            var model = dto.FromPostDTO(user.Id, motorcycleId);
 
             var id = await _commentsRepository.CreateAsync(model);
 
