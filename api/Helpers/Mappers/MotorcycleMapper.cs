@@ -13,7 +13,7 @@ namespace api.Helpers.Mappers
                 Make = model.Make,
                 Model = model.Model,
                 Year = model.Year,
-                Specs = model.Specs.ToGetDTO(),
+                Specs = model.Specs?.ToGetDTO(),
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }
@@ -30,15 +30,16 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, int id)
+        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, int motorcycleId, int? specsId)
         {
             return new Motorcycle
             {
-                Id = id,
+                Id = motorcycleId,
                 Name = dto.Name,
                 Make = dto.Make,
                 Model = dto.Model,
-                Year = dto.Year
+                Year = dto.Year,
+                SpecsId = specsId
             };
         }
     }

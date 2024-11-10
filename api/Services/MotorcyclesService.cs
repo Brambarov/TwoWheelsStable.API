@@ -41,18 +41,18 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<MotorcycleGetDTO?> UpdateAsync(int id, MotorcyclePutDTO dto)
+        public async Task<MotorcycleGetDTO?> UpdateAsync(int motorcycleId, MotorcyclePutDTO dto)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
+            var model = await _motorcyclesRepository.GetByIdAsync(motorcycleId);
 
             if (model == null) return null;
 
             // TODO: validate model input data
-            var update = dto.FromPutDTO(id);
+            var update = dto.FromPutDTO(motorcycleId, model.SpecsId);
 
             await _motorcyclesRepository.UpdateAsync(model, update);
 
-            model = await _motorcyclesRepository.GetByIdAsync(id);
+            model = await _motorcyclesRepository.GetByIdAsync(motorcycleId);
 
             if (model == null) return null;
 
