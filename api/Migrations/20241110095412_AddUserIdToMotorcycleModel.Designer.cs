@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110095412_AddUserIdToMotorcycleModel")]
+    partial class AddUserIdToMotorcycleModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f4c04ce1-aef8-4c30-aae4-acdf2ab81e41",
+                            Id = "aab64313-8505-406e-a64c-37e7a0f73ade",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "058feb6e-60b9-43c4-9c88-22e4c912a6f9",
+                            Id = "8c69adc9-52b1-4607-94d2-d2f95848273f",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -562,7 +565,7 @@ namespace api.Migrations
                         .HasForeignKey("SpecsId");
 
                     b.HasOne("api.Models.User", "User")
-                        .WithMany("Stable")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -575,11 +578,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Motorcycle", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("api.Models.User", b =>
-                {
-                    b.Navigation("Stable");
                 });
 #pragma warning restore 612, 618
         }
