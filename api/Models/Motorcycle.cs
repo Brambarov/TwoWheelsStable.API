@@ -12,8 +12,8 @@ namespace api.Models
         public int Year { get; set; }
         public int? SpecsId { get; set; }
         public Specs? Specs { get; set; }
-        //public int? UserId { get; set; }
-        //public User? User { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public User? User { get; set; }
         public List<Comment> Comments { get; set; } = [];
     }
 }
