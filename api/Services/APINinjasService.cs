@@ -2,7 +2,7 @@
 using api.Services.Contracts;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-using static api.Helpers.ErrorMessages;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
 {

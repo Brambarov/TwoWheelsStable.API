@@ -3,7 +3,7 @@ using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static api.Helpers.ErrorMessages;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Repositories
 {

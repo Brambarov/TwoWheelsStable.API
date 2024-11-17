@@ -1,6 +1,6 @@
 ﻿using api.Repositories.Contracts;
 using api.Services.Contracts;
-using static api.Helpers.ErrorMessages;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
 {
