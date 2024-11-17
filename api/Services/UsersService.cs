@@ -1,5 +1,6 @@
 ﻿using api.DTOs.User;
 using api.Helpers.Mappers;
+using api.Helpers.Queries;
 using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
@@ -22,6 +23,33 @@ namespace api.Services
         private readonly IConfiguration _configuration = configuration;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly SymmetricSecurityKey _key = new(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException(JWTSigningKeyError)));
+
+        public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query)
+        {
+            var models = await _usersRepository.GetAllAsync(query);
+
+            return models.Select(u => u.ToGetDTO());
+        }
+
+        public async Task<UserGetDTO?> GetByIdAsync(string id)
+        {
+            var model = await _usersRepository.GetByIdAsync(id)
+                        ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                        "User",
+                                                                        "Id",
+                                                                        id));
+            return model.ToGetDTO();
+        }
+
+        public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
+        {
+            var model = await _usersRepository.GetByUserNameAsync(userName)
+                        ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                        "User",
+                                                                        "UserName",
+                                                                        userName));
+            return model.ToGetDTO();
+        }
 
         public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
@@ -48,24 +76,33 @@ namespace api.Services
             return model.ToLoginGetDTO(token);
         }
 
-        public async Task<UserGetDTO?> GetByIdAsync(string id)
+        public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto)
         {
-            var model = await _usersRepository.GetByIdAsync(id)
-                        ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                        "User",
-                                                                        "Id",
-                                                                        id));
+            var model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "User", "Id", id.ToString()));
+
+            var update = dto.FromPutDTO(id);
+
+            await _usersRepository.UpdateAsync(model, update);
+
+            model = await _usersRepository.GetByIdAsync(id);
+
+            if (model == null) return null;
+
             return model.ToGetDTO();
         }
 
-        public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
+        public async Task<UserGetDTO?> DeleteAsync(string id)
         {
-            var model = await _usersRepository.GetByUserNameAsync(userName)
-                        ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                        "User",
-                                                                        "UserName",
-                                                                        userName));
+            var model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
+
+            await _usersRepository.DeleteAsync(model);
+
             return model.ToGetDTO();
+        }
+
+        public string? GetId()
+        {
+            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         private string CreateToken(User user)
@@ -98,11 +135,6 @@ namespace api.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
-        }
-
-        public string? GetId()
-        {
-            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }
