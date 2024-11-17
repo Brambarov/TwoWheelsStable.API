@@ -2,6 +2,7 @@
 using api.Services.Contracts;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using static api.Helpers.ErrorMessages;
 
 namespace api.Services
 {
@@ -31,7 +32,7 @@ namespace api.Services
                     jsonResponse = await response.Content.ReadAsStringAsync();
                     specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
 
-                    if (specsList == null || specsList.Count == 0) throw new ApplicationException("Specs not found on API Ninjas!");
+                    if (specsList == null || specsList.Count == 0) throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
                 }
 
                 var specs = specsList.Where(s => s.Year <= year
@@ -52,15 +53,15 @@ namespace api.Services
                     return FormatSpecs(specs);
                 }
 
-                throw new ApplicationException("Specs not found on API Ninjas!");
+                throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
             }
             catch (HttpRequestException ex)
             {
-                throw new Exception("Error occured while calling an external API!", ex);
+                throw new Exception(ExternalApiError, ex);
             }
             catch (Exception ex)
             {
-                throw new Exception("Unexpected error occurred!", ex);
+                throw new Exception(UnexpectedError, ex);
             }
         }
 

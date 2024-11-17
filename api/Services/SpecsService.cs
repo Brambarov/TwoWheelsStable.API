@@ -1,5 +1,6 @@
 ﻿using api.Repositories.Contracts;
 using api.Services.Contracts;
+using static api.Helpers.ErrorMessages;
 
 namespace api.Services
 {
@@ -29,7 +30,7 @@ namespace api.Services
                 }
             }
 
-            throw new ApplicationException("Specs not found!");
+            throw new ApplicationException(string.Format(NotFoundError, "Specs"));
         }
     }
 }

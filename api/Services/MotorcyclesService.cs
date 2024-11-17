@@ -1,21 +1,17 @@
 ﻿using api.DTOs.Motorcycle;
-using api.Helpers.Extensions;
 using api.Helpers.Mappers;
 using api.Helpers.Queries;
-using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
-using Microsoft.AspNetCore.Identity;
+using static api.Helpers.ErrorMessages;
 
 namespace api.Services
 {
-    public class MotorcyclesService(UserManager<User> userManager,
-                                    IHttpContextAccessor httpContextAccessor,
-                                    ISpecsService specsService,
-                                    IMotorcyclesRepository motorcyclesRepository) : IMotorcyclesService
+    public class MotorcyclesService(IUsersService usersService,
+                                    IMotorcyclesRepository motorcyclesRepository,
+                                    ISpecsService specsService) : IMotorcyclesService
     {
-        private readonly UserManager<User> _userManager = userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IUsersService _usersService = usersService;
         private readonly ISpecsService _specsService = specsService;
         private readonly IMotorcyclesRepository _motorcyclesRepository = motorcyclesRepository;
 
@@ -28,9 +24,7 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> GetByIdAsync(int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
+            var model = await _motorcyclesRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
 
             return model.ToGetDTO();
         }
@@ -39,15 +33,9 @@ namespace api.Services
         {
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException("Http connection failed!");
+            var userId = _usersService.GetId() ?? throw new ApplicationException(UnauthorizedError);
 
-            var userName = httpContext.User.GetUserName();
-
-            if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException($"Username {userName} is invalid!");
-
-            var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException($"User with username {userName} does not exist!");
-
-            var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, user.Id));
+            var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, userId));
 
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
@@ -56,19 +44,20 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<MotorcycleGetDTO?> UpdateAsync(int motorcycleId, MotorcyclePutDTO dto)
+        public async Task<MotorcycleGetDTO?> UpdateAsync(int id, MotorcyclePutDTO dto)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(motorcycleId);
+            var model = await _motorcyclesRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
 
-            if (model == null) return null;
+            var userId = _usersService.GetId();
+            if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
 
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var update = dto.FromPutDTO(motorcycleId, specsId);
+            var update = dto.FromPutDTO(id, specsId);
 
             await _motorcyclesRepository.UpdateAsync(model, update);
 
-            model = await _motorcyclesRepository.GetByIdAsync(motorcycleId);
+            model = await _motorcyclesRepository.GetByIdAsync(id);
 
             if (model == null) return null;
 
@@ -77,9 +66,10 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> DeleteAsync(int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
+            var model = await _motorcyclesRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
 
-            if (model == null) return null;
+            var userId = _usersService.GetId();
+            if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
 
             await _motorcyclesRepository.DeleteAsync(model);
 

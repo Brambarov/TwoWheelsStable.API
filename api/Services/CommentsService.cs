@@ -5,6 +5,7 @@ using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
+using static api.Helpers.ErrorMessages;
 
 namespace api.Services
 {
@@ -36,15 +37,15 @@ namespace api.Services
 
         public async Task<CommentGetDTO?> CreateAsync(int motorcycleId, CommentPostDTO dto)
         {
-            if (!await _motorcyclesRepository.Exists(motorcycleId)) throw new ApplicationException($"Motorcycle with Id {motorcycleId} does not exist!");
+            if (!await _motorcyclesRepository.Exists(motorcycleId)) throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", motorcycleId.ToString()));
 
-            var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException("Http connection failed!");
+            var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException(HttpConnectionError);
 
             var userName = httpContext.User.GetUserName();
 
-            if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException($"Username {userName} is invalid!");
+            if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException(string.Format(PropertyIsInvalidError, "UserName", userName));
 
-            var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException($"User with username {userName} does not exist!");
+            var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "User", "UserName", userName));
 
             var model = dto.FromPostDTO(user.Id, motorcycleId);
 
