@@ -42,14 +42,14 @@ namespace api.Controllers
         }
 
         // TODO: Create an endpoint to get user by Id and view his stable
-        [HttpGet]
-        public async Task<IActionResult> GetByUserName([FromQuery] string userName)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] string id)
         {
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(await _usersService.GetByUserNameAsync(userName));
+                return Ok(await _usersService.GetByIdAsync(id));
             }
             catch (Exception ex)
             {
