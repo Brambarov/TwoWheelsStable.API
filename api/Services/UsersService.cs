@@ -1,9 +1,9 @@
 ﻿using api.DTOs.User;
 using api.Helpers.Mappers;
 using api.Models;
+using api.Repositories.Contracts;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,45 +11,23 @@ using System.Text;
 
 namespace api.Services
 {
-    public class UsersService : IUsersService
+    public class UsersService(IUsersRepository usersRepository,
+                        SignInManager<User> signInManager,
+                        IConfiguration configuration) : IUsersService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly IConfiguration _configuration;
-        private readonly SymmetricSecurityKey _key;
-
-        public UsersService(UserManager<User> userManager,
-                            SignInManager<User> signInManager,
-                            IConfiguration configuration)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _configuration = configuration;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key exception!")));
-        }
+        private readonly IUsersRepository _usersRepository = usersRepository;
+        private readonly SignInManager<User> _signInManager = signInManager;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly SymmetricSecurityKey _key = new(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key exception!")));
 
         // TODO: Introduce repository layer for User model
         public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
             var model = dto.FromRegisterPostDTO();
 
-            var createdUser = await _userManager.CreateAsync(model, dto.Password);
+            var id = await _usersRepository.CreateAsync(model, dto.Password);
 
-            if (!createdUser.Succeeded)
-            {
-                var error = createdUser.Errors.FirstOrDefault() ?? throw new ApplicationException("Registration exception!");
-
-                throw new ApplicationException(error.Description);
-            }
-
-            var roleResult = await _userManager.AddToRoleAsync(model, "User");
-
-            if (!roleResult.Succeeded)
-            {
-                var error = roleResult.Errors.FirstOrDefault() ?? throw new ApplicationException("Registration exception!");
-
-                throw new ApplicationException(error.Description ?? "Registration exception!");
-            }
+            model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException("User registration failed!");
 
             var token = CreateToken(model);
 
@@ -58,8 +36,7 @@ namespace api.Services
 
         public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
         {
-            var model = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(dto.UserName.ToLower())) ?? throw new ApplicationException("Invalid username!");
-
+            var model = await _usersRepository.GetByUserNameAsync(dto.UserName) ?? throw new ApplicationException("User login failed!");
             var result = await _signInManager.CheckPasswordSignInAsync(model, dto.Password, false);
 
             if (!result.Succeeded) throw new ApplicationException("Username/password is incorrect!");
@@ -71,9 +48,7 @@ namespace api.Services
 
         public async Task<UserGetDTO?> GetByIdAsync(string id)
         {
-            var model = await _userManager.Users.Include(u => u.Stable)
-                                                .ThenInclude(m => m.Specs)
-                                                .FirstOrDefaultAsync(u => u.Id.Equals(id)) ?? throw new ApplicationException("User does not exist!");
+            var model = await _usersRepository.GetByIdAsync(id);
 
             if (model == null) return null;
 
