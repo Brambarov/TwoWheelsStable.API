@@ -5,12 +5,23 @@ namespace api.Helpers.Mappers
 {
     public static class UserMapper
     {
-        public static UserGetDTO ToGetDTO(this User model, string token)
+        public static UserGetDTO ToGetDTO(this User model)
+        {
+            var userName = model.UserName ?? throw new ApplicationException("UserName exception!");
+
+            return new UserGetDTO
+            {
+                UserName = userName,
+                Stable = model.Stable.Select(m => m.ToGetDTO()).ToList()
+            };
+        }
+
+        public static UserLoginGetDTO ToLoginGetDTO(this User model, string token)
         {
             var userName = model.UserName ?? throw new ApplicationException("UserName exception!");
             var email = model.Email ?? throw new ApplicationException("Email exception!");
 
-            return new UserGetDTO
+            return new UserLoginGetDTO
             {
                 UserName = userName,
                 Email = email,
