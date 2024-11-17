@@ -28,11 +28,11 @@ namespace api.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key exception!")));
         }
 
-        public async Task<UserGetDTO> RegisterAsync(UserRegisterPostDTO dto)
+        public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
-            var user = dto.FromRegisterPostDTO();
+            var model = dto.FromRegisterPostDTO();
 
-            var createdUser = await _userManager.CreateAsync(user, dto.Password);
+            var createdUser = await _userManager.CreateAsync(model, dto.Password);
 
             if (!createdUser.Succeeded)
             {
@@ -41,7 +41,7 @@ namespace api.Services
                 throw new ApplicationException(error.Description);
             }
 
-            var roleResult = await _userManager.AddToRoleAsync(user, "User");
+            var roleResult = await _userManager.AddToRoleAsync(model, "User");
 
             if (!roleResult.Succeeded)
             {
@@ -50,22 +50,33 @@ namespace api.Services
                 throw new ApplicationException(error.Description ?? "Registration exception!");
             }
 
-            var token = CreateToken(user);
+            var token = CreateToken(model);
 
-            return user.ToGetDTO(token);
+            return model.ToLoginGetDTO(token);
         }
 
-        public async Task<UserGetDTO> LoginAsync(UserLoginPostDTO dto)
+        public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(dto.UserName.ToLower())) ?? throw new ApplicationException("Invalid username!");
+            var model = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(dto.UserName.ToLower())) ?? throw new ApplicationException("Invalid username!");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(model, dto.Password, false);
 
             if (!result.Succeeded) throw new ApplicationException("Username/password is incorrect!");
 
-            var token = CreateToken(user);
+            var token = CreateToken(model);
 
-            return user.ToGetDTO(token);
+            return model.ToLoginGetDTO(token);
+        }
+
+        public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
+        {
+            var model = await _userManager.Users.Include(u => u.Stable)
+                                                .ThenInclude(m => m.Specs)
+                                                .FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(userName.ToLower())) ?? throw new ApplicationException("Invalid username!");
+
+            if (model == null) return null;
+
+            return model.ToGetDTO();
         }
 
         private string CreateToken(User user)
