@@ -6,6 +6,6 @@ namespace api.Services.Contracts
     {
         Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto);
         Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto);
-        Task<UserGetDTO?> GetByUserNameAsync(string userName);
+        Task<UserGetDTO?> GetByIdAsync(string userName);
     }
 }

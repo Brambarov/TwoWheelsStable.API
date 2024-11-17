@@ -28,6 +28,7 @@ namespace api.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key exception!")));
         }
 
+        // TODO: Introduce repository layer for User model
         public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
             var model = dto.FromRegisterPostDTO();
@@ -68,11 +69,11 @@ namespace api.Services
             return model.ToLoginGetDTO(token);
         }
 
-        public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
+        public async Task<UserGetDTO?> GetByIdAsync(string id)
         {
             var model = await _userManager.Users.Include(u => u.Stable)
                                                 .ThenInclude(m => m.Specs)
-                                                .FirstOrDefaultAsync(u => u.UserName != null && u.UserName.Equals(userName.ToLower())) ?? throw new ApplicationException("Invalid username!");
+                                                .FirstOrDefaultAsync(u => u.Id.Equals(id)) ?? throw new ApplicationException("User does not exist!");
 
             if (model == null) return null;
 
