@@ -59,11 +59,16 @@ namespace api.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _motorcyclesService.DeleteAsync(id);
-
-            return getDto == null ? NotFound() : NoContent();
+                return Ok(await _motorcyclesService.DeleteAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

@@ -55,7 +55,5 @@ namespace api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
-        // TODO: Implement soft delete for all entity types
     }
 }

@@ -3,6 +3,7 @@ using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static api.Helpers.ErrorMessages;
 
 namespace api.Repositories
 {
@@ -54,7 +55,7 @@ namespace api.Repositories
 
             if (!createdUser.Succeeded)
             {
-                var error = createdUser.Errors.FirstOrDefault() ?? throw new ApplicationException("Registration exception!");
+                var error = createdUser.Errors.FirstOrDefault() ?? throw new ApplicationException(RegistrationError);
 
                 throw new ApplicationException(error.Description);
             }
@@ -63,9 +64,9 @@ namespace api.Repositories
 
             if (!roleResult.Succeeded)
             {
-                var error = roleResult.Errors.FirstOrDefault() ?? throw new ApplicationException("Registration exception!");
+                var error = roleResult.Errors.FirstOrDefault() ?? throw new ApplicationException(RegistrationError);
 
-                throw new ApplicationException(error.Description ?? "Registration exception!");
+                throw new ApplicationException(error.Description ?? RegistrationError);
             }
 
             return await _userManager.GetUserIdAsync(model);
@@ -82,7 +83,7 @@ namespace api.Repositories
 
             var result = await _userManager.UpdateAsync(model);
 
-            if (!result.Succeeded) throw new ApplicationException("User deletion failed!");
+            if (!result.Succeeded) throw new ApplicationException(string.Format(SoftDeletionError, "User"));
         }
     }
 }
