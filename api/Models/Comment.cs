@@ -13,5 +13,6 @@ namespace api.Models
         public User? User { get; set; }
         public int? MotorcycleId { get; set; }
         public Motorcycle? Motorcycle { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

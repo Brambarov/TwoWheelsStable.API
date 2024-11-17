@@ -14,6 +14,10 @@ namespace api.Models
         public Specs? Specs { get; set; }
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
+
+        // TODO: Create maintenance schedule model and add it as a property to the motorcycle model
+
         public List<Comment> Comments { get; set; } = [];
+        public bool IsDeleted { get; set; }
     }
 }

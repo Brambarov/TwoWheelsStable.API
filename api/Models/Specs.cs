@@ -62,5 +62,6 @@ namespace api.Models
         [Column("FuelCapacity")]
         public string Fuel_capacity { get; set; } = string.Empty;
         public string Starter { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; }
     }
 }
