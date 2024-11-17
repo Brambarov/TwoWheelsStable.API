@@ -12,57 +12,46 @@ namespace api.Services
 
         public async Task<Specs?> GetAsync(string make, string model, int year)
         {
-            try
-            {
-                _httpClient.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("APININJAS_KEY"));
+            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("APININJAS_KEY"));
 
-                var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}&year={year}");
+            var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}&year={year}");
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
+
+            if (specsList == null || specsList.Count == 0)
+            {
+                response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}");
 
                 response.EnsureSuccessStatusCode();
 
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
+                jsonResponse = await response.Content.ReadAsStringAsync();
+                specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
 
-                if (specsList == null || specsList.Count == 0)
-                {
-                    response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}");
-
-                    response.EnsureSuccessStatusCode();
-
-                    jsonResponse = await response.Content.ReadAsStringAsync();
-                    specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
-
-                    if (specsList == null || specsList.Count == 0) throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
-                }
-
-                var specs = specsList.Where(s => s.Year <= year
-                                        && s.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
-                                        && s.Model.Equals(model, StringComparison.OrdinalIgnoreCase))
-                            .OrderBy(s => s.Year)
-                            .LastOrDefault();
-
-                if (specs != null)
-                {
-                    return FormatSpecs(specs);
-                }
-
-                specs = specsList.Where(s => s.Year <= year).LastOrDefault();
-
-                if (specs != null)
-                {
-                    return FormatSpecs(specs);
-                }
-
-                throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
+                if (specsList == null || specsList.Count == 0) throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
             }
-            catch (HttpRequestException ex)
+
+            var specs = specsList.Where(s => s.Year <= year
+                                    && s.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
+                                    && s.Model.Equals(model, StringComparison.OrdinalIgnoreCase))
+                        .OrderBy(s => s.Year)
+                        .LastOrDefault();
+
+            if (specs != null)
             {
-                throw new Exception(ExternalApiError, ex);
+                return FormatSpecs(specs);
             }
-            catch (Exception ex)
+
+            specs = specsList.Where(s => s.Year <= year).LastOrDefault();
+
+            if (specs != null)
             {
-                throw new Exception(UnexpectedError, ex);
+                return FormatSpecs(specs);
             }
+
+            throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
         }
 
         private static Specs FormatSpecs(Specs specs)

@@ -17,9 +17,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDtos = await _motorcyclesService.GetAllAsync(query);
-
-            return Ok(getDtos);
+            return Ok(await _motorcyclesService.GetAllAsync(query));
         }
 
         [HttpGet("{id:int}")]
@@ -27,9 +25,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _motorcyclesService.GetByIdAsync(id);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+            return Ok(await _motorcyclesService.GetByIdAsync(id));
         }
 
         [Authorize]
@@ -38,9 +34,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _motorcyclesService.CreateAsync(postDto);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+            return Ok(await _motorcyclesService.CreateAsync(postDto));
         }
 
         [Authorize]
@@ -50,25 +44,16 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _motorcyclesService.UpdateAsync(id, putDto);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+            return Ok(await _motorcyclesService.UpdateAsync(id, putDto));
         }
 
         [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(await _motorcyclesService.DeleteAsync(id));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(await _motorcyclesService.DeleteAsync(id));
         }
     }
 }

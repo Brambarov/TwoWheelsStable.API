@@ -16,9 +16,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDtos = await _commentsService.GetAllAsync();
-
-            return Ok(getDtos);
+            return Ok(await _commentsService.GetAllAsync());
         }
 
         [HttpGet("{id:int}")]
@@ -26,9 +24,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _commentsService.GetByIdAsync(id);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+            return Ok(await _commentsService.GetByIdAsync(id));
         }
 
         [Authorize]
@@ -38,9 +34,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _commentsService.CreateAsync(motorcycleId, postDto);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+            return Ok(await _commentsService.CreateAsync(motorcycleId, postDto));
         }
 
         [Authorize]
@@ -50,9 +44,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _commentsService.UpdateAsync(id, putDto);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+            return Ok(await _commentsService.UpdateAsync(id, putDto));
         }
 
         [Authorize]
@@ -61,9 +53,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _commentsService.DeleteAsync(id);
-
-            return getDto == null ? NotFound() : NoContent();
+            return Ok(await _commentsService.DeleteAsync(id));
         }
     }
 }
