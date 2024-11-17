@@ -76,9 +76,13 @@ namespace api.Repositories
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(User model)
+        public async Task DeleteAsync(User model)
         {
-            throw new NotImplementedException();
+            model.IsDeleted = true;
+
+            var result = await _userManager.UpdateAsync(model);
+
+            if (!result.Succeeded) throw new ApplicationException("User deletion failed!");
         }
     }
 }

@@ -73,7 +73,9 @@ namespace api.Repositories
 
         public async Task DeleteAsync(Motorcycle model)
         {
-            _context.Motorcycles.Remove(model);
+            model.IsDeleted = true;
+
+            _context.Motorcycles.Update(model);
             await _context.SaveChangesAsync();
         }
 

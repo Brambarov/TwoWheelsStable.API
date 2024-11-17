@@ -40,7 +40,9 @@ namespace api.Repositories
 
         public async Task DeleteAsync(Comment model)
         {
-            _context.Comments.Remove(model);
+            model.IsDeleted = true;
+
+            _context.Comments.Update(model);
             await _context.SaveChangesAsync();
         }
     }

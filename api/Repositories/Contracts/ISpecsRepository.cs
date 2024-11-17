@@ -6,5 +6,6 @@ namespace api.Repositories.Contracts
     {
         Task<IEnumerable<Specs>> GetAsync(string make, string model);
         Task<int?> CreateAsync(Specs model);
+        Task DeleteAsync(Specs model);
     }
 }

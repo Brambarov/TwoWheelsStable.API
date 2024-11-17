@@ -24,5 +24,13 @@ namespace api.Repositories
 
             return id;
         }
+
+        public async Task DeleteAsync(Specs model)
+        {
+            model.IsDeleted = true;
+
+            _context.Specs.Update(model);
+            await _context.SaveChangesAsync();
+        }
     }
 }
