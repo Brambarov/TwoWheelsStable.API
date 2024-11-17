@@ -45,11 +45,16 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByUserName([FromQuery] string userName)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var getDto = await _usersService.GetByUserNameAsync(userName);
-
-            return getDto == null ? NotFound() : Ok(getDto);
+                return Ok(await _usersService.GetByUserNameAsync(userName));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // TODO: Implement soft delete for all entity types
