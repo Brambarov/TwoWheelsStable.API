@@ -30,6 +30,11 @@ namespace api.Data
             ];
 
             builder.Entity<IdentityRole>().HasData(roles);
+
+            builder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+            builder.Entity<Motorcycle>().HasQueryFilter(m => !m.IsDeleted);
+            builder.Entity<Specs>().HasQueryFilter(s => !s.IsDeleted);
+            builder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
         }
     }
 }
