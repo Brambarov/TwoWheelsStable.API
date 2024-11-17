@@ -37,5 +37,14 @@ namespace api.Helpers.Mappers
                 Email = dto.Email
             };
         }
+
+        public static User FromPutDTO(this UserPutDTO dto, string id)
+        {
+            return new User
+            {
+                Id = id,
+                UserName = dto.UserName,
+            };
+        }
     }
 }
