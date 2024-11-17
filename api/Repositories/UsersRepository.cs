@@ -72,9 +72,9 @@ namespace api.Repositories
             return await _userManager.GetUserIdAsync(model);
         }
 
-        public Task UpdateAsync(User model, User update)
+        public async Task UpdateAsync(User model, User update)
         {
-            throw new NotImplementedException();
+            await _userManager.UpdateAsync(model);
         }
 
         public async Task DeleteAsync(User model)
