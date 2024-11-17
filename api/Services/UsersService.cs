@@ -80,6 +80,9 @@ namespace api.Services
         {
             var model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "User", "Id", id.ToString()));
 
+            var userId = GetId();
+            if (model.Id != userId) throw new ApplicationException(UnauthorizedError);
+
             var update = dto.FromPutDTO(id);
 
             await _usersRepository.UpdateAsync(model, update);
@@ -94,6 +97,9 @@ namespace api.Services
         public async Task<UserGetDTO?> DeleteAsync(string id)
         {
             var model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
+
+            var userId = GetId();
+            if (model.Id != userId) throw new ApplicationException(UnauthorizedError);
 
             await _usersRepository.DeleteAsync(model);
 
