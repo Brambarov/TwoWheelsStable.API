@@ -13,47 +13,25 @@ namespace api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterPostDTO dto)
         {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(await _usersService.RegisterAsync(dto));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(await _usersService.RegisterAsync(dto));
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginPostDTO dto)
         {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(await _usersService.LoginAsync(dto));
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(await _usersService.LoginAsync(dto));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(await _usersService.GetByIdAsync(id));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(await _usersService.GetByIdAsync(id));
         }
     }
 }
