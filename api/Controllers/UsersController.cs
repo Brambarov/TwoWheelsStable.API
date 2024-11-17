@@ -41,7 +41,6 @@ namespace api.Controllers
             }
         }
 
-        // TODO: Create an endpoint to get user by Id and view his stable
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
