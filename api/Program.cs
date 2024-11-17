@@ -1,4 +1,5 @@
 using api.Data;
+using api.Middleware;
 using api.Models;
 using api.Repositories;
 using api.Repositories.Contracts;
@@ -122,6 +123,8 @@ namespace api
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
