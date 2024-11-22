@@ -13,6 +13,7 @@ namespace api.Helpers.Mappers
                 Make = model.Make,
                 Model = model.Model,
                 Year = model.Year,
+                Mileage = model.Mileage,
                 Specs = model.Specs?.ToGetDTO(),
                 Owner = model.User?.UserName,
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
@@ -27,6 +28,7 @@ namespace api.Helpers.Mappers
                 Make = dto.Make,
                 Model = dto.Model,
                 Year = dto.Year,
+                Mileage = dto.Mileage,
                 SpecsId = specsId,
                 UserId = userId
             };
@@ -41,6 +43,7 @@ namespace api.Helpers.Mappers
                 Make = dto.Make,
                 Model = dto.Model,
                 Year = dto.Year,
+                Mileage = dto.Mileage,
                 SpecsId = specsId
             };
         }

@@ -13,5 +13,8 @@ namespace api.DTOs.Motorcycle
         [Required]
         [Range(1901, int.MaxValue, ErrorMessage = "Year must be greater than 1900!")]
         public int Year { get; set; }
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Mileage must be positive!")]
+        public int Mileage { get; set; }
     }
 }
