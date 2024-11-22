@@ -11,6 +11,7 @@ namespace api.Data
         public DbSet<Motorcycle> Motorcycles { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Specs> Specs { get; set; }
+        public DbSet<Job> Jobs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -43,6 +44,8 @@ namespace api.Data
             builder.Entity<Motorcycle>().HasQueryFilter(m => !m.IsDeleted);
             builder.Entity<Specs>().HasQueryFilter(s => !s.IsDeleted);
             builder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
+            builder.Entity<Job>().HasQueryFilter(c => !c.IsDeleted);
+            builder.Entity<Job>().Property(j => j.Cost).HasPrecision(19, 4);
         }
     }
 }
