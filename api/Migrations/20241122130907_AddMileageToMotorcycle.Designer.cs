@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241122130907_AddMileageToMotorcycle")]
+    partial class AddMileageToMotorcycle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c962f7e7-f885-48fa-a80b-53e6a9081111",
+                            Id = "13123f98-17d2-4c4b-9a2d-2542a7e3884c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6b89fa57-da02-4717-a6a8-9ec7540354f2",
+                            Id = "33a5c652-df44-4c4a-ac71-4a3a524e380d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -205,50 +208,6 @@ namespace api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("api.Models.Job", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DueMileage")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Mileage")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MotorcycleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MotorcycleId");
-
-                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("api.Models.Motorcycle", b =>
@@ -612,15 +571,6 @@ namespace api.Migrations
                     b.Navigation("Motorcycle");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("api.Models.Job", b =>
-                {
-                    b.HasOne("api.Models.Motorcycle", "Motorcycle")
-                        .WithMany()
-                        .HasForeignKey("MotorcycleId");
-
-                    b.Navigation("Motorcycle");
                 });
 
             modelBuilder.Entity("api.Models.Motorcycle", b =>
