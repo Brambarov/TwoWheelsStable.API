@@ -13,6 +13,8 @@ namespace api.Models
         public DateTime DueDate { get; set; }
         public int Mileage { get; set; }
         public int DueMileage { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public User? User { get; set; }
         public int? MotorcycleId { get; set; }
         public Motorcycle? Motorcycle { get; set; }
         public bool IsDeleted { get; set; }
