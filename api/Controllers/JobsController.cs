@@ -6,18 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/motorcycles/{motorcycleId}/[controller]")]
     [ApiController]
     public class JobsController(IJobsService jobsService) : ControllerBase
     {
         private readonly IJobsService _jobsService = jobsService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] JobQuery query)
+        public async Task<IActionResult> GetAllByMotorcycleId([FromRoute] int motorcycleId,
+                                                [FromQuery] JobQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _jobsService.GetAllAsync(query));
+            return Ok(await _jobsService.GetAllByMotorcycleIdAsync(motorcycleId, query));
         }
 
         [HttpGet("{id:int}")]
