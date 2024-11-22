@@ -10,9 +10,44 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Job>> GetAllAsync(JobQuery query)
+        public async Task<IEnumerable<Job>> GetAllByMotorcycleIdAsync(int motorcycleId,
+                                                        JobQuery query)
         {
-            var models = _context.Jobs.AsQueryable();
+            var models = _context.Jobs.Where(j => j.MotorcycleId.Equals(motorcycleId)).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                models = models.Where(j => j.Title.Contains(query.Title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Description))
+            {
+                models = models.Where(j => j.Description.Contains(query.Description));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Cost", StringComparison.OrdinalIgnoreCase))
+                {
+                    models = query.IsDescending ? models.OrderByDescending(j => j.Cost) : models.OrderBy(m => m.Id);
+                }
+                if (query.SortBy.Equals("DueDate", StringComparison.OrdinalIgnoreCase))
+                {
+                    models = query.IsDescending ? models.OrderByDescending(j => j.DueDate) : models.OrderBy(m => m.Id);
+                }
+                if (query.SortBy.Equals("Mileage", StringComparison.OrdinalIgnoreCase))
+                {
+                    models = query.IsDescending ? models.OrderByDescending(j => j.Mileage) : models.OrderBy(m => m.Id);
+                }
+                if (query.SortBy.Equals("DueMileage", StringComparison.OrdinalIgnoreCase))
+                {
+                    models = query.IsDescending ? models.OrderByDescending(j => j.DueMileage) : models.OrderBy(m => m.Id);
+                }
+            }
+            else
+            {
+                models = query.IsDescending ? models.OrderByDescending(j => j.Date) : models.OrderBy(j => j.Date);
+            }
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
@@ -21,7 +56,7 @@ namespace api.Repositories
 
         public async Task<Job?> GetByIdAsync(int? id)
         {
-            return await _context.Jobs.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            return await _context.Jobs.FirstOrDefaultAsync(j => j.Id.Equals(id));
         }
 
         public async Task<int?> CreateAsync(Job model)
@@ -34,7 +69,8 @@ namespace api.Repositories
             return id;
         }
 
-        public async Task UpdateAsync(Job model, Job update)
+        public async Task UpdateAsync(Job model,
+                                      Job update)
         {
             _context.Entry(model).CurrentValues
                     .SetValues(update);
