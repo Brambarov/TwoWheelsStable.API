@@ -12,6 +12,7 @@ namespace api.Services
 
         public async Task<int?> GetOrCreateAsync(string make, string model, int year)
         {
+            // TODO: Refactor this method so if a specs are present in db with same year as motorcycle, a call to NINJAs API is not being performed
             var specsDb = (await _specsRepository.GetAsync(make, model)).Where(s => s.Year <= year)
                                                                         .OrderBy(s => s.Year)
                                                                         .LastOrDefault();
