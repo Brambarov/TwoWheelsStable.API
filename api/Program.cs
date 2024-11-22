@@ -27,6 +27,8 @@ namespace api
 
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: myCorsPolicy,
@@ -134,6 +136,8 @@ namespace api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseRouting();
 
             app.UseCors(myCorsPolicy);
 
