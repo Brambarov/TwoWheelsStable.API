@@ -14,6 +14,7 @@ namespace api.Repositories
         {
             var models = _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
+                                             .Include(m => m.Schedule)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
                                              .AsQueryable();
@@ -49,6 +50,7 @@ namespace api.Repositories
         {
             return await _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
+                                             .Include(m => m.Schedule)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
                                              .FirstOrDefaultAsync(m => m.Id.Equals(id));
