@@ -114,10 +114,12 @@ namespace api
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
             builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
-            builder.Services.AddScoped<ICommentsService, CommentsService>();
-            builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
             builder.Services.AddScoped<ISpecsService, SpecsService>();
             builder.Services.AddScoped<ISpecsRepository, SpecsRepository>();
+            builder.Services.AddScoped<IJobsService, JobsService>();
+            builder.Services.AddScoped<IJobsRepository, JobsRepository>();
+            builder.Services.AddScoped<ICommentsService, CommentsService>();
+            builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
             builder.Services.AddScoped<IAPINinjasService, APINinjasService>();
 
             var app = builder.Build();
