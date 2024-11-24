@@ -11,7 +11,6 @@ namespace api.Helpers.Mappers
             {
                 Title = model.Title,
                 Content = model.Content,
-                MotorcycleId = model.MotorcycleId,
                 CreatedOn = model.CreatedOn,
                 CreatedBy = model.User?.UserName
             };
@@ -29,16 +28,12 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Comment FromPutDTO(this CommentPutDTO dto, int id, int? motorcycleId)
+        public static Comment FromPutDTO(this CommentPutDTO dto, Comment model)
         {
-            return new Comment
-            {
-                Id = id,
-                Title = dto.Title,
-                Content = dto.Content,
-                MotorcycleId = motorcycleId
+            model.Title = dto.Title;
+            model.Content = dto.Content;
 
-            };
+            return model;
         }
     }
 }
