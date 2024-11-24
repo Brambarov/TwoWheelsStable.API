@@ -35,19 +35,16 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, int id, string userId, int? specsId)
+        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, Motorcycle model, int? specsId)
         {
-            return new Motorcycle
-            {
-                Id = id,
-                Name = dto.Name,
-                Make = dto.Make,
-                Model = dto.Model,
-                Year = dto.Year,
-                Mileage = dto.Mileage,
-                UserId = userId,
-                SpecsId = specsId
-            };
+            model.Name = dto.Name;
+            model.Make = dto.Make;
+            model.Model = dto.Model;
+            model.Year = dto.Year;
+            model.Mileage = dto.Mileage;
+            model.SpecsId = specsId;
+
+            return model;
         }
     }
 }

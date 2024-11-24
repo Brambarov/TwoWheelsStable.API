@@ -35,20 +35,17 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Job FromPutDTO(this JobPutDTO dto, int JobId, int? motorcycleId)
+        public static Job FromPutDTO(this JobPutDTO dto, Job model)
         {
-            return new Job
-            {
-                Id = JobId,
-                Title = dto.Title,
-                Description = dto.Description,
-                Cost = dto.Cost,
-                Date = dto.Date,
-                DueDate = dto.DueDate,
-                Mileage = dto.Mileage,
-                DueMileage = dto.DueMileage,
-                MotorcycleId = motorcycleId
-            };
+            model.Title = dto.Title;
+            model.Description = dto.Description;
+            model.Cost = dto.Cost;
+            model.Date = dto.Date;
+            model.DueDate = dto.DueDate;
+            model.Mileage = dto.Mileage;
+            model.DueMileage = dto.DueMileage;
+
+            return model;
         }
     }
 }

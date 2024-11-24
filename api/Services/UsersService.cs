@@ -68,15 +68,11 @@ namespace api.Services
 
             if (model.Id != GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
-            var update = dto.FromPutDTO(id);
+            var update = dto.FromPutDTO(model);
 
             await _usersRepository.UpdateAsync(model, update);
 
-            model = await _usersRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
-
-            return model.ToGetDTO();
+            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task DeleteAsync(string id)

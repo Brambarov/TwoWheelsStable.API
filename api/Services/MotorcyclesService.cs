@@ -45,7 +45,7 @@ namespace api.Services
 
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var update = dto.FromPutDTO(id, userId, specsId);
+            var update = dto.FromPutDTO(model, specsId);
 
             await _motorcyclesRepository.UpdateAsync(model, update);
 

@@ -16,18 +16,15 @@ namespace api.Services
         private readonly IJobsRepository _jobsRepository = jobsRepository;
 
         public async Task<IEnumerable<JobGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
-                                                              JobQuery query)
+                                                                            JobQuery query)
         {
-            var models = await _jobsRepository.GetAllByMotorcycleIdAsync(motorcycleId, query);
-
-            return models.Select(j => j.ToGetDTO());
+            return (await _jobsRepository.GetAllByMotorcycleIdAsync(motorcycleId,
+                                                                    query)).Select(j => j.ToGetDTO());
         }
 
         public async Task<JobGetDTO?> GetByIdAsync(int id)
         {
-            var model = await _jobsRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task<JobGetDTO?> CreateAsync(int motorcycleId,
@@ -35,11 +32,10 @@ namespace api.Services
         {
             await _motorcyclesService.GetByIdAsync(motorcycleId);
 
-            var id = await _jobsRepository.CreateAsync(dto.FromPostDTO(_usersService.GetCurrentUserId(), motorcycleId));
+            var id = await _jobsRepository.CreateAsync(dto.FromPostDTO(_usersService.GetCurrentUserId(),
+                                                                       motorcycleId));
 
-            var model = await _jobsRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task<JobGetDTO?> UpdateAsync(int id,
@@ -49,13 +45,11 @@ namespace api.Services
 
             if (model.UserId != _usersService.GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
-            var update = dto.FromPutDTO(id, model.MotorcycleId);
+            var update = dto.FromPutDTO(model);
 
             await _jobsRepository.UpdateAsync(model, update);
 
-            model = await _jobsRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task DeleteAsync(int id)

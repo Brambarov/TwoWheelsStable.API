@@ -39,13 +39,11 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static User FromPutDTO(this UserPutDTO dto, string id)
+        public static User FromPutDTO(this UserPutDTO dto, User model)
         {
-            return new User
-            {
-                Id = id,
-                UserName = dto.UserName,
-            };
+            model.UserName = dto.UserName;
+
+            return model;
         }
     }
 }
