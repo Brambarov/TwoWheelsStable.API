@@ -17,16 +17,12 @@ namespace api.Services
 
         public async Task<IEnumerable<MotorcycleGetDTO>> GetAllAsync(MotorcycleQuery query)
         {
-            var models = await _motorcyclesRepository.GetAllAsync(query);
-
-            return models.Select(m => m.ToGetDTO());
+            return (await _motorcyclesRepository.GetAllAsync(query)).Select(m => m.ToGetDTO());
         }
 
         public async Task<MotorcycleGetDTO?> GetByIdAsync(int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto)
@@ -37,11 +33,7 @@ namespace api.Services
 
             var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, userId));
 
-            var model = await _motorcyclesRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
-
-            return model.ToGetDTO();
+            return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task<MotorcycleGetDTO?> UpdateAsync(int id, MotorcyclePutDTO dto)
@@ -53,15 +45,11 @@ namespace api.Services
 
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var update = dto.FromPutDTO(id, specsId);
+            var update = dto.FromPutDTO(id, userId, specsId);
 
             await _motorcyclesRepository.UpdateAsync(model, update);
 
-            model = await _motorcyclesRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
-
-            return model.ToGetDTO();
+            return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task DeleteAsync(int id)
