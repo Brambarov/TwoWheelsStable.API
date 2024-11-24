@@ -24,7 +24,7 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> GetByIdAsync(int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
+            var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             return model.ToGetDTO();
         }
@@ -46,7 +46,7 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> UpdateAsync(int id, MotorcyclePutDTO dto)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
+            var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             var userId = _usersService.GetId();
             if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
@@ -66,7 +66,7 @@ namespace api.Services
 
         public async Task<MotorcycleGetDTO?> DeleteAsync(int id)
         {
-            var model = await _motorcyclesRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
+            var model = await _motorcyclesRepository.GetByIdAsync(id);
 
             var userId = _usersService.GetId();
             if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);

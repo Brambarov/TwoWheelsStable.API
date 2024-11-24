@@ -3,6 +3,7 @@ using api.Helpers.Queries;
 using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Repositories
 {
@@ -46,14 +47,18 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Motorcycle?> GetByIdAsync(int? id)
+        public async Task<Motorcycle> GetByIdAsync(int? id)
         {
             return await _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
                                              .Include(m => m.Schedule)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
-                                             .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                                             .FirstOrDefaultAsync(m => m.Id.Equals(id))
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "Motorcycle",
+                                                                   "Id",
+                                                                   id.ToString())); ;
         }
 
         public async Task<int?> CreateAsync(Motorcycle model)
