@@ -8,9 +8,11 @@ using static api.Helpers.Constants.ErrorMessages;
 namespace api.Services
 {
     public class JobsService(IUsersService usersService,
+                             IMotorcyclesService motorcyclesService,
                              IJobsRepository jobsRepository) : IJobsService
     {
         private readonly IUsersService _usersService = usersService;
+        private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly IJobsRepository _jobsRepository = jobsRepository;
 
         public async Task<IEnumerable<JobGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
@@ -23,7 +25,7 @@ namespace api.Services
 
         public async Task<JobGetDTO?> GetByIdAsync(int id)
         {
-            var model = await _jobsRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Job", "Id", id.ToString()));
+            var model = await _jobsRepository.GetByIdAsync(id);
 
             return model.ToGetDTO();
         }
@@ -31,13 +33,11 @@ namespace api.Services
         public async Task<JobGetDTO?> CreateAsync(int motorcycleId,
                                                   JobPostDTO dto)
         {
-            var userId = _usersService.GetId() ?? throw new ApplicationException(UnauthorizedError);
+            await _motorcyclesService.GetByIdAsync(motorcycleId);
 
-            var id = await _jobsRepository.CreateAsync(dto.FromPostDTO(userId, motorcycleId));
+            var id = await _jobsRepository.CreateAsync(dto.FromPostDTO(_usersService.GetId(), motorcycleId));
 
             var model = await _jobsRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
 
             return model.ToGetDTO();
         }
@@ -45,28 +45,24 @@ namespace api.Services
         public async Task<JobGetDTO?> UpdateAsync(int id,
                                                   JobPutDTO dto)
         {
-            var model = await _jobsRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Job", "Id", id.ToString()));
+            var model = await _jobsRepository.GetByIdAsync(id);
 
-            var userId = _usersService.GetId();
-            if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
+            if (model.UserId != _usersService.GetId()) throw new ApplicationException(UnauthorizedError);
 
-            var update = dto.FromPutDTO(id);
+            var update = dto.FromPutDTO(id, model.MotorcycleId);
 
             await _jobsRepository.UpdateAsync(model, update);
 
             model = await _jobsRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
 
             return model.ToGetDTO();
         }
 
         public async Task<JobGetDTO?> DeleteAsync(int id)
         {
-            var model = await _jobsRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Job", "Id", id.ToString()));
+            var model = await _jobsRepository.GetByIdAsync(id);
 
-            var userId = _usersService.GetId();
-            if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
+            if (model.UserId != _usersService.GetId()) throw new ApplicationException(UnauthorizedError);
 
             await _jobsRepository.DeleteAsync(model);
 

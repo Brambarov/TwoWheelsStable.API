@@ -3,6 +3,7 @@ using api.Helpers.Queries;
 using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Repositories
 {
@@ -11,9 +12,10 @@ namespace api.Repositories
         private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<Job>> GetAllByMotorcycleIdAsync(int motorcycleId,
-                                                        JobQuery query)
+                                                                      JobQuery query)
         {
-            var models = _context.Jobs.Where(j => j.MotorcycleId.Equals(motorcycleId)).AsQueryable();
+            var models = _context.Jobs.Where(j => j.MotorcycleId.Equals(motorcycleId))
+                                      .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
@@ -54,9 +56,13 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Job?> GetByIdAsync(int? id)
+        public async Task<Job> GetByIdAsync(int? id)
         {
-            return await _context.Jobs.FirstOrDefaultAsync(j => j.Id.Equals(id));
+            return await _context.Jobs.FirstOrDefaultAsync(j => j.Id.Equals(id))
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "Job",
+                                                                   "Id",
+                                                                   id.ToString()));
         }
 
         public async Task<int?> CreateAsync(Job model)
