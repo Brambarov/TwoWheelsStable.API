@@ -1,22 +1,24 @@
 ﻿using api.DTOs.Comment;
+using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/motorcycle/{motorcycleId}/[controller]")]
     [ApiController]
     public class CommentsController(ICommentsService commentsService) : ControllerBase
     {
         private readonly ICommentsService _commentsService = commentsService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllByMotorcycleId([FromRoute] int motorcycleId,
+                                                              [FromQuery] CommentQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.GetAllAsync());
+            return Ok(await _commentsService.GetAllByMotorcycleIdAsync(motorcycleId, query));
         }
 
         [HttpGet("{id:int}")]
