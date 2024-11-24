@@ -14,7 +14,7 @@ namespace api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllByMotorcycleId([FromRoute] int motorcycleId,
-                                                [FromQuery] JobQuery query)
+                                                              [FromQuery] JobQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -30,7 +30,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("{motorcycleId:int}")]
         public async Task<IActionResult> Create([FromRoute] int motorcycleId,
                                                 [FromBody] JobPostDTO postDto)
         {
