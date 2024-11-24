@@ -11,7 +11,7 @@ namespace api.Services.Contracts
         Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto);
         Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto);
         Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto);
-        Task<UserGetDTO?> DeleteAsync(string id);
+        Task DeleteAsync(string id);
         string GetCurrentUserId();
     }
 }

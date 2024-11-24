@@ -53,7 +53,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.DeleteAsync(id));
+            await _motorcyclesService.DeleteAsync(id);
+
+            return NoContent();
         }
     }
 }

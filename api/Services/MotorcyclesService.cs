@@ -64,7 +64,7 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<MotorcycleGetDTO?> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
@@ -72,8 +72,6 @@ namespace api.Services
             if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
 
             await _motorcyclesRepository.DeleteAsync(model);
-
-            return model.ToGetDTO();
         }
     }
 }

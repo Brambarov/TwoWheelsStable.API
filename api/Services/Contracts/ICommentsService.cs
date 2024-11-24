@@ -9,6 +9,6 @@ namespace api.Services.Contracts
         Task<CommentGetDTO?> GetByIdAsync(int id);
         Task<CommentGetDTO?> CreateAsync(int motorcycleId, CommentPostDTO dto);
         Task<CommentGetDTO?> UpdateAsync(int id, CommentPutDTO dto);
-        Task<CommentGetDTO?> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

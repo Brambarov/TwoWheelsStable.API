@@ -58,15 +58,13 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<JobGetDTO?> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var model = await _jobsRepository.GetByIdAsync(id);
 
             if (model.UserId != _usersService.GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             await _jobsRepository.DeleteAsync(model);
-
-            return model.ToGetDTO();
         }
     }
 }

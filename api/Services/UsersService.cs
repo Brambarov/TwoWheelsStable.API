@@ -79,15 +79,13 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<UserGetDTO?> DeleteAsync(string id)
+        public async Task DeleteAsync(string id)
         {
             var model = await _usersRepository.GetByIdAsync(id);
 
             if (model.Id != GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             await _usersRepository.DeleteAsync(model);
-
-            return model.ToGetDTO();
         }
 
         public string GetCurrentUserId()

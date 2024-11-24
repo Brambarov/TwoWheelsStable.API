@@ -55,7 +55,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.DeleteAsync(id));
+            await _commentsService.DeleteAsync(id);
+
+            return NoContent();
         }
     }
 }

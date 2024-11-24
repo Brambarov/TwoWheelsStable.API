@@ -9,6 +9,6 @@ namespace api.Services.Contracts
         Task<JobGetDTO?> GetByIdAsync(int id);
         Task<JobGetDTO?> CreateAsync(int motorcycleId, JobPostDTO dto);
         Task<JobGetDTO?> UpdateAsync(int id, JobPutDTO dto);
-        Task<JobGetDTO?> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

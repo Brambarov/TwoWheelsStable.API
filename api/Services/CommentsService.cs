@@ -18,16 +18,13 @@ namespace api.Services
         public async Task<IEnumerable<CommentGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
                                                                                 CommentQuery query)
         {
-            var models = await _commentsRepository.GetAllByMotorcycleIdAsync(motorcycleId, query);
-
-            return models.Select(c => c.ToGetDTO());
+            return (await _commentsRepository.GetAllByMotorcycleIdAsync(motorcycleId,
+                                                                        query)).Select(c => c.ToGetDTO());
         }
 
         public async Task<CommentGetDTO?> GetByIdAsync(int id)
         {
-            var model = await _commentsRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task<CommentGetDTO?> CreateAsync(int motorcycleId,
@@ -54,20 +51,16 @@ namespace api.Services
 
             await _commentsRepository.UpdateAsync(model, update);
 
-            model = await _commentsRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task<CommentGetDTO?> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
             if (model.UserId != _usersService.GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             await _commentsRepository.DeleteAsync(model);
-
-            return model.ToGetDTO();
         }
     }
 }
