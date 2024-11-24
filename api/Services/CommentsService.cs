@@ -47,7 +47,7 @@ namespace api.Services
 
             if (model.UserId != _usersService.GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
-            var update = dto.FromPutDTO(id, model.MotorcycleId);
+            var update = dto.FromPutDTO(model);
 
             await _commentsRepository.UpdateAsync(model, update);
 
