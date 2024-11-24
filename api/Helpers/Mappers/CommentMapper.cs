@@ -29,14 +29,16 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Comment FromPutDTO(this Comment model, int id, int? motorcycleId, CommentPutDTO dto)
+        public static Comment FromPutDTO(this CommentPutDTO dto, int id, int? motorcycleId)
         {
-            model.Id = id;
-            model.Title = dto.Title;
-            model.Content = dto.Content;
-            model.MotorcycleId = motorcycleId;
+            return new Comment
+            {
+                Id = id,
+                Title = dto.Title,
+                Content = dto.Content,
+                MotorcycleId = motorcycleId
 
-            return model;
+            };
         }
     }
 }
