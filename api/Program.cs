@@ -8,9 +8,11 @@ using api.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api
 {
@@ -97,7 +99,7 @@ namespace api
                 options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                var jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException("JWT Signing key is missing");
+                var jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException(string.Format(IsMissingError, "JWT Signing key"));
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
