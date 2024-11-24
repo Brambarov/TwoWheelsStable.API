@@ -12,6 +12,6 @@ namespace api.Services.Contracts
         Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto);
         Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto);
         Task<UserGetDTO?> DeleteAsync(string id);
-        string? GetId();
+        string? GetCurrentUserId();
     }
 }

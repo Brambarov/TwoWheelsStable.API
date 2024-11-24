@@ -33,7 +33,7 @@ namespace api.Services
         {
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
-            var userId = _usersService.GetId() ?? throw new ApplicationException(UnauthorizedError);
+            var userId = _usersService.GetCurrentUserId() ?? throw new ApplicationException(UnauthorizedError);
 
             var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, userId));
 
@@ -48,7 +48,7 @@ namespace api.Services
         {
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
-            var userId = _usersService.GetId();
+            var userId = _usersService.GetCurrentUserId();
             if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
 
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
@@ -68,7 +68,7 @@ namespace api.Services
         {
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
-            var userId = _usersService.GetId();
+            var userId = _usersService.GetCurrentUserId();
             if (model.UserId != userId) throw new ApplicationException(UnauthorizedError);
 
             await _motorcyclesRepository.DeleteAsync(model);

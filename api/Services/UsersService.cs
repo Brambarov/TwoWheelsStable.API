@@ -26,35 +26,23 @@ namespace api.Services
 
         public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query)
         {
-            var models = await _usersRepository.GetAllAsync(query);
-
-            return models.Select(u => u.ToGetDTO());
+            return (await _usersRepository.GetAllAsync(query)).Select(u => u.ToGetDTO());
         }
 
         public async Task<UserGetDTO?> GetByIdAsync(string id)
         {
-            var model = await _usersRepository.GetByIdAsync(id);
-
-            return model.ToGetDTO();
+            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
         public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
         {
-            var model = await _usersRepository.GetByUserNameAsync(userName)
-                        ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                        "User",
-                                                                        "UserName",
-                                                                        userName));
-            return model.ToGetDTO();
+            return (await _usersRepository.GetByUserNameAsync(userName)).ToGetDTO();
         }
 
         public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
-            var model = dto.FromRegisterPostDTO();
-
-            var id = await _usersRepository.CreateAsync(model, dto.Password);
-
-            model = await _usersRepository.GetByIdAsync(id);
+            var model = await _usersRepository.GetByIdAsync(await _usersRepository.CreateAsync(dto.FromRegisterPostDTO(),
+                                                                                               dto.Password));
 
             var token = CreateToken(model);
 
@@ -63,10 +51,11 @@ namespace api.Services
 
         public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
         {
-            var model = await _usersRepository.GetByUserNameAsync(dto.UserName) ?? throw new ApplicationException(UserNameOrPasswordIncorrectError);
-            var result = await _signInManager.CheckPasswordSignInAsync(model, dto.Password, false);
+            var model = await _usersRepository.GetByUserNameAsync(dto.UserName);
 
-            if (!result.Succeeded) throw new ApplicationException(UserNameOrPasswordIncorrectError);
+            if (!(await _signInManager.CheckPasswordSignInAsync(model,
+                                                                dto.Password,
+                                                                false)).Succeeded) throw new ApplicationException(UserNameOrPasswordIncorrectError);
 
             var token = CreateToken(model);
 
@@ -77,8 +66,7 @@ namespace api.Services
         {
             var model = await _usersRepository.GetByIdAsync(id);
 
-            var userId = GetId();
-            if (model.Id != userId) throw new ApplicationException(UnauthorizedError);
+            if (model.Id != GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             var update = dto.FromPutDTO(id);
 
@@ -95,16 +83,19 @@ namespace api.Services
         {
             var model = await _usersRepository.GetByIdAsync(id);
 
-            if (model.Id != GetId()) throw new ApplicationException(UnauthorizedError);
+            if (model.Id != GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             await _usersRepository.DeleteAsync(model);
 
             return model.ToGetDTO();
         }
 
-        public string? GetId()
+        public string GetCurrentUserId()
         {
-            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var id = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                     ?? throw new ApplicationException(string.Format(NotFoundError, "Id"));
+
+            return id;
         }
 
         private string CreateToken(User user)

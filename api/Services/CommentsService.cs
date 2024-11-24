@@ -35,7 +35,7 @@ namespace api.Services
         {
             await _motorcyclesService.GetByIdAsync(motorcycleId);
 
-            var userId = _usersService.GetId() ?? throw new ApplicationException(UnauthorizedError);
+            var userId = _usersService.GetCurrentUserId() ?? throw new ApplicationException(UnauthorizedError);
 
             var id = await _commentsRepository.CreateAsync(dto.FromPostDTO(userId, motorcycleId));
 
@@ -48,7 +48,7 @@ namespace api.Services
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            if (model.UserId != _usersService.GetId()) throw new ApplicationException(UnauthorizedError);
+            if (model.UserId != _usersService.GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             var update = dto.FromPutDTO(id, model.MotorcycleId);
 
@@ -63,7 +63,7 @@ namespace api.Services
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            if (model.UserId != _usersService.GetId()) throw new ApplicationException(UnauthorizedError);
+            if (model.UserId != _usersService.GetCurrentUserId()) throw new ApplicationException(UnauthorizedError);
 
             await _commentsRepository.DeleteAsync(model);
 
