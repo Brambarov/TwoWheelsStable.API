@@ -35,7 +35,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Job FromPutDTO(this JobPutDTO dto, int JobId)
+        public static Job FromPutDTO(this JobPutDTO dto, int JobId, int? motorcycleId)
         {
             return new Job
             {
@@ -46,7 +46,8 @@ namespace api.Helpers.Mappers
                 Date = dto.Date,
                 DueDate = dto.DueDate,
                 Mileage = dto.Mileage,
-                DueMileage = dto.DueMileage
+                DueMileage = dto.DueMileage,
+                MotorcycleId = motorcycleId
             };
         }
     }
