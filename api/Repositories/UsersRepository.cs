@@ -33,20 +33,28 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<User?> GetByIdAsync(string? id)
+        public async Task<User> GetByIdAsync(string? id)
         {
             return await _userManager.Users.Include(u => u.Stable)
                                            .ThenInclude(m => m.Specs)
-                                           .FirstOrDefaultAsync(u => u.Id.Equals(id));
+                                           .FirstOrDefaultAsync(u => u.Id.Equals(id))
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "User",
+                                                                   "Id",
+                                                                   id));
         }
 
-        public async Task<User?> GetByUserNameAsync(string? userName)
+        public async Task<User> GetByUserNameAsync(string? userName)
         {
             return await _userManager.Users.Include(u => u.Stable)
                                            .ThenInclude(m => m.Specs)
                                            .FirstOrDefaultAsync(u => u.UserName != null
                                                                      && userName != null
-                                                                     && u.UserName.Equals(userName.ToLower()));
+                                                                     && u.UserName.Equals(userName.ToLower()))
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "Job",
+                                                                   "Id",
+                                                                   userName)); ;
         }
 
         public async Task<string?> CreateAsync(User model, string password)

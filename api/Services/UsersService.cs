@@ -33,11 +33,8 @@ namespace api.Services
 
         public async Task<UserGetDTO?> GetByIdAsync(string id)
         {
-            var model = await _usersRepository.GetByIdAsync(id)
-                        ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                        "User",
-                                                                        "Id",
-                                                                        id));
+            var model = await _usersRepository.GetByIdAsync(id);
+
             return model.ToGetDTO();
         }
 
@@ -57,7 +54,7 @@ namespace api.Services
 
             var id = await _usersRepository.CreateAsync(model, dto.Password);
 
-            model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(RegistrationError);
+            model = await _usersRepository.GetByIdAsync(id);
 
             var token = CreateToken(model);
 
@@ -78,7 +75,7 @@ namespace api.Services
 
         public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto)
         {
-            var model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "User", "Id", id.ToString()));
+            var model = await _usersRepository.GetByIdAsync(id);
 
             var userId = GetId();
             if (model.Id != userId) throw new ApplicationException(UnauthorizedError);
@@ -96,10 +93,9 @@ namespace api.Services
 
         public async Task<UserGetDTO?> DeleteAsync(string id)
         {
-            var model = await _usersRepository.GetByIdAsync(id) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", id.ToString()));
+            var model = await _usersRepository.GetByIdAsync(id);
 
-            var userId = GetId();
-            if (model.Id != userId) throw new ApplicationException(UnauthorizedError);
+            if (model.Id != GetId()) throw new ApplicationException(UnauthorizedError);
 
             await _usersRepository.DeleteAsync(model);
 
