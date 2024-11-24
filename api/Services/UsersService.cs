@@ -92,10 +92,8 @@ namespace api.Services
 
         public string GetCurrentUserId()
         {
-            var id = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)
-                     ?? throw new ApplicationException(string.Format(NotFoundError, "Id"));
-
-            return id;
+            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                   ?? throw new ApplicationException(string.Format(NotFoundError, "Id"));
         }
 
         private string CreateToken(User user)
