@@ -30,7 +30,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpPost("{motorcycleId:int}")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromRoute] int motorcycleId,
                                                 [FromBody] CommentPostDTO postDto)
         {

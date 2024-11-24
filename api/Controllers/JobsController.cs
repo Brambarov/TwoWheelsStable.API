@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/motorcycles/{motorcycleId}/[controller]")]
+    [Route("api/motorcycles/{motorcycleId:int}/[controller]")]
     [ApiController]
     public class JobsController(IJobsService jobsService) : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpPost("{motorcycleId:int}")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromRoute] int motorcycleId,
                                                 [FromBody] JobPostDTO postDto)
         {
