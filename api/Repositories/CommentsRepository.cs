@@ -1,7 +1,9 @@
 ﻿using api.Data;
+using api.Helpers.Queries;
 using api.Models;
 using api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Repositories
 {
@@ -9,16 +11,38 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Comment>> GetAllAsync()
+        public async Task<IEnumerable<Comment>> GetAllByMotorcycleIdAsync(int motorcycleId,
+                                                                          CommentQuery query)
         {
-            return await _context.Comments.Include(c => c.User)
-                                          .ToListAsync();
+            var models = _context.Comments.Where(c => c.MotorcycleId.Equals(motorcycleId))
+                                                .Include(c => c.User)
+                                                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                models = models.Where(c => c.Title.Contains(query.Title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Content))
+            {
+                models = models.Where(c => c.Content.Contains(query.Content));
+            }
+
+            models = query.IsDescending ? models.OrderByDescending(j => j.CreatedOn) : models.OrderBy(j => j.CreatedOn);
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Comment?> GetByIdAsync(int? id)
+        public async Task<Comment> GetByIdAsync(int? id)
         {
             return await _context.Comments.Include(c => c.User)
-                                          .FirstOrDefaultAsync(c => c.Id.Equals(id));
+                                          .FirstOrDefaultAsync(c => c.Id.Equals(id))
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "Job",
+                                                                   "Id",
+                                                                   id.ToString()));
         }
 
         public async Task<int?> CreateAsync(Comment model)

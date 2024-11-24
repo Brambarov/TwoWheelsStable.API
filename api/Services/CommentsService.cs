@@ -1,27 +1,24 @@
 ﻿using api.DTOs.Comment;
-using api.Helpers.Extensions;
 using api.Helpers.Mappers;
-using api.Models;
+using api.Helpers.Queries;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
-using Microsoft.AspNetCore.Identity;
 using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
 {
-    public class CommentsService(UserManager<User> userManager,
-                                 IHttpContextAccessor httpContextAccessor,
-                                 ICommentsRepository commentsRepository,
-                                 IMotorcyclesRepository motorcyclesRepository) : ICommentsService
+    public class CommentsService(IUsersService usersService,
+                                 IMotorcyclesService motorcyclesService,
+                                 ICommentsRepository commentsRepository) : ICommentsService
     {
-        private readonly UserManager<User> _userManager = userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IUsersService _usersService = usersService;
+        private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly ICommentsRepository _commentsRepository = commentsRepository;
-        private readonly IMotorcyclesRepository _motorcyclesRepository = motorcyclesRepository;
 
-        public async Task<IEnumerable<CommentGetDTO>> GetAllAsync()
+        public async Task<IEnumerable<CommentGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
+                                                                                CommentQuery query)
         {
-            var models = await _commentsRepository.GetAllAsync();
+            var models = await _commentsRepository.GetAllByMotorcycleIdAsync(motorcycleId, query);
 
             return models.Select(c => c.ToGetDTO());
         }
@@ -30,29 +27,19 @@ namespace api.Services
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            if (model == null) return null;
-
             return model.ToGetDTO();
         }
 
-        public async Task<CommentGetDTO?> CreateAsync(int motorcycleId, CommentPostDTO dto)
+        public async Task<CommentGetDTO?> CreateAsync(int motorcycleId,
+                                                      CommentPostDTO dto)
         {
-            if (!await _motorcyclesRepository.Exists(motorcycleId)) throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "Motorcycle", "Id", motorcycleId.ToString()));
+            await _motorcyclesService.GetByIdAsync(motorcycleId);
 
-            var httpContext = _httpContextAccessor.HttpContext ?? throw new ApplicationException(HttpConnectionError);
+            var userId = _usersService.GetId() ?? throw new ApplicationException(UnauthorizedError);
 
-            var userName = httpContext.User.GetUserName();
+            var id = await _commentsRepository.CreateAsync(dto.FromPostDTO(userId, motorcycleId));
 
-            if (string.IsNullOrWhiteSpace(userName)) throw new ApplicationException(string.Format(PropertyIsInvalidError, "UserName", userName));
-
-            var user = await _userManager.FindByNameAsync(userName) ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError, "User", "UserName", userName));
-
-            var model = dto.FromPostDTO(user.Id, motorcycleId);
-
-            var id = await _commentsRepository.CreateAsync(model);
-
-            model = await _commentsRepository.GetByIdAsync(id);
-            if (model == null) return null;
+            var model = await _commentsRepository.GetByIdAsync(id);
 
             return model.ToGetDTO();
         }
@@ -61,16 +48,13 @@ namespace api.Services
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            if (model == null) return null;
+            if (model.UserId != _usersService.GetId()) throw new ApplicationException(UnauthorizedError);
 
-            // TODO: validate model input data
-            var update = new Comment().FromPutDTO(id, model.MotorcycleId, dto);
+            var update = dto.FromPutDTO(id, model.MotorcycleId);
 
             await _commentsRepository.UpdateAsync(model, update);
 
             model = await _commentsRepository.GetByIdAsync(id);
-
-            if (model == null) return null;
 
             return model.ToGetDTO();
         }
@@ -79,7 +63,7 @@ namespace api.Services
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            if (model == null) return null;
+            if (model.UserId != _usersService.GetId()) throw new ApplicationException(UnauthorizedError);
 
             await _commentsRepository.DeleteAsync(model);
 
