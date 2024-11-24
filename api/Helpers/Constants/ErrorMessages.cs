@@ -17,5 +17,8 @@
         public const string NotFoundError = "{0} not found!";
         public const string NotFoundOnError = "{0} not found on {1}!";
         public const string UnhandledExceptionError = "Unhandled exception occurred!";
+        public const string ClaimExceptionError = "{0} claim exception!";
+        public const string GenericExceptionError = "{0} exception!";
+        public const string IsMissingError = "{0} is missing!";
     }
 }
