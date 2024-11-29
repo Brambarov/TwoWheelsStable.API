@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import './App.css';
+import CardList from './components/CardList/CardList';
+import Search from './components/Search/Search';
+import { MotorcycleSearch } from '../motorcycle';
+import { searchMotorcycles } from './api';
 
-function App() {
+function App() {    
+  const [search, setSearch] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<MotorcycleSearch[]>([]);
+  const [serverError, setServerError] = useState<string>("");
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value);
+      console.log(e);
+  };
+
+  const onClick = async (e: SyntheticEvent) => {
+      const result = await searchMotorcycles(search);
+      if(typeof result === "string")
+      {
+        setServerError(result);
+      }
+      else if (Array.isArray(result.data))
+      {
+        setSearchResult(result.data);
+      }
+      console.log(searchResult);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Search onClick={onClick} search={search} handleChange={handleChange}/>
+      {serverError && <h1>{serverError}</h1>}
+      <CardList searchResults={searchResult}/>
     </div>
   );
 }
