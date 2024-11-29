@@ -85,10 +85,5 @@ namespace api.Repositories
             _context.Motorcycles.Update(model);
             await _context.SaveChangesAsync();
         }
-
-        public async Task<bool> Exists(int id)
-        {
-            return await _context.Motorcycles.AnyAsync(m => m.Id.Equals(id));
-        }
     }
 }

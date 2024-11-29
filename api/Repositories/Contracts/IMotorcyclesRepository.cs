@@ -10,6 +10,5 @@ namespace api.Repositories.Contracts
         Task<int?> CreateAsync(Motorcycle model);
         Task UpdateAsync(Motorcycle model, Motorcycle update);
         Task DeleteAsync(Motorcycle model);
-        Task<bool> Exists(int id);
     }
 }
