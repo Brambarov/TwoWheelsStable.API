@@ -27,19 +27,23 @@ namespace api.Repositories
 
             if (!string.IsNullOrWhiteSpace(query.Model))
             {
-                models = models.Where(m => m.Make.Contains(query.Model));
+                models = models.Where(m => m.Model.Contains(query.Model));
             }
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
                 if (query.SortBy.Equals("Make", StringComparison.OrdinalIgnoreCase))
                 {
-                    models = query.IsDescending ? models.OrderByDescending(m => m.Make) : models.OrderBy(m => m.Id);
+                    models = query.IsDescending ? models.OrderByDescending(m => m.Make) : models.OrderBy(m => m.Make);
                 }
                 if (query.SortBy.Equals("Model", StringComparison.OrdinalIgnoreCase))
                 {
-                    models = query.IsDescending ? models.OrderByDescending(m => m.Model) : models.OrderBy(m => m.Id);
+                    models = query.IsDescending ? models.OrderByDescending(m => m.Model) : models.OrderBy(m => m.Model);
                 }
+            }
+            else
+            {
+                models = query.IsDescending ? models.OrderByDescending(m => m.Id) : models.OrderBy(m => m.Id);
             }
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
