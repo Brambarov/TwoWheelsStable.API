@@ -41,6 +41,10 @@ namespace api.Repositories
                     models = query.IsDescending ? models.OrderByDescending(m => m.Model) : models.OrderBy(m => m.Id);
                 }
             }
+            else
+            {
+                models = query.IsDescending ? models.OrderByDescending(m => m.Id) : models.OrderBy(m => m.Id);
+            }
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
