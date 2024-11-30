@@ -27,7 +27,7 @@ namespace api.Repositories
 
             if (!string.IsNullOrWhiteSpace(query.Model))
             {
-                models = models.Where(m => m.Make.Contains(query.Model));
+                models = models.Where(m => m.Model.Contains(query.Model));
             }
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
