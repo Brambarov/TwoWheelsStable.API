@@ -11,10 +11,14 @@ const Card : React.FC<Props> = ({id, searchResult}: Props) : JSX.Element => {
     <div className='card'>
         <div className='details'>
           <img alt="Motorcycle picture"/>
-            <h2>{searchResult.make}</h2>
+            <h2>{searchResult.name}</h2>
+            <p>{searchResult.make}</p>
             <p>{searchResult.model}</p>
+            <p>{searchResult.year}</p>
+            <p>{searchResult.mileage}</p>
+            <p>{searchResult.owner}</p>
         </div>
-        <p className='specs'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, hic.</p>
+        <p className='specs'>{searchResult.}</p>
     </div>
   )
 }
