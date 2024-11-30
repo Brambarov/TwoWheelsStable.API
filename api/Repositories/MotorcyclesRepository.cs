@@ -34,11 +34,11 @@ namespace api.Repositories
             {
                 if (query.SortBy.Equals("Make", StringComparison.OrdinalIgnoreCase))
                 {
-                    models = query.IsDescending ? models.OrderByDescending(m => m.Make) : models.OrderBy(m => m.Id);
+                    models = query.IsDescending ? models.OrderByDescending(m => m.Make) : models.OrderBy(m => m.Make);
                 }
                 if (query.SortBy.Equals("Model", StringComparison.OrdinalIgnoreCase))
                 {
-                    models = query.IsDescending ? models.OrderByDescending(m => m.Model) : models.OrderBy(m => m.Id);
+                    models = query.IsDescending ? models.OrderByDescending(m => m.Model) : models.OrderBy(m => m.Model);
                 }
             }
             else
