@@ -1,8 +1,9 @@
 export interface MotorcycleSearch {
-    // name: string;
+    name: string;
     make: string;
     model: string;
-    // year: number;
-    // mileage: number;
-    // owner: string;
+    year: number;
+    mileage: number;
+    owner: string;
+    specs: any;
 }
