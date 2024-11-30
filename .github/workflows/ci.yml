@@ -1,0 +1,33 @@
+name: .NET Continiuous Integration
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x
+        
+    - name: Restore main project dependencies
+      run: dotnet restore ./api/api.csproj
+    
+    - name: Build main project
+      run: dotnet build --no-restore ./api/api.csproj
+      
+    # - name: Restore test project dependencies
+      # run: dotnet restore ./Blog.API/Blog.Test/Blog.Test.csproj
+      
+    # - name: Build test project
+      # run: dotnet build --no-restore ./Blog.API/Blog.Test/Blog.Test.csproj
+      
+    # - name: Run tests
+      # run: dotnet test --no-build --verbosity normal ./Blog.API/Blog.Test/Blog.Test.csproj
