@@ -8,9 +8,10 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(IUsersService usersService) : ControllerBase
+    public class UsersController(IUsersService usersService, IMotorcyclesService motorcyclesService) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;
+        private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] UserQuery query)
@@ -28,24 +29,8 @@ namespace api.Controllers
             return Ok(await _usersService.GetByIdAsync(id));
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterPostDTO dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _usersService.RegisterAsync(dto));
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginPostDTO dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _usersService.LoginAsync(dto));
-        }
-
         [Authorize]
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] string id,
                                                 [FromBody] UserPutDTO putDto)
         {
@@ -55,7 +40,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -63,6 +48,14 @@ namespace api.Controllers
             await _usersService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/motorcycles")]
+        public async Task<IActionResult> GetMotorcyclesByUserId([FromRoute] string id)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok(await _motorcyclesService.GetByUserIdAsync(id));
         }
     }
 }
