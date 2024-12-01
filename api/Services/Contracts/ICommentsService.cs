@@ -5,7 +5,7 @@ namespace api.Services.Contracts
 {
     public interface ICommentsService
     {
-        Task<IEnumerable<CommentGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId, CommentQuery query);
+        Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(int motorcycleId, CommentQuery query);
         Task<CommentGetDTO?> GetByIdAsync(int id);
         Task<CommentGetDTO?> CreateAsync(int motorcycleId, CommentPostDTO dto);
         Task<CommentGetDTO?> UpdateAsync(int id, CommentPutDTO dto);

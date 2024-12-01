@@ -5,7 +5,7 @@ namespace api.Repositories.Contracts
 {
     public interface IJobsRepository
     {
-        Task<IEnumerable<Job>> GetAllByMotorcycleIdAsync(int motorcycleId, JobQuery query);
+        Task<IEnumerable<Job>> GetByMotorcycleIdAsync(int motorcycleId, JobQuery query);
         Task<Job> GetByIdAsync(int? id);
         Task<int?> CreateAsync(Job model);
         Task UpdateAsync(Job model, Job update);

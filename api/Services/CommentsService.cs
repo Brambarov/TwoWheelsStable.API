@@ -15,10 +15,10 @@ namespace api.Services
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly ICommentsRepository _commentsRepository = commentsRepository;
 
-        public async Task<IEnumerable<CommentGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(int motorcycleId,
                                                                                 CommentQuery query)
         {
-            return (await _commentsRepository.GetAllByMotorcycleIdAsync(motorcycleId,
+            return (await _commentsRepository.GetByMotorcycleIdAsync(motorcycleId,
                                                                         query)).Select(c => c.ToGetDTO());
         }
 

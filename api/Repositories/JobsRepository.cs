@@ -11,7 +11,7 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Job>> GetAllByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<Job>> GetByMotorcycleIdAsync(int motorcycleId,
                                                                       JobQuery query)
         {
             var models = _context.Jobs.Where(j => j.MotorcycleId.Equals(motorcycleId))

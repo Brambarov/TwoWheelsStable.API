@@ -11,7 +11,7 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Comment>> GetAllByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<Comment>> GetByMotorcycleIdAsync(int motorcycleId,
                                                                           CommentQuery query)
         {
             var models = _context.Comments.Where(c => c.MotorcycleId.Equals(motorcycleId))
