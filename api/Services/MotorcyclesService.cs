@@ -20,6 +20,11 @@ namespace api.Services
             return (await _motorcyclesRepository.GetAllAsync(query)).Select(m => m.ToGetDTO());
         }
 
+        public async Task<IEnumerable<MotorcycleGetDTO>> GetByUserIdAsync(string userId)
+        {
+            return (await _motorcyclesRepository.GetByUserIdAsync(userId)).Select(m => m.ToGetDTO());
+        }
+
         public async Task<MotorcycleGetDTO?> GetByIdAsync(int id)
         {
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
