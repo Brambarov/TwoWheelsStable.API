@@ -25,6 +25,7 @@ namespace api.Helpers.Mappers
 
             return new UserLoginGetDTO
             {
+                Id = model.Id,
                 UserName = userName,
                 Email = email,
                 Token = token
