@@ -51,6 +51,21 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
+        public async Task<IEnumerable<Motorcycle>> GetByUserIdAsync(string userId)
+        {
+            return await _context.Motorcycles.Include(m => m.Specs)
+                                             .Include(m => m.User)
+                                             .Include(m => m.Schedule)
+                                             .Include(m => m.Comments)
+                                             .ThenInclude(c => c.User)
+                                             .Where(m => m.UserId.Equals(userId))
+                                             .ToListAsync()
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "Motorcycle",
+                                                                   "UserId",
+                                                                   userId.ToString()));
+        }
+
         public async Task<Motorcycle> GetByIdAsync(int? id)
         {
             return await _context.Motorcycles.Include(m => m.Specs)
@@ -62,7 +77,7 @@ namespace api.Repositories
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
                                                                    "Motorcycle",
                                                                    "Id",
-                                                                   id.ToString())); ;
+                                                                   id.ToString()));
         }
 
         public async Task<int?> CreateAsync(Motorcycle model)
