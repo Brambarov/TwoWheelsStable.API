@@ -9,6 +9,7 @@ namespace api.Helpers.Mappers
         {
             return new SpecsGetDTO
             {
+                Id = model.Id,
                 Type = model.Type,
                 Displacement = model.Displacement,
                 Engine = model.Engine,

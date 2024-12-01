@@ -12,6 +12,7 @@ namespace api.Helpers.Mappers
 
             return new UserGetDTO
             {
+                Id = model.Id,
                 UserName = userName,
                 Stable = model.Stable.Select(m => m.ToGetDTO()).ToList()
             };

@@ -9,6 +9,7 @@ namespace api.Helpers.Mappers
         {
             return new CommentGetDTO
             {
+                Id = model.Id,
                 Title = model.Title,
                 Content = model.Content,
                 CreatedOn = model.CreatedOn,

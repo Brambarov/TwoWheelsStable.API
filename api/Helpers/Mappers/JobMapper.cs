@@ -9,6 +9,7 @@ namespace api.Helpers.Mappers
         {
             return new JobGetDTO
             {
+                Id = model.Id,
                 Title = model.Title,
                 Description = model.Description,
                 Cost = model.Cost,

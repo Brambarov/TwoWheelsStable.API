@@ -9,6 +9,7 @@ namespace api.Helpers.Mappers
         {
             return new MotorcycleGetDTO
             {
+                Id = model.Id,
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
