@@ -1,25 +1,15 @@
 ﻿using api.DTOs.Comment;
-using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/motorcycle/{motorcycleId}/[controller]")]
+    [Route("api/motorcycles/{motorcycleId}/[controller]")]
     [ApiController]
     public class CommentsController(ICommentsService commentsService) : ControllerBase
     {
         private readonly ICommentsService _commentsService = commentsService;
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllByMotorcycleId([FromRoute] int motorcycleId,
-                                                              [FromQuery] CommentQuery query)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _commentsService.GetAllByMotorcycleIdAsync(motorcycleId, query));
-        }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -27,16 +17,6 @@ namespace api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             return Ok(await _commentsService.GetByIdAsync(id));
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Create([FromRoute] int motorcycleId,
-                                                [FromBody] CommentPostDTO postDto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _commentsService.CreateAsync(motorcycleId, postDto));
         }
 
         [Authorize]

@@ -1,4 +1,6 @@
-﻿using api.DTOs.Motorcycle;
+﻿using api.DTOs.Comment;
+using api.DTOs.Job;
+using api.DTOs.Motorcycle;
 using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -8,9 +10,13 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MotorcyclesController(IMotorcyclesService motorcyclesService) : ControllerBase
+    public class MotorcyclesController(IMotorcyclesService motorcyclesService,
+                                       ICommentsService commentsService,
+                                       IJobsService jobsService) : ControllerBase
     {
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
+        private readonly ICommentsService _commentsService = commentsService;
+        private readonly IJobsService _jobsService = jobsService;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] MotorcycleQuery query)
@@ -56,6 +62,44 @@ namespace api.Controllers
             await _motorcyclesService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("{id:int}/comments")]
+        public async Task<IActionResult> GetCommentsByMotorcycleId([FromRoute] int id,
+                                                              [FromQuery] CommentQuery query)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok(await _commentsService.GetByMotorcycleIdAsync(id, query));
+        }
+
+        [Authorize]
+        [HttpPost("{id:int}/comments")]
+        public async Task<IActionResult> CreateComment([FromRoute] int id,
+                                                [FromBody] CommentPostDTO postDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok(await _commentsService.CreateAsync(id, postDto));
+        }
+
+        [HttpGet("{id:int}/jobs")]
+        public async Task<IActionResult> GetJobsByMotorcycleId([FromRoute] int id,
+                                                              [FromQuery] JobQuery query)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok(await _jobsService.GetByMotorcycleIdAsync(id, query));
+        }
+
+        [Authorize]
+        [HttpPost("{id:int}/jobs")]
+        public async Task<IActionResult> CreateJob([FromRoute] int id,
+                                                [FromBody] JobPostDTO postDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok(await _jobsService.CreateAsync(id, postDto));
         }
     }
 }
