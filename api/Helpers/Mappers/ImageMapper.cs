@@ -15,5 +15,15 @@ namespace api.Helpers.Mappers
                 MimeType = model.MimeType
             };
         }
+        public static Image FromPostDTO(this ImagePostDTO dto, int? motorcycleId)
+        {
+            return new Image
+            {
+                MotorcycleId = motorcycleId,
+                Data = dto.Data,
+                FileName = dto.FileName,
+                MimeType = dto.MimeType
+            };
+        }
     }
 }
