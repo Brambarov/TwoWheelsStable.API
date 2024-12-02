@@ -114,6 +114,8 @@ namespace api
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
             builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
+            builder.Services.AddScoped<IImagesService, ImagesService>();
+            builder.Services.AddScoped<IImagesRepository, ImagesRepository>();
             builder.Services.AddScoped<ISpecsService, SpecsService>();
             builder.Services.AddScoped<ISpecsRepository, SpecsRepository>();
             builder.Services.AddScoped<IJobsService, JobsService>();
