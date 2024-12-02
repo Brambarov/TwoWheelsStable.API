@@ -40,7 +40,7 @@ namespace api.Repositories
             return await _context.Comments.Include(c => c.User)
                                           .FirstOrDefaultAsync(c => c.Id.Equals(id))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                   "Job",
+                                                                   "Comment",
                                                                    "Id",
                                                                    id.ToString()));
         }
