@@ -11,7 +11,7 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Comment>> GetByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<Comment>> GetByMotorcycleIdAsync(Guid motorcycleId,
                                                                           CommentQuery query)
         {
             var models = _context.Comments.Where(c => c.MotorcycleId.Equals(motorcycleId))
@@ -35,7 +35,7 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Comment> GetByIdAsync(int? id)
+        public async Task<Comment> GetByIdAsync(Guid id)
         {
             return await _context.Comments.Include(c => c.User)
                                           .FirstOrDefaultAsync(c => c.Id.Equals(id))
@@ -45,12 +45,12 @@ namespace api.Repositories
                                                                    id.ToString()));
         }
 
-        public async Task<int?> CreateAsync(Comment model)
+        public async Task<Guid> CreateAsync(Comment model)
         {
             await _context.Comments.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out Guid id);
 
             return id;
         }

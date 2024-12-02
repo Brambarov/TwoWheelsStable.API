@@ -7,8 +7,8 @@ namespace api.Repositories.Contracts
     {
         Task<IEnumerable<Motorcycle>> GetAllAsync(MotorcycleQuery query);
         Task<IEnumerable<Motorcycle>> GetByUserIdAsync(string userId);
-        Task<Motorcycle> GetByIdAsync(int? id);
-        Task<int> CreateAsync(Motorcycle model);
+        Task<Motorcycle> GetByIdAsync(Guid id);
+        Task<Guid> CreateAsync(Motorcycle model);
         Task UpdateAsync(Motorcycle model, Motorcycle update);
         Task DeleteAsync(Motorcycle model);
     }

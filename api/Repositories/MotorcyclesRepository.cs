@@ -68,7 +68,7 @@ namespace api.Repositories
                                                                    userId.ToString()));
         }
 
-        public async Task<Motorcycle> GetByIdAsync(int? id)
+        public async Task<Motorcycle> GetByIdAsync(Guid id)
         {
             return await _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
@@ -83,12 +83,12 @@ namespace api.Repositories
                                                                    id.ToString()));
         }
 
-        public async Task<int> CreateAsync(Motorcycle model)
+        public async Task<Guid> CreateAsync(Motorcycle model)
         {
             await _context.Motorcycles.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out Guid id);
 
             return id;
         }

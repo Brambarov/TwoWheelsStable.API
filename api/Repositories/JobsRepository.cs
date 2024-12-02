@@ -11,7 +11,7 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Job>> GetByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<Job>> GetByMotorcycleIdAsync(Guid motorcycleId,
                                                                       JobQuery query)
         {
             var models = _context.Jobs.Where(j => j.MotorcycleId.Equals(motorcycleId))
@@ -56,7 +56,7 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Job> GetByIdAsync(int? id)
+        public async Task<Job> GetByIdAsync(Guid id)
         {
             return await _context.Jobs.FirstOrDefaultAsync(j => j.Id.Equals(id))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
@@ -65,12 +65,12 @@ namespace api.Repositories
                                                                    id.ToString()));
         }
 
-        public async Task<int?> CreateAsync(Job model)
+        public async Task<Guid> CreateAsync(Job model)
         {
             await _context.Jobs.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out Guid id);
 
             return id;
         }
@@ -91,7 +91,7 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(int id)
+        public async Task<bool> Exists(Guid id)
         {
             return await _context.Jobs.AnyAsync(m => m.Id.Equals(id));
         }

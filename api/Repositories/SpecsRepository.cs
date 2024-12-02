@@ -15,12 +15,12 @@ namespace api.Repositories
                                        .ToListAsync();
         }
 
-        public async Task<int?> CreateAsync(Specs model)
+        public async Task<Guid> CreateAsync(Specs model)
         {
             await _context.Specs.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out Guid id);
 
             return id;
         }

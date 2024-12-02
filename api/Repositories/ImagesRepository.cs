@@ -9,18 +9,18 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Image>> GetByMotorcycleIdAsync(int motorcycleId)
+        public async Task<IEnumerable<Image>> GetByMotorcycleIdAsync(Guid motorcycleId)
         {
-            return await _context.Images.Where(i => i.MotorcycleId == motorcycleId)
+            return await _context.Images.Where(i => i.ResourceId.Equals(motorcycleId))
                                         .ToListAsync();
         }
 
-        public async Task<int?> CreateAsync(Image model)
+        public async Task<Guid> CreateAsync(Image model)
         {
             await _context.Images.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out Guid id);
 
             return id;
         }
