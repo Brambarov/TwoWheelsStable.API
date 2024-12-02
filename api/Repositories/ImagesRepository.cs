@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Models;
 using api.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
@@ -8,9 +9,10 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public Task<IEnumerable<Image>> GetByMotorcycleIdAsync(int motorcycleId)
+        public async Task<IEnumerable<Image>> GetByMotorcycleIdAsync(int motorcycleId)
         {
-            throw new NotImplementedException();
+            return await _context.Images.Where(i => i.MotorcycleId == motorcycleId)
+                                        .ToListAsync();
         }
 
         public async Task<int?> CreateAsync(Image model)
@@ -23,9 +25,12 @@ namespace api.Repositories
             return id;
         }
 
-        public Task DeleteAsync(Image model)
+        public async Task DeleteAsync(Image model)
         {
-            throw new NotImplementedException();
+            model.IsDeleted = true;
+
+            _context.Images.Update(model);
+            await _context.SaveChangesAsync();
         }
     }
 }
