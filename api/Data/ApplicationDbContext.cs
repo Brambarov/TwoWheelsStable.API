@@ -39,14 +39,58 @@ namespace api.Data
                 }
             ];
 
-            builder.Entity<IdentityRole>().HasData(roles);
+            builder.Entity<IdentityRole>()
+                   .HasData(roles);
 
-            builder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
-            builder.Entity<Motorcycle>().HasQueryFilter(m => !m.IsDeleted);
-            builder.Entity<Specs>().HasQueryFilter(s => !s.IsDeleted);
-            builder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
-            builder.Entity<Job>().HasQueryFilter(c => !c.IsDeleted);
-            builder.Entity<Job>().Property(j => j.Cost).HasPrecision(19, 4);
+            builder.Entity<User>()
+                   .HasQueryFilter(u => !u.IsDeleted);
+
+            builder.Entity<Motorcycle>()
+                   .HasQueryFilter(m => !m.IsDeleted);
+
+            builder.Entity<Image>()
+                   .HasQueryFilter(i => !i.IsDeleted);
+
+            builder.Entity<Image>()
+                   .Property(i => i.ResourceType)
+                   .HasConversion<string>();
+
+            builder.Entity<Specs>()
+                   .HasQueryFilter(s => !s.IsDeleted);
+
+            builder.Entity<Comment>()
+                   .HasQueryFilter(c => !c.IsDeleted);
+
+            builder.Entity<Comment>()
+                   .HasOne(c => c.Motorcycle)
+                   .WithMany(m => m.Comments)
+                   .HasForeignKey(c => c.MotorcycleId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Comment>()
+                   .HasOne(c => c.User)
+                   .WithMany()
+                   .HasForeignKey(c => c.UserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Job>()
+                   .HasQueryFilter(j => !j.IsDeleted);
+
+            builder.Entity<Job>()
+                   .Property(j => j.Cost)
+                   .HasPrecision(19, 4);
+
+            builder.Entity<Job>()
+                   .HasOne(j => j.Motorcycle)
+                   .WithMany(m => m.Jobs)
+                   .HasForeignKey(c => c.MotorcycleId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Job>()
+                   .HasOne(j => j.User)
+                   .WithMany()
+                   .HasForeignKey(c => c.UserId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
