@@ -15,8 +15,8 @@ namespace api.Models
         public Specs? Specs { get; set; }
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
-        public List<Job> Jobs { get; set; } = [];
         public List<Image> Images { get; set; } = [];
+        public List<Job> Jobs { get; set; } = [];
         public List<Comment> Comments { get; set; } = [];
         public bool IsDeleted { get; set; }
     }
