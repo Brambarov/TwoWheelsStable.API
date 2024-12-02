@@ -22,7 +22,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, int? specsId, string userId)
+        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, Guid specsId, string userId)
         {
             return new Motorcycle
             {
@@ -36,7 +36,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, Motorcycle model, int? specsId)
+        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, Motorcycle model, Guid specsId)
         {
             model.Name = dto.Name;
             model.Make = dto.Make;

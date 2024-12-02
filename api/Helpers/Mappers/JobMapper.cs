@@ -20,7 +20,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Job FromPostDTO(this JobPostDTO dto, string userId, int? motorcycleId)
+        public static Job FromPostDTO(this JobPostDTO dto, string userId, Guid motorcycleId)
         {
             return new Job
             {

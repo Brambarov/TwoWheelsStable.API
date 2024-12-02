@@ -17,7 +17,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Comment FromPostDTO(this CommentPostDTO dto, string userId, int motorcycleId)
+        public static Comment FromPostDTO(this CommentPostDTO dto, string userId, Guid motorcycleId)
         {
             return new Comment
             {
