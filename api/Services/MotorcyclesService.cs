@@ -27,7 +27,7 @@ namespace api.Services
             return (await _motorcyclesRepository.GetByUserIdAsync(userId)).Select(m => m.ToGetDTO());
         }
 
-        public async Task<MotorcycleGetDTO?> GetByIdAsync(int id)
+        public async Task<MotorcycleGetDTO?> GetByIdAsync(Guid id)
         {
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
@@ -49,7 +49,7 @@ namespace api.Services
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task<MotorcycleGetDTO?> UpdateAsync(int id, MotorcyclePutDTO dto)
+        public async Task<MotorcycleGetDTO?> UpdateAsync(Guid id, MotorcyclePutDTO dto)
         {
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 
@@ -65,7 +65,7 @@ namespace api.Services
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var model = await _motorcyclesRepository.GetByIdAsync(id);
 

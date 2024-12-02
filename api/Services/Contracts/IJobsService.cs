@@ -5,10 +5,10 @@ namespace api.Services.Contracts
 {
     public interface IJobsService
     {
-        Task<IEnumerable<JobGetDTO>> GetByMotorcycleIdAsync(int motorcycleId, JobQuery query);
-        Task<JobGetDTO?> GetByIdAsync(int id);
-        Task<JobGetDTO?> CreateAsync(int motorcycleId, JobPostDTO dto);
-        Task<JobGetDTO?> UpdateAsync(int id, JobPutDTO dto);
-        Task DeleteAsync(int id);
+        Task<IEnumerable<JobGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId, JobQuery query);
+        Task<JobGetDTO?> GetByIdAsync(Guid id);
+        Task<JobGetDTO?> CreateAsync(Guid motorcycleId, JobPostDTO dto);
+        Task<JobGetDTO?> UpdateAsync(Guid id, JobPutDTO dto);
+        Task DeleteAsync(Guid id);
     }
 }

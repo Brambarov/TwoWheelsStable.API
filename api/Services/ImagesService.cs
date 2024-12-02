@@ -9,12 +9,12 @@ namespace api.Services
     {
         private readonly IImagesRepository _imagesRepository = imagesRepository;
 
-        public async Task<IEnumerable<ImageGetDTO>> GetByMotorcycleIdAsync(int motorcycleId)
+        public async Task<IEnumerable<ImageGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId)
         {
             return (await _imagesRepository.GetByMotorcycleIdAsync(motorcycleId)).Select(i => i.ToGetDTO());
         }
 
-        public async Task<int?> CreateAsync(IFormFile file, int motorcycleId)
+        public async Task<Guid> CreateAsync(IFormFile file, Guid motorcycleId)
         {
             return await _imagesRepository.CreateAsync(await file.FromFormFile(motorcycleId));
         }

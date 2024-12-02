@@ -15,19 +15,19 @@ namespace api.Services
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly ICommentsRepository _commentsRepository = commentsRepository;
 
-        public async Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId,
                                                                                 CommentQuery query)
         {
             return (await _commentsRepository.GetByMotorcycleIdAsync(motorcycleId,
                                                                         query)).Select(c => c.ToGetDTO());
         }
 
-        public async Task<CommentGetDTO?> GetByIdAsync(int id)
+        public async Task<CommentGetDTO?> GetByIdAsync(Guid id)
         {
             return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task<CommentGetDTO?> CreateAsync(int motorcycleId,
+        public async Task<CommentGetDTO?> CreateAsync(Guid motorcycleId,
                                                       CommentPostDTO dto)
         {
             await _motorcyclesService.GetByIdAsync(motorcycleId);
@@ -41,7 +41,7 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<CommentGetDTO?> UpdateAsync(int id, CommentPutDTO dto)
+        public async Task<CommentGetDTO?> UpdateAsync(Guid id, CommentPutDTO dto)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
@@ -54,7 +54,7 @@ namespace api.Services
             return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 

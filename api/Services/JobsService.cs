@@ -15,19 +15,19 @@ namespace api.Services
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly IJobsRepository _jobsRepository = jobsRepository;
 
-        public async Task<IEnumerable<JobGetDTO>> GetByMotorcycleIdAsync(int motorcycleId,
+        public async Task<IEnumerable<JobGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId,
                                                                             JobQuery query)
         {
             return (await _jobsRepository.GetByMotorcycleIdAsync(motorcycleId,
                                                                     query)).Select(j => j.ToGetDTO());
         }
 
-        public async Task<JobGetDTO?> GetByIdAsync(int id)
+        public async Task<JobGetDTO?> GetByIdAsync(Guid id)
         {
             return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task<JobGetDTO?> CreateAsync(int motorcycleId,
+        public async Task<JobGetDTO?> CreateAsync(Guid motorcycleId,
                                                   JobPostDTO dto)
         {
             await _motorcyclesService.GetByIdAsync(motorcycleId);
@@ -38,7 +38,7 @@ namespace api.Services
             return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task<JobGetDTO?> UpdateAsync(int id,
+        public async Task<JobGetDTO?> UpdateAsync(Guid id,
                                                   JobPutDTO dto)
         {
             var model = await _jobsRepository.GetByIdAsync(id);
@@ -52,7 +52,7 @@ namespace api.Services
             return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var model = await _jobsRepository.GetByIdAsync(id);
 

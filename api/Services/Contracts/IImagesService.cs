@@ -4,8 +4,8 @@ namespace api.Services.Contracts
 {
     public interface IImagesService
     {
-        Task<IEnumerable<ImageGetDTO>> GetByMotorcycleIdAsync(int motorcycleId);
-        Task<int?> CreateAsync(IFormFile file, int motorcycleId);
+        Task<IEnumerable<ImageGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId);
+        Task<Guid> CreateAsync(IFormFile file, Guid motorcycleId);
         Task DeleteAsync(ImageGetDTO dto);
     }
 }
