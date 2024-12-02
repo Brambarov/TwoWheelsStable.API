@@ -12,6 +12,7 @@ namespace api.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Specs> Specs { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
