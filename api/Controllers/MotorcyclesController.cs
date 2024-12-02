@@ -27,7 +27,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -45,7 +45,7 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id,
+        public async Task<IActionResult> Update([FromRoute] Guid id,
                                                 [FromBody] MotorcyclePutDTO putDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -55,7 +55,7 @@ namespace api.Controllers
 
         [Authorize]
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -65,7 +65,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}/comments")]
-        public async Task<IActionResult> GetCommentsByMotorcycleId([FromRoute] int id,
+        public async Task<IActionResult> GetCommentsByMotorcycleId([FromRoute] Guid id,
                                                                    [FromQuery] CommentQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -75,7 +75,7 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPost("{id:int}/comments")]
-        public async Task<IActionResult> CreateComment([FromRoute] int id,
+        public async Task<IActionResult> CreateComment([FromRoute] Guid id,
                                                        [FromBody] CommentPostDTO postDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -84,7 +84,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}/jobs")]
-        public async Task<IActionResult> GetJobsByMotorcycleId([FromRoute] int id,
+        public async Task<IActionResult> GetJobsByMotorcycleId([FromRoute] Guid id,
                                                                [FromQuery] JobQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -94,7 +94,7 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPost("{id:int}/jobs")]
-        public async Task<IActionResult> CreateJob([FromRoute] int id,
+        public async Task<IActionResult> CreateJob([FromRoute] Guid id,
                                                    [FromBody] JobPostDTO postDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

@@ -12,7 +12,7 @@ namespace api.Controllers
         private readonly ICommentsService _commentsService = commentsService;
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -21,7 +21,7 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id,
+        public async Task<IActionResult> Update([FromRoute] Guid id,
                                                 [FromBody] CommentPutDTO putDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -31,7 +31,7 @@ namespace api.Controllers
 
         [Authorize]
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
