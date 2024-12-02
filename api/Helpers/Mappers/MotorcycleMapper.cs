@@ -17,7 +17,7 @@ namespace api.Helpers.Mappers
                 Mileage = model.Mileage,
                 Specs = model.Specs?.ToGetDTO(),
                 Owner = model.User?.UserName,
-                Schedule = model.Schedule.Select(j => j.ToGetDTO()).ToList(),
+                Jobs = model.Jobs.Select(j => j.ToGetDTO()).ToList(),
                 Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
             };
         }

@@ -14,7 +14,7 @@ namespace api.DTOs.Motorcycle
         public int Mileage { get; set; }
         public SpecsGetDTO? Specs { get; set; }
         public string? Owner { get; set; } = string.Empty;
-        public List<JobGetDTO> Schedule { get; set; } = [];
+        public List<JobGetDTO> Jobs { get; set; } = [];
         public List<CommentGetDTO> Comments { get; set; } = [];
     }
 }
