@@ -1,0 +1,19 @@
+﻿using api.DTOs.Image;
+using api.Models;
+
+namespace api.Helpers.Mappers
+{
+    public static class ImageMapper
+    {
+        public static ImageGetDTO ToGetDTO(this Image model)
+        {
+            return new ImageGetDTO
+            {
+                Id = model.Id,
+                Data = model.Data,
+                FileName = model.FileName,
+                MimeType = model.MimeType
+            };
+        }
+    }
+}
