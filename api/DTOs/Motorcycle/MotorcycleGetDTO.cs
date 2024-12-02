@@ -7,7 +7,7 @@ namespace api.DTOs.Motorcycle
 {
     public class MotorcycleGetDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Make { get; set; } = string.Empty;
         public string Model { get; set; } = string.Empty;

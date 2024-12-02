@@ -2,7 +2,7 @@
 {
     public class SpecsGetDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Type { get; set; } = string.Empty;
         public string Displacement { get; set; } = string.Empty;
         public string Engine { get; set; } = string.Empty;
