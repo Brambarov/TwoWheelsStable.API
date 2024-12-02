@@ -83,7 +83,7 @@ namespace api.Repositories
                                                                    id.ToString()));
         }
 
-        public async Task<int?> CreateAsync(Motorcycle model)
+        public async Task<int> CreateAsync(Motorcycle model)
         {
             await _context.Motorcycles.AddAsync(model);
             await _context.SaveChangesAsync();
