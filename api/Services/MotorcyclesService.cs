@@ -19,32 +19,44 @@ namespace api.Services
 
         public async Task<IEnumerable<MotorcycleGetDTO>> GetAllAsync(MotorcycleQuery query)
         {
-            return (await _motorcyclesRepository.GetAllAsync(query)).Select(m => m.ToGetDTO());
+            var dtos = (await _motorcyclesRepository.GetAllAsync(query)).Select(m => m.ToGetDTO());
+
+            foreach (var dto in dtos)
+            {
+                dto.Images = (await _imagesService.GetByMotorcycleIdAsync(dto.Id)).ToList();
+            }
+
+            return dtos;
         }
 
         public async Task<IEnumerable<MotorcycleGetDTO>> GetByUserIdAsync(string userId)
         {
-            return (await _motorcyclesRepository.GetByUserIdAsync(userId)).Select(m => m.ToGetDTO());
+            var dtos = (await _motorcyclesRepository.GetByUserIdAsync(userId)).Select(m => m.ToGetDTO());
+
+            foreach (var dto in dtos)
+            {
+                dto.Images = (await _imagesService.GetByMotorcycleIdAsync(dto.Id)).ToList();
+            }
+
+            return dtos;
         }
 
         public async Task<MotorcycleGetDTO?> GetByIdAsync(Guid id)
         {
-            return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
+            var dto = (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
+
+            dto.Images = (await _imagesService.GetByMotorcycleIdAsync(id)).ToList();
+
+            return dto;
         }
 
-        public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto,
-                                                         List<IFormFile> files)
+        public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto)
         {
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
             var userId = _usersService.GetCurrentUserId() ?? throw new ApplicationException(UnauthorizedError);
 
             var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, userId));
-
-            foreach (var file in files)
-            {
-                await _imagesService.CreateAsync(file, id);
-            }
 
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }

@@ -8,7 +8,7 @@ namespace api.Services.Contracts
         Task<IEnumerable<MotorcycleGetDTO>> GetAllAsync(MotorcycleQuery query);
         Task<IEnumerable<MotorcycleGetDTO>> GetByUserIdAsync(string userId);
         Task<MotorcycleGetDTO?> GetByIdAsync(Guid id);
-        Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto, List<IFormFile> images);
+        Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto);
         Task<MotorcycleGetDTO?> UpdateAsync(Guid id, MotorcyclePutDTO dto);
         Task DeleteAsync(Guid id);
     }

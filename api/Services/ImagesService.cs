@@ -14,9 +14,17 @@ namespace api.Services
             return (await _imagesRepository.GetByMotorcycleIdAsync(motorcycleId)).Select(i => i.ToGetDTO());
         }
 
-        public async Task<Guid> CreateAsync(IFormFile file, Guid motorcycleId)
+        public async Task CreateAsync(IFormFile file, Guid motorcycleId)
         {
-            return await _imagesRepository.CreateAsync(await file.FromFormFile(motorcycleId));
+            await _imagesRepository.CreateAsync(await file.FromFormFile(motorcycleId));
+        }
+
+        public async Task BatchCreateAsync(List<IFormFile> files, Guid motorcycleId)
+        {
+            foreach (var file in files)
+            {
+                await _imagesRepository.CreateAsync(await file.FromFormFile(motorcycleId));
+            }
         }
 
         public Task DeleteAsync(ImageGetDTO dto)
