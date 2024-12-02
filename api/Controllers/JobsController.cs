@@ -11,7 +11,7 @@ namespace api.Controllers
     {
         private readonly IJobsService _jobsService = jobsService;
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -20,7 +20,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,
                                                 [FromBody] JobPutDTO putDto)
         {
@@ -30,7 +30,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

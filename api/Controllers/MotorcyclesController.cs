@@ -26,7 +26,7 @@ namespace api.Controllers
             return Ok(await _motorcyclesService.GetAllAsync(query));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -36,15 +36,15 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] MotorcyclePostDTO postDto, [FromForm] List<IFormFile> files)
+        public async Task<IActionResult> Create([FromBody] MotorcyclePostDTO postDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.CreateAsync(postDto, files));
+            return Ok(await _motorcyclesService.CreateAsync(postDto));
         }
 
         [Authorize]
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,
                                                 [FromBody] MotorcyclePutDTO putDto)
         {
@@ -54,7 +54,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -64,7 +64,7 @@ namespace api.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id:int}/comments")]
+        [HttpGet("{id:guid}/comments")]
         public async Task<IActionResult> GetCommentsByMotorcycleId([FromRoute] Guid id,
                                                                    [FromQuery] CommentQuery query)
         {
@@ -74,7 +74,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpPost("{id:int}/comments")]
+        [HttpPost("{id:guid}/comments")]
         public async Task<IActionResult> CreateComment([FromRoute] Guid id,
                                                        [FromBody] CommentPostDTO postDto)
         {
@@ -83,7 +83,7 @@ namespace api.Controllers
             return Ok(await _commentsService.CreateAsync(id, postDto));
         }
 
-        [HttpGet("{id:int}/jobs")]
+        [HttpGet("{id:guid}/jobs")]
         public async Task<IActionResult> GetJobsByMotorcycleId([FromRoute] Guid id,
                                                                [FromQuery] JobQuery query)
         {
@@ -93,7 +93,7 @@ namespace api.Controllers
         }
 
         [Authorize]
-        [HttpPost("{id:int}/jobs")]
+        [HttpPost("{id:guid}/jobs")]
         public async Task<IActionResult> CreateJob([FromRoute] Guid id,
                                                    [FromBody] JobPostDTO postDto)
         {
