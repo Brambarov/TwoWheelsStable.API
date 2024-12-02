@@ -1,4 +1,5 @@
 ﻿using api.DTOs.Comment;
+using api.DTOs.Image;
 using api.DTOs.Job;
 using api.DTOs.Specs;
 
@@ -14,6 +15,7 @@ namespace api.DTOs.Motorcycle
         public int Mileage { get; set; }
         public SpecsGetDTO? Specs { get; set; }
         public string? Owner { get; set; } = string.Empty;
+        public List<ImageGetDTO> Images { get; set; } = [];
         public List<JobGetDTO> Jobs { get; set; } = [];
         public List<CommentGetDTO> Comments { get; set; } = [];
     }
