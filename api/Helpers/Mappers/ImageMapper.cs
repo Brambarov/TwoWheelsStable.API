@@ -15,14 +15,17 @@ namespace api.Helpers.Mappers
                 MimeType = model.MimeType
             };
         }
-        public static Image FromPostDTO(this ImagePostDTO dto, int? motorcycleId)
+        public static async Task<Image> FromFormFile(this IFormFile file, int? motorcycleId)
         {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+
             return new Image
             {
-                MotorcycleId = motorcycleId,
-                Data = dto.Data,
-                FileName = dto.FileName,
-                MimeType = dto.MimeType
+                ResourceId = motorcycleId,
+                Data = memoryStream.ToArray(),
+                FileName = file.FileName,
+                MimeType = file.ContentType
             };
         }
     }
