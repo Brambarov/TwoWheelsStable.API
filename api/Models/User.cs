@@ -4,7 +4,7 @@ namespace api.Models
 {
     public class User : IdentityUser
     {
-        public List<Motorcycle> Stable { get; set; } = [];
+        public List<Motorcycle> Motorcycles { get; set; } = [];
         public bool IsDeleted { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace api.Helpers.Mappers
             {
                 Id = model.Id,
                 UserName = userName,
-                Stable = model.Stable.Select(m => m.ToGetDTO()).ToList()
+                Motorcycles = model.Motorcycles.Select(m => m.ToGetDTO()).ToList()
             };
         }
 

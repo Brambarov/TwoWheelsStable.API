@@ -13,7 +13,7 @@ namespace api.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync(UserQuery query)
         {
-            var models = _userManager.Users.Include(u => u.Stable)
+            var models = _userManager.Users.Include(u => u.Motorcycles)
                                            .ThenInclude(m => m.Specs)
                                            .AsQueryable();
 
@@ -35,7 +35,7 @@ namespace api.Repositories
 
         public async Task<User> GetByIdAsync(string? id)
         {
-            return await _userManager.Users.Include(u => u.Stable)
+            return await _userManager.Users.Include(u => u.Motorcycles)
                                            .ThenInclude(m => m.Specs)
                                            .FirstOrDefaultAsync(u => u.Id.Equals(id))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
@@ -46,7 +46,7 @@ namespace api.Repositories
 
         public async Task<User> GetByUserNameAsync(string? userName)
         {
-            return await _userManager.Users.Include(u => u.Stable)
+            return await _userManager.Users.Include(u => u.Motorcycles)
                                            .ThenInclude(m => m.Specs)
                                            .FirstOrDefaultAsync(u => u.UserName != null
                                                                      && userName != null
