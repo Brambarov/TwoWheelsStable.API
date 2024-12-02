@@ -14,9 +14,9 @@ namespace api.Services
             return (await _imagesRepository.GetByMotorcycleIdAsync(motorcycleId)).Select(i => i.ToGetDTO());
         }
 
-        public async Task<int?> CreateAsync(ImagePostDTO dto, int motorcycleId)
+        public async Task<int?> CreateAsync(IFormFile file, int motorcycleId)
         {
-            return await _imagesRepository.CreateAsync(dto.FromPostDTO(motorcycleId));
+            return await _imagesRepository.CreateAsync(await file.FromFormFile(motorcycleId));
         }
 
         public Task DeleteAsync(ImageGetDTO dto)

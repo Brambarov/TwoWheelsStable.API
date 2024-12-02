@@ -8,10 +8,12 @@ using static api.Helpers.Constants.ErrorMessages;
 namespace api.Services
 {
     public class MotorcyclesService(IUsersService usersService,
+                                    IImagesService imagesService,
                                     IMotorcyclesRepository motorcyclesRepository,
                                     ISpecsService specsService) : IMotorcyclesService
     {
         private readonly IUsersService _usersService = usersService;
+        private readonly IImagesService _imagesService = imagesService;
         private readonly ISpecsService _specsService = specsService;
         private readonly IMotorcyclesRepository _motorcyclesRepository = motorcyclesRepository;
 
@@ -30,13 +32,19 @@ namespace api.Services
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
 
-        public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto)
+        public async Task<MotorcycleGetDTO?> CreateAsync(MotorcyclePostDTO dto,
+                                                         List<IFormFile> files)
         {
             var specsId = await _specsService.GetOrCreateAsync(dto.Make, dto.Model, dto.Year);
 
             var userId = _usersService.GetCurrentUserId() ?? throw new ApplicationException(UnauthorizedError);
 
             var id = await _motorcyclesRepository.CreateAsync(dto.FromPostDTO(specsId, userId));
+
+            foreach (var file in files)
+            {
+                await _imagesService.CreateAsync(file, id);
+            }
 
             return (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
         }
