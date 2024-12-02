@@ -17,7 +17,7 @@ namespace api.Models
         public int DueMileage { get; set; }
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
-        public int? MotorcycleId { get; set; }
+        public Guid MotorcycleId { get; set; }
         public Motorcycle? Motorcycle { get; set; }
         public bool IsDeleted { get; set; }
     }

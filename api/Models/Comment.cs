@@ -13,7 +13,7 @@ namespace api.Models
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
-        public int? MotorcycleId { get; set; }
+        public Guid MotorcycleId { get; set; }
         public Motorcycle? Motorcycle { get; set; }
         public bool IsDeleted { get; set; }
     }
