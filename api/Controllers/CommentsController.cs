@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/motorcycles/{motorcycleId}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CommentsController(ICommentsService commentsService) : ControllerBase
     {

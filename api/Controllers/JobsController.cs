@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/motorcycles/{motorcycleId:int}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class JobsController(IJobsService jobsService) : ControllerBase
     {
