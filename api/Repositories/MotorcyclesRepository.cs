@@ -15,7 +15,6 @@ namespace api.Repositories
         {
             var models = _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
-                                             .Include(m => m.Images)
                                              .Include(m => m.Jobs)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
@@ -56,7 +55,6 @@ namespace api.Repositories
         {
             return await _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
-                                             .Include(m => m.Images)
                                              .Include(m => m.Jobs)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
@@ -72,7 +70,6 @@ namespace api.Repositories
         {
             return await _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
-                                             .Include(m => m.Images)
                                              .Include(m => m.Jobs)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
