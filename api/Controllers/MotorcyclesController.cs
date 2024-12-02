@@ -36,11 +36,11 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] MotorcyclePostDTO postDto)
+        public async Task<IActionResult> Create([FromForm] MotorcyclePostDTO postDto, [FromForm] List<IFormFile> files)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.CreateAsync(postDto));
+            return Ok(await _motorcyclesService.CreateAsync(postDto, files));
         }
 
         [Authorize]
