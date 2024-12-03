@@ -8,6 +8,7 @@
         public string Engine { get; set; } = string.Empty;
         public string Power { get; set; } = string.Empty;
         public string Torque { get; set; } = string.Empty;
+        public string TopSpeed { get; set; } = string.Empty;
         public string Compression { get; set; } = string.Empty;
         public string BoreStroke { get; set; } = string.Empty;
         public string ValvesPerCylinder { get; set; } = string.Empty;
@@ -28,6 +29,7 @@
         public string RearTire { get; set; } = string.Empty;
         public string FrontBrakes { get; set; } = string.Empty;
         public string RearBrakes { get; set; } = string.Empty;
+        public string DryWeight { get; set; } = string.Empty;
         public string TotalWeight { get; set; } = string.Empty;
         public string SeatHeight { get; set; } = string.Empty;
         public string TotalHeight { get; set; } = string.Empty;

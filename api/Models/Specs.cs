@@ -16,6 +16,8 @@ namespace api.Models
         public string Engine { get; set; } = string.Empty;
         public string Power { get; set; } = string.Empty;
         public string Torque { get; set; } = string.Empty;
+        [Column("TopSpeed")]
+        public string Top_speed { get; set; } = string.Empty;
         public string Compression { get; set; } = string.Empty;
         [Column("BoreStroke")]
         public string Bore_stroke { get; set; } = string.Empty;
@@ -48,6 +50,8 @@ namespace api.Models
         public string Front_brakes { get; set; } = string.Empty;
         [Column("RearBrakes")]
         public string Rear_brakes { get; set; } = string.Empty;
+        [Column("DryWeight")]
+        public string Dry_weight { get; set; } = string.Empty;
         [Column("TotalWeight")]
         public string Total_weight { get; set; } = string.Empty;
         [Column("SeatHeight")]
