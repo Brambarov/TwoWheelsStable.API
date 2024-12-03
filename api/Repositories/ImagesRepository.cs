@@ -9,7 +9,7 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Image>> GetByMotorcycleIdAsync(Guid motorcycleId)
+        public async Task<IEnumerable<Image>> GetByResourceIdAsync(Guid motorcycleId)
         {
             return await _context.Images.Where(i => i.ResourceId.Equals(motorcycleId))
                                         .ToListAsync();

@@ -52,7 +52,7 @@ namespace api.Repositories
                                                                      && userName != null
                                                                      && u.UserName.Equals(userName.ToLower()))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                   "Job",
+                                                                   "User",
                                                                    "Id",
                                                                    userName)); ;
         }
