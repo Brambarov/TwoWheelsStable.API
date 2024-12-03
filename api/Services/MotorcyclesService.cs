@@ -21,11 +21,6 @@ namespace api.Services
         {
             var dtos = (await _motorcyclesRepository.GetAllAsync(query)).Select(m => m.ToGetDTO());
 
-            foreach (var dto in dtos)
-            {
-                dto.Images = (await _imagesService.GetByMotorcycleIdAsync(dto.Id)).ToList();
-            }
-
             return dtos;
         }
 
@@ -33,19 +28,12 @@ namespace api.Services
         {
             var dtos = (await _motorcyclesRepository.GetByUserIdAsync(userId)).Select(m => m.ToGetDTO());
 
-            foreach (var dto in dtos)
-            {
-                dto.Images = (await _imagesService.GetByMotorcycleIdAsync(dto.Id)).ToList();
-            }
-
             return dtos;
         }
 
         public async Task<MotorcycleGetDTO?> GetByIdAsync(Guid id)
         {
             var dto = (await _motorcyclesRepository.GetByIdAsync(id)).ToGetDTO();
-
-            dto.Images = (await _imagesService.GetByMotorcycleIdAsync(id)).ToList();
 
             return dto;
         }
