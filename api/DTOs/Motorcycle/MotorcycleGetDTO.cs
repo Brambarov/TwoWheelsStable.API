@@ -1,5 +1,4 @@
 ﻿using api.DTOs.Comment;
-using api.DTOs.Image;
 using api.DTOs.Job;
 using api.DTOs.Specs;
 

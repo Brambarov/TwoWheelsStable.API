@@ -10,41 +10,24 @@ namespace api.Services
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<Specs?> GetAsync(string make, string model, int year)
+        public async Task<Specs> GetAsync(string make, string model, int year)
         {
             _httpClient.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("APININJAS_KEY"));
 
-            var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}&year={year}");
+            var specsList = await TryGetSpecsAsync(make, model)
+                            ?? await TryGetSpecsAsync(make, NormalizeString(model))
+                            ?? await TryGetSpecsAsync(make, AddSpaces(model));
 
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
-
-            if (specsList == null || specsList.Count == 0)
-            {
-                response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}");
-
-                response.EnsureSuccessStatusCode();
-
-                jsonResponse = await response.Content.ReadAsStringAsync();
-                specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
-
-                if (specsList == null || specsList.Count == 0) throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
-            }
+            if (specsList == null || specsList.Count == 0) throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
 
             var specs = specsList.Where(s => s.Year <= year
-                                    && s.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
-                                    && s.Model.Equals(model, StringComparison.OrdinalIgnoreCase))
-                        .OrderBy(s => s.Year)
-                        .LastOrDefault();
-
-            if (specs != null)
-            {
-                return FormatSpecs(specs);
-            }
-
-            specs = specsList.Where(s => s.Year <= year).LastOrDefault();
+                                             && s.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
+                                             && s.Model.Equals(model, StringComparison.OrdinalIgnoreCase))
+                                 .OrderBy(s => s.Year)
+                                 .LastOrDefault()
+                        ?? specsList.Where(s => s.Year <= year)
+                                    .OrderBy(s => s.Year)
+                                    .LastOrDefault();
 
             if (specs != null)
             {
@@ -52,6 +35,22 @@ namespace api.Services
             }
 
             throw new ApplicationException(string.Format(NotFoundOnError, "Specs", "API Ninjas"));
+        }
+
+        private async Task<List<Specs>?> TryGetSpecsAsync(string make, string model)
+        {
+            var response = await _httpClient.GetAsync($"https://api.api-ninjas.com/v1/motorcycles?make={make}&model={model}");
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var specsList = JsonConvert.DeserializeObject<List<Specs>>(jsonResponse);
+
+            if (specsList == null || specsList.Count == 0)
+            {
+                return null;
+            }
+
+            return specsList;
         }
 
         private static Specs FormatSpecs(Specs specs)
@@ -80,6 +79,20 @@ namespace api.Services
             }
 
             return specs;
+        }
+
+        private static string NormalizeString(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+
+            return s.Replace(" ", "").ToUpperInvariant();
+        }
+
+        private static string AddSpaces(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+
+            return Regex.Replace(s, @"(?<=[A-Za-z])(?=\d)|(?=\d)(?=[A-Z-a-z])", " ");
         }
     }
 }
