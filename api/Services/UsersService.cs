@@ -14,11 +14,13 @@ using static api.Helpers.Constants.ErrorMessages;
 namespace api.Services
 {
     public class UsersService(IUsersRepository usersRepository,
-                        SignInManager<User> signInManager,
-                        IConfiguration configuration,
-                        IHttpContextAccessor httpContextAccessor) : IUsersService
+                              IRefreshTokensService refreshTokensService,
+                              SignInManager<User> signInManager,
+                              IConfiguration configuration,
+                              IHttpContextAccessor httpContextAccessor) : IUsersService
     {
         private readonly IUsersRepository _usersRepository = usersRepository;
+        private readonly IRefreshTokensService _refreshTokensService = refreshTokensService;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly IConfiguration _configuration = configuration;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -41,12 +43,14 @@ namespace api.Services
 
         public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
         {
-            var model = await _usersRepository.GetByIdAsync(await _usersRepository.CreateAsync(dto.FromRegisterPostDTO(),
-                                                                                               dto.Password));
+            var id = await _usersRepository.CreateAsync(dto.FromRegisterPostDTO(), dto.Password);
 
-            var token = CreateToken(model);
+            var model = await _usersRepository.GetByIdAsync(id);
 
-            return model.ToLoginGetDTO(token);
+            var accessToken = GenerateAccessToken(model);
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
+
+            return /*model.*/ UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
         }
 
         public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
@@ -57,9 +61,10 @@ namespace api.Services
                                                                 dto.Password,
                                                                 false)).Succeeded) throw new ApplicationException(UserNameOrPasswordIncorrectError);
 
-            var token = CreateToken(model);
+            var accessToken = GenerateAccessToken(model);
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
 
-            return model.ToLoginGetDTO(token);
+            return /*model.*/ UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
         }
 
         public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto)
@@ -70,7 +75,7 @@ namespace api.Services
 
             var update = dto.FromPutDTO(model);
 
-            await _usersRepository.UpdateAsync(model, update);
+            await _usersRepository.UpdateAsync(update);
 
             return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
         }
@@ -90,7 +95,32 @@ namespace api.Services
                    ?? throw new ApplicationException(string.Format(NotFoundError, "Id"));
         }
 
-        private string CreateToken(User user)
+        public async Task<string[]> GetByRefreshTokenAsync(string refreshToken)
+        {
+            var model = await _usersRepository.GetByRefreshTokenAsync(refreshToken);
+
+            var storedRefreshToken = model.RefreshTokens.FirstOrDefault(rt => rt.Token.Equals(refreshToken));
+            if (storedRefreshToken == null || storedRefreshToken.IsRevoked || storedRefreshToken.IsUsed)
+            {
+                throw new ApplicationException("Invalid or expired refresh token!");
+            }
+
+            if (storedRefreshToken.Expires < DateTime.UtcNow)
+            {
+                throw new UnauthorizedAccessException("Refresh token has expired!");
+            }
+
+            storedRefreshToken.IsUsed = true;
+
+            var newAccessToken = GenerateAccessToken(model);
+            var newRefreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
+
+            await _usersRepository.UpdateAsync(model);
+
+            return [newAccessToken, newRefreshToken.Token];
+        }
+
+        private string GenerateAccessToken(User user)
         {
             var userName = user.UserName
                            ?? throw new ApplicationException(string.Format(TokenCreationError, "UserName"));
@@ -109,7 +139,7 @@ namespace api.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddMinutes(15),
                 SigningCredentials = credentials,
                 Issuer = _configuration["JWT:Issuer"],
                 Audience = _configuration["JWT:Audience"]

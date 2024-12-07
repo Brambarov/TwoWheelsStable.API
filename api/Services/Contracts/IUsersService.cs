@@ -8,6 +8,7 @@ namespace api.Services.Contracts
         Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query);
         Task<UserGetDTO?> GetByIdAsync(string id);
         Task<UserGetDTO?> GetByUserNameAsync(string userName);
+        Task<string[]> GetByRefreshTokenAsync(string refreshToken);
         Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto);
         Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto);
         Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto);
