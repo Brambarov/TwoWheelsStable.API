@@ -25,5 +25,13 @@ namespace api.Controllers
 
             return Ok(await _usersService.LoginAsync(dto));
         }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            return Ok(await _usersService.GetByRefreshTokenAsync(refreshToken));
+        }
     }
 }
