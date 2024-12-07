@@ -1,15 +1,17 @@
 ﻿using api.DTOs.Motorcycle;
 using api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Helpers.Mappers
 {
     public static class MotorcycleMapper
     {
-        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model)
+        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model, IUrlHelper urlHelper)
         {
+
             return new MotorcycleGetDTO
             {
-                Id = model.Id,
+                Href = urlHelper.Link("GetMotorcycleById", new { id = model.Id }),
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
