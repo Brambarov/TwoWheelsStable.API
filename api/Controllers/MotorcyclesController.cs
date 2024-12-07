@@ -5,6 +5,7 @@ using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
@@ -12,26 +13,32 @@ namespace api.Controllers
     [ApiController]
     public class MotorcyclesController(IMotorcyclesService motorcyclesService,
                                        ICommentsService commentsService,
-                                       IJobsService jobsService) : ControllerBase
+                                       IJobsService jobsService,
+                                       IUrlHelperFactory urlHelperFactory) : ControllerBase
     {
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly ICommentsService _commentsService = commentsService;
         private readonly IJobsService _jobsService = jobsService;
+        private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] MotorcycleQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.GetAllAsync(query));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _motorcyclesService.GetAllAsync(query, urlHelper));
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:guid}", Name = "GetMotorcycleById")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.GetByIdAsync(id));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _motorcyclesService.GetByIdAsync(id, urlHelper));
         }
 
         [Authorize]
@@ -40,7 +47,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.CreateAsync(postDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _motorcyclesService.CreateAsync(postDto, urlHelper));
         }
 
         [Authorize]
@@ -50,7 +59,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.UpdateAsync(id, putDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _motorcyclesService.UpdateAsync(id, putDto, urlHelper));
         }
 
         [Authorize]

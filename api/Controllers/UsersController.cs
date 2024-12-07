@@ -3,15 +3,19 @@ using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(IUsersService usersService, IMotorcyclesService motorcyclesService) : ControllerBase
+    public class UsersController(IUsersService usersService,
+                                 IMotorcyclesService motorcyclesService,
+                                 IUrlHelperFactory urlHelperFactory) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
+        private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] UserQuery query)
@@ -55,7 +59,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _motorcyclesService.GetByUserIdAsync(id));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _motorcyclesService.GetByUserIdAsync(id, urlHelper));
         }
     }
 }
