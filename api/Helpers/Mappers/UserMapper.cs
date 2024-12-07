@@ -18,17 +18,18 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static UserLoginGetDTO ToLoginGetDTO(this User model, string token)
+        public static UserLoginGetDTO ToLoginGetDTO(/*this User model, */string userId, string accessToken, string refreshToken)
         {
-            var userName = model.UserName ?? throw new ApplicationException(string.Format(GenericExceptionError, "UserName"));
-            var email = model.Email ?? throw new ApplicationException(string.Format(GenericExceptionError, "Email"));
+            /*var userName = model.UserName ?? throw new ApplicationException(string.Format(GenericExceptionError, "UserName"));
+            var email = model.Email ?? throw new ApplicationException(string.Format(GenericExceptionError, "Email"));*/
 
             return new UserLoginGetDTO
             {
-                Id = model.Id,
-                UserName = userName,
-                Email = email,
-                Token = token
+                Id = userId,
+                /*UserName = userName,
+                Email = email,*/
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
             };
         }
 
