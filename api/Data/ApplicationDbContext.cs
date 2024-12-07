@@ -8,6 +8,7 @@ namespace api.Data
 {
     public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<User>(options)
     {
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Motorcycle> Motorcycles { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Specs> Specs { get; set; }
@@ -44,6 +45,11 @@ namespace api.Data
 
             builder.Entity<User>()
                    .HasQueryFilter(u => !u.IsDeleted);
+
+            builder.Entity<RefreshToken>()
+                   .HasOne(rt => rt.User)
+                   .WithMany(u => u.RefreshTokens)
+                   .IsRequired(false);
 
             builder.Entity<Motorcycle>()
                    .HasQueryFilter(m => !m.IsDeleted);
