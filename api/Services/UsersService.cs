@@ -5,6 +5,7 @@ using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -26,19 +27,19 @@ namespace api.Services
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly SymmetricSecurityKey _key = new(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException(JWTSigningKeyError)));
 
-        public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query)
+        public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query, IUrlHelper urlHelper)
         {
-            return (await _usersRepository.GetAllAsync(query)).Select(u => u.ToGetDTO());
+            return (await _usersRepository.GetAllAsync(query)).Select(u => u.ToGetDTO(urlHelper));
         }
 
-        public async Task<UserGetDTO?> GetByIdAsync(string id)
+        public async Task<UserGetDTO?> GetByIdAsync(string id, IUrlHelper urlHelper)
         {
-            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
+        public async Task<UserGetDTO?> GetByUserNameAsync(string userName, IUrlHelper urlHelper)
         {
-            return (await _usersRepository.GetByUserNameAsync(userName)).ToGetDTO();
+            return (await _usersRepository.GetByUserNameAsync(userName)).ToGetDTO(urlHelper);
         }
 
         public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
@@ -50,7 +51,7 @@ namespace api.Services
             var accessToken = GenerateAccessToken(model);
             var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
 
-            return /*model.*/ UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
+            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
         }
 
         public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
@@ -64,10 +65,10 @@ namespace api.Services
             var accessToken = GenerateAccessToken(model);
             var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
 
-            return /*model.*/ UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
+            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
         }
 
-        public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto)
+        public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto, IUrlHelper urlHelper)
         {
             var model = await _usersRepository.GetByIdAsync(id);
 
@@ -77,7 +78,7 @@ namespace api.Services
 
             await _usersRepository.UpdateAsync(update);
 
-            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
         public async Task DeleteAsync(string id)

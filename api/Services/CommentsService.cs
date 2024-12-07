@@ -3,6 +3,7 @@ using api.Helpers.Mappers;
 using api.Helpers.Queries;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
@@ -16,7 +17,7 @@ namespace api.Services
         private readonly ICommentsRepository _commentsRepository = commentsRepository;
 
         public async Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId,
-                                                                                CommentQuery query)
+                                                                             CommentQuery query)
         {
             return (await _commentsRepository.GetByMotorcycleIdAsync(motorcycleId,
                                                                         query)).Select(c => c.ToGetDTO());
@@ -28,9 +29,10 @@ namespace api.Services
         }
 
         public async Task<CommentGetDTO?> CreateAsync(Guid motorcycleId,
-                                                      CommentPostDTO dto)
+                                                      CommentPostDTO dto,
+                                                      IUrlHelper urlHelper)
         {
-            await _motorcyclesService.GetByIdAsync(motorcycleId);
+            await _motorcyclesService.GetByIdAsync(motorcycleId, urlHelper);
 
             var userId = _usersService.GetCurrentUserId() ?? throw new ApplicationException(UnauthorizedError);
 
@@ -41,7 +43,8 @@ namespace api.Services
             return model.ToGetDTO();
         }
 
-        public async Task<CommentGetDTO?> UpdateAsync(Guid id, CommentPutDTO dto)
+        public async Task<CommentGetDTO?> UpdateAsync(Guid id,
+                                                      CommentPutDTO dto)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 

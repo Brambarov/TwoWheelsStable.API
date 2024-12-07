@@ -30,7 +30,7 @@ namespace api.Services
         public async Task<JobGetDTO?> CreateAsync(Guid motorcycleId,
                                                   JobPostDTO dto)
         {
-            await _motorcyclesService.GetByIdAsync(motorcycleId);
+            //await _motorcyclesService.GetByIdAsync(motorcycleId);
 
             var id = await _jobsRepository.CreateAsync(dto.FromPostDTO(_usersService.GetCurrentUserId(),
                                                                        motorcycleId));
