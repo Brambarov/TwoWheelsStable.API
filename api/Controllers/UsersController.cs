@@ -22,7 +22,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.GetAllAsync(query));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _usersService.GetAllAsync(query, urlHelper));
         }
 
         [HttpGet("{id}")]
@@ -30,7 +32,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.GetByIdAsync(id));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _usersService.GetByIdAsync(id, urlHelper));
         }
 
         [Authorize]
@@ -40,7 +44,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.UpdateAsync(id, putDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _usersService.UpdateAsync(id, putDto, urlHelper));
         }
 
         [Authorize]
