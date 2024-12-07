@@ -91,7 +91,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.CreateAsync(id, postDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _commentsService.CreateAsync(id, postDto, urlHelper));
         }
 
         [HttpGet("{id:guid}/jobs")]
