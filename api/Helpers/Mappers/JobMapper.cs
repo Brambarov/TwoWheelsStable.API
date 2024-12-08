@@ -10,7 +10,7 @@ namespace api.Helpers.Mappers
         {
             return new JobGetDTO
             {
-                Href = urlHelper.Link("GetMotorcycleById", new { id = model.Id })
+                Href = urlHelper.Link("GetJobById", new { id = model.Id })
                        ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Title = model.Title,
                 Description = model.Description,
