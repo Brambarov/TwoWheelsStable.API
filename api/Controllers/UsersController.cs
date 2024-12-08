@@ -27,7 +27,7 @@ namespace api.Controllers
             return Ok(await _usersService.GetAllAsync(query, urlHelper));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUserById")]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
