@@ -2,7 +2,6 @@
 using api.Helpers.Mappers;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
-using Microsoft.AspNetCore.Mvc;
 
 namespace api.Services
 {
@@ -10,9 +9,9 @@ namespace api.Services
     {
         private readonly IImagesRepository _imagesRepository = imagesRepository;
 
-        public async Task<IEnumerable<ImageGetDTO>> GetByResourceIdAsync(Guid resourceId, IUrlHelper urlHelper)
+        public async Task<IEnumerable<ImageGetDTO>> GetByResourceIdAsync(Guid resourceId)
         {
-            return (await _imagesRepository.GetByResourceIdAsync(resourceId)).Select(i => i.ToGetDTO(urlHelper));
+            return (await _imagesRepository.GetByResourceIdAsync(resourceId)).Select(i => i.ToGetDTO());
         }
 
         public async Task CreateAsync(IFormFile file, Guid resourceId)

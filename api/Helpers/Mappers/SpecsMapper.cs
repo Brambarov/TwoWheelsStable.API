@@ -1,17 +1,14 @@
 ﻿using api.DTOs.Specs;
 using api.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace api.Helpers.Mappers
 {
     public static class SpecsMapper
     {
-        public static SpecsGetDTO ToGetDTO(this Specs model, IUrlHelper urlHelper)
+        public static SpecsGetDTO ToGetDTO(this Specs model)
         {
             return new SpecsGetDTO
             {
-                Href = urlHelper.Link("GetSpecsById", new { id = model.Id })
-                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Type = model.Type,
                 Displacement = model.Displacement,
                 Engine = model.Engine,

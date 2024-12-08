@@ -17,7 +17,7 @@ namespace api.Helpers.Mappers
                 Model = model.Model,
                 Year = model.Year,
                 Mileage = model.Mileage,
-                Specs = model.Specs?.ToGetDTO(urlHelper),
+                Specs = model.Specs?.ToGetDTO(),
                 Owner = model.User?.UserName,
                 Jobs = model.Jobs.Select(j => j.ToGetDTO(urlHelper)).ToList(),
                 Comments = model.Comments.Select(c => c.ToGetDTO(urlHelper)).ToList()

@@ -1,17 +1,14 @@
 ﻿using api.DTOs.Image;
 using api.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace api.Helpers.Mappers
 {
     public static class ImageMapper
     {
-        public static ImageGetDTO ToGetDTO(this Image model, IUrlHelper urlHelper)
+        public static ImageGetDTO ToGetDTO(this Image model)
         {
             return new ImageGetDTO
             {
-                Href = urlHelper.Link("GetImageById", new { id = model.Id })
-                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Data = model.Data,
                 FileName = model.FileName,
                 MimeType = model.MimeType
