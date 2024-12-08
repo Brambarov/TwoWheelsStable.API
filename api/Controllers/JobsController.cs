@@ -14,7 +14,7 @@ namespace api.Controllers
         private readonly IJobsService _jobsService = jobsService;
         private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
-        [HttpGet("{id:guid}", Name ="GetJobById")]
+        [HttpGet("{id:guid}", Name = "GetJobById")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
