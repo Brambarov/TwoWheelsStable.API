@@ -10,8 +10,8 @@ namespace api.Services.Contracts
         Task<UserGetDTO?> GetByIdAsync(string id, IUrlHelper urlHelper);
         Task<UserGetDTO?> GetByUserNameAsync(string userName, IUrlHelper urlHelper);
         Task<string[]> GetByRefreshTokenAsync(string refreshToken);
-        Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto);
-        Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto);
+        Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto, IUrlHelper urlHelper);
+        Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto, IUrlHelper urlHelper);
         Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto, IUrlHelper urlHelper);
         Task DeleteAsync(string id);
         string GetCurrentUserId();

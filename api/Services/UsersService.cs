@@ -6,6 +6,7 @@ using api.Repositories.Contracts;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -42,21 +43,20 @@ namespace api.Services
             return (await _usersRepository.GetByUserNameAsync(userName)).ToGetDTO(urlHelper);
         }
 
-        public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
+        public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto, IUrlHelper urlHelper)
         {
             var id = await _usersRepository.CreateAsync(dto.FromRegisterPostDTO(), dto.Password);
 
             var model = await _usersRepository.GetByIdAsync(id);
 
             var accessToken = GenerateAccessToken(model);
-            var refreshToken = await _refreshTokensService.CreateAsync(model.Id,
-                                                                       _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
-                                                                       ?? throw new Exception("Unable to retrieve the remote IP address!"));
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                                 ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
-            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
+            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token, urlHelper);
         }
 
-        public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
+        public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto, IUrlHelper urlHelper)
         {
             var model = await _usersRepository.GetByUserNameAsync(dto.UserName);
 
@@ -65,11 +65,10 @@ namespace api.Services
                                                                 false)).Succeeded) throw new ApplicationException(UserNameOrPasswordIncorrectError);
 
             var accessToken = GenerateAccessToken(model);
-            var refreshToken = await _refreshTokensService.CreateAsync(model.Id,
-                                                                       _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
-                                                                       ?? throw new Exception("Unable to retrieve the remote IP address!"));
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                                 ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
-            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
+            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token, urlHelper);
         }
 
         public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto, IUrlHelper urlHelper)
@@ -118,9 +117,8 @@ namespace api.Services
             storedRefreshToken.IsUsed = true;
 
             var newAccessToken = GenerateAccessToken(model);
-            var newRefreshToken = await _refreshTokensService.CreateAsync(model.Id,
-                                                                       _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
-                                                                       ?? throw new Exception("Unable to retrieve the remote IP address!"));
+            var newRefreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                                    ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
             await _usersRepository.UpdateAsync(model);
 
