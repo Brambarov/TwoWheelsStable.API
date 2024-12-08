@@ -17,15 +17,16 @@ namespace api.Services
         private readonly ICommentsRepository _commentsRepository = commentsRepository;
 
         public async Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId,
-                                                                             CommentQuery query)
+                                                                             CommentQuery query,
+                                                                             IUrlHelper urlHelper)
         {
             return (await _commentsRepository.GetByMotorcycleIdAsync(motorcycleId,
-                                                                        query)).Select(c => c.ToGetDTO());
+                                                                        query)).Select(c => c.ToGetDTO(urlHelper));
         }
 
-        public async Task<CommentGetDTO?> GetByIdAsync(Guid id)
+        public async Task<CommentGetDTO?> GetByIdAsync(Guid id, IUrlHelper urlHelper)
         {
-            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
         public async Task<CommentGetDTO?> CreateAsync(Guid motorcycleId,
@@ -40,11 +41,12 @@ namespace api.Services
 
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            return model.ToGetDTO();
+            return model.ToGetDTO(urlHelper);
         }
 
         public async Task<CommentGetDTO?> UpdateAsync(Guid id,
-                                                      CommentPutDTO dto)
+                                                      CommentPutDTO dto,
+                                                      IUrlHelper urlHelper)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
@@ -54,7 +56,7 @@ namespace api.Services
 
             await _commentsRepository.UpdateAsync(model, update);
 
-            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
         public async Task DeleteAsync(Guid id)
