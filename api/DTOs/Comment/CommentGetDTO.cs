@@ -2,7 +2,7 @@
 {
     public class CommentGetDTO
     {
-        public Guid Id { get; set; }
+        public string Href { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedOn { get; set; }

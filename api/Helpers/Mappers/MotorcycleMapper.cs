@@ -20,7 +20,7 @@ namespace api.Helpers.Mappers
                 Specs = model.Specs?.ToGetDTO(),
                 Owner = model.User?.UserName,
                 Jobs = model.Jobs.Select(j => j.ToGetDTO()).ToList(),
-                Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
+                Comments = model.Comments.Select(c => c.ToGetDTO(urlHelper)).ToList()
             };
         }
 
