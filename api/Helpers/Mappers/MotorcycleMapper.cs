@@ -19,7 +19,7 @@ namespace api.Helpers.Mappers
                 Mileage = model.Mileage,
                 Specs = model.Specs?.ToGetDTO(),
                 Owner = model.User?.UserName,
-                Jobs = model.Jobs.Select(j => j.ToGetDTO()).ToList(),
+                Jobs = model.Jobs.Select(j => j.ToGetDTO(urlHelper)).ToList(),
                 Comments = model.Comments.Select(c => c.ToGetDTO(urlHelper)).ToList()
             };
         }
