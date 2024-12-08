@@ -49,7 +49,9 @@ namespace api.Services
             var model = await _usersRepository.GetByIdAsync(id);
 
             var accessToken = GenerateAccessToken(model);
-            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id,
+                                                                       _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                       ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
             return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
         }
@@ -63,7 +65,9 @@ namespace api.Services
                                                                 false)).Succeeded) throw new ApplicationException(UserNameOrPasswordIncorrectError);
 
             var accessToken = GenerateAccessToken(model);
-            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id,
+                                                                       _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                       ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
             return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token);
         }
@@ -114,7 +118,9 @@ namespace api.Services
             storedRefreshToken.IsUsed = true;
 
             var newAccessToken = GenerateAccessToken(model);
-            var newRefreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
+            var newRefreshToken = await _refreshTokensService.CreateAsync(model.Id,
+                                                                       _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                       ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
             await _usersRepository.UpdateAsync(model);
 

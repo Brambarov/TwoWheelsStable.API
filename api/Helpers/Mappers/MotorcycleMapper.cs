@@ -8,10 +8,10 @@ namespace api.Helpers.Mappers
     {
         public static MotorcycleGetDTO ToGetDTO(this Motorcycle model, IUrlHelper urlHelper)
         {
-
             return new MotorcycleGetDTO
             {
-                Href = urlHelper.Link("GetMotorcycleById", new { id = model.Id }),
+                Href = urlHelper.Link("GetMotorcycleById", new { id = model.Id })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
