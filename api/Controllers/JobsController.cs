@@ -2,21 +2,26 @@
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JobsController(IJobsService jobsService) : ControllerBase
+    public class JobsController(IJobsService jobsService,
+                                IUrlHelperFactory urlHelperFactory) : ControllerBase
     {
         private readonly IJobsService _jobsService = jobsService;
+        private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:guid}", Name ="GetJobById")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _jobsService.GetByIdAsync(id));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _jobsService.GetByIdAsync(id, urlHelper));
         }
 
         [Authorize]
@@ -26,7 +31,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _jobsService.UpdateAsync(id, putDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _jobsService.UpdateAsync(id, putDto, urlHelper));
         }
 
         [Authorize]

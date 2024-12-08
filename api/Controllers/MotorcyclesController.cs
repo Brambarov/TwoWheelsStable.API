@@ -104,7 +104,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _jobsService.GetByMotorcycleIdAsync(id, query));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _jobsService.GetByMotorcycleIdAsync(id, query, urlHelper));
         }
 
         [Authorize]
@@ -114,7 +116,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _jobsService.CreateAsync(id, postDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _jobsService.CreateAsync(id, postDto, urlHelper));
         }
     }
 }
