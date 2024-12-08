@@ -13,17 +13,19 @@ namespace api.Helpers.Mappers
 
             return new UserGetDTO
             {
-                Id = model.Id,
+                Href = urlHelper.Link("GetUserById", new { id = model.Id })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 UserName = userName,
                 Motorcycles = model.Motorcycles.Select(m => m.ToGetDTO(urlHelper)).ToList()
             };
         }
 
-        public static UserLoginGetDTO ToLoginGetDTO(string userId, string accessToken, string refreshToken)
+        public static UserLoginGetDTO ToLoginGetDTO(string userId, string accessToken, string refreshToken, IUrlHelper urlHelper)
         {
             return new UserLoginGetDTO
             {
-                Id = userId,
+                Href = urlHelper.Link("GetUserById", new { id = userId })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
