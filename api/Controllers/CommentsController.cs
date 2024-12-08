@@ -2,21 +2,26 @@
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommentsController(ICommentsService commentsService) : ControllerBase
+    public class CommentsController(ICommentsService commentsService,
+                                    IUrlHelperFactory urlHelperFactory) : ControllerBase
     {
         private readonly ICommentsService _commentsService = commentsService;
+        private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:guid}", Name = "GetCommentById")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.GetByIdAsync(id));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _commentsService.GetByIdAsync(id, urlHelper));
         }
 
         [Authorize]
@@ -26,7 +31,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.UpdateAsync(id, putDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _commentsService.UpdateAsync(id, putDto, urlHelper));
         }
 
         [Authorize]

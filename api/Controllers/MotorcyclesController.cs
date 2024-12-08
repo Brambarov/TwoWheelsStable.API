@@ -81,7 +81,9 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.GetByMotorcycleIdAsync(id, query));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _commentsService.GetByMotorcycleIdAsync(id, query, urlHelper));
         }
 
         [Authorize]
