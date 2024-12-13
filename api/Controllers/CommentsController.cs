@@ -1,57 +1,44 @@
 ﻿using api.DTOs.Comment;
-using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
-    [Route("api/motorcycle/{motorcycleId}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CommentsController(ICommentsService commentsService) : ControllerBase
+    public class CommentsController(ICommentsService commentsService,
+                                    IUrlHelperFactory urlHelperFactory) : ControllerBase
     {
         private readonly ICommentsService _commentsService = commentsService;
+        private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllByMotorcycleId([FromRoute] int motorcycleId,
-                                                              [FromQuery] CommentQuery query)
+        [HttpGet("{id:guid}", Name = "GetCommentById")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.GetAllByMotorcycleIdAsync(motorcycleId, query));
-        }
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _commentsService.GetByIdAsync(id));
+            return Ok(await _commentsService.GetByIdAsync(id, urlHelper));
         }
 
         [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Create([FromRoute] int motorcycleId,
-                                                [FromBody] CommentPostDTO postDto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _commentsService.CreateAsync(motorcycleId, postDto));
-        }
-
-        [Authorize]
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id,
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id,
                                                 [FromBody] CommentPutDTO putDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _commentsService.UpdateAsync(id, putDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _commentsService.UpdateAsync(id, putDto, urlHelper));
         }
 
         [Authorize]
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

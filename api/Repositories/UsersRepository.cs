@@ -13,7 +13,7 @@ namespace api.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync(UserQuery query)
         {
-            var models = _userManager.Users.Include(u => u.Stable)
+            var models = _userManager.Users.Include(u => u.Motorcycles)
                                            .ThenInclude(m => m.Specs)
                                            .AsQueryable();
 
@@ -33,9 +33,9 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<User> GetByIdAsync(string? id)
+        public async Task<User> GetByIdAsync(string id)
         {
-            return await _userManager.Users.Include(u => u.Stable)
+            return await _userManager.Users.Include(u => u.Motorcycles)
                                            .ThenInclude(m => m.Specs)
                                            .FirstOrDefaultAsync(u => u.Id.Equals(id))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
@@ -44,20 +44,30 @@ namespace api.Repositories
                                                                    id));
         }
 
-        public async Task<User> GetByUserNameAsync(string? userName)
+        public async Task<User> GetByUserNameAsync(string userName)
         {
-            return await _userManager.Users.Include(u => u.Stable)
+            return await _userManager.Users.Include(u => u.Motorcycles)
                                            .ThenInclude(m => m.Specs)
                                            .FirstOrDefaultAsync(u => u.UserName != null
                                                                      && userName != null
                                                                      && u.UserName.Equals(userName.ToLower()))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
-                                                                   "Job",
-                                                                   "Id",
-                                                                   userName)); ;
+                                                                   "User",
+                                                                   "username",
+                                                                   userName));
         }
 
-        public async Task<string?> CreateAsync(User model, string password)
+        public async Task<User> GetByRefreshTokenAsync(string refreshToken)
+        {
+            return await _userManager.Users.Include(u => u.RefreshTokens)
+                                           .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token.Equals(refreshToken)))
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "User",
+                                                                   "RefreshToken",
+                                                                   refreshToken));
+        }
+
+        public async Task<string> CreateAsync(User model, string password)
         {
             var createdUser = await _userManager.CreateAsync(model, password);
 
@@ -80,7 +90,7 @@ namespace api.Repositories
             return await _userManager.GetUserIdAsync(model);
         }
 
-        public async Task UpdateAsync(User model, User update)
+        public async Task UpdateAsync(User model)
         {
             await _userManager.UpdateAsync(model);
         }

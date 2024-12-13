@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
     [Table("Jobs")]
     public class Job
     {
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal Cost { get; set; }
@@ -15,7 +17,7 @@ namespace api.Models
         public int DueMileage { get; set; }
         public string UserId { get; set; } = string.Empty;
         public User? User { get; set; }
-        public int? MotorcycleId { get; set; }
+        public Guid MotorcycleId { get; set; }
         public Motorcycle? Motorcycle { get; set; }
         public bool IsDeleted { get; set; }
     }

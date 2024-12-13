@@ -3,43 +3,43 @@ using api.Helpers.Mappers;
 using api.Helpers.Queries;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
 {
     public class JobsService(IUsersService usersService,
-                             IMotorcyclesService motorcyclesService,
                              IJobsRepository jobsRepository) : IJobsService
     {
         private readonly IUsersService _usersService = usersService;
-        private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly IJobsRepository _jobsRepository = jobsRepository;
 
-        public async Task<IEnumerable<JobGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
-                                                                            JobQuery query)
+        public async Task<IEnumerable<JobGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId,
+                                                                         JobQuery query,
+                                                                         IUrlHelper urlHelper)
         {
-            return (await _jobsRepository.GetAllByMotorcycleIdAsync(motorcycleId,
-                                                                    query)).Select(j => j.ToGetDTO());
+            return (await _jobsRepository.GetByMotorcycleIdAsync(motorcycleId,
+                                                                    query)).Select(j => j.ToGetDTO(urlHelper));
         }
 
-        public async Task<JobGetDTO?> GetByIdAsync(int id)
+        public async Task<JobGetDTO?> GetByIdAsync(Guid id, IUrlHelper urlHelper)
         {
-            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task<JobGetDTO?> CreateAsync(int motorcycleId,
-                                                  JobPostDTO dto)
+        public async Task<JobGetDTO?> CreateAsync(Guid motorcycleId,
+                                                  JobPostDTO dto,
+                                                  IUrlHelper urlHelper)
         {
-            await _motorcyclesService.GetByIdAsync(motorcycleId);
-
             var id = await _jobsRepository.CreateAsync(dto.FromPostDTO(_usersService.GetCurrentUserId(),
                                                                        motorcycleId));
 
-            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task<JobGetDTO?> UpdateAsync(int id,
-                                                  JobPutDTO dto)
+        public async Task<JobGetDTO?> UpdateAsync(Guid id,
+                                                  JobPutDTO dto,
+                                                  IUrlHelper urlHelper)
         {
             var model = await _jobsRepository.GetByIdAsync(id);
 
@@ -49,10 +49,10 @@ namespace api.Services
 
             await _jobsRepository.UpdateAsync(model, update);
 
-            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _jobsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var model = await _jobsRepository.GetByIdAsync(id);
 

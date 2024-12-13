@@ -1,23 +1,27 @@
 ﻿using api.DTOs.Comment;
 using api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Helpers.Mappers
 {
     public static class CommentMapper
     {
-        public static CommentGetDTO ToGetDTO(this Comment model)
+        public static CommentGetDTO ToGetDTO(this Comment model, IUrlHelper urlHelper)
         {
             return new CommentGetDTO
             {
-                Id = model.Id,
+                Href = urlHelper.Link("GetCommentById", new { id = model.Id })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Title = model.Title,
                 Content = model.Content,
                 CreatedOn = model.CreatedOn,
-                CreatedBy = model.User?.UserName
+                UserName = model.User?.UserName,
+                UserHref = urlHelper.Link("GetUserById", new { id = model.UserId })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!")
             };
         }
 
-        public static Comment FromPostDTO(this CommentPostDTO dto, string userId, int motorcycleId)
+        public static Comment FromPostDTO(this CommentPostDTO dto, string userId, Guid motorcycleId)
         {
             return new Comment
             {

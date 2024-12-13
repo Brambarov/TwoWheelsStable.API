@@ -104,7 +104,9 @@ namespace api
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["JWT:Audience"],
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
@@ -112,8 +114,12 @@ namespace api
 
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+            builder.Services.AddScoped<IRefreshTokensService, RefreshTokensService>();
+            builder.Services.AddScoped<IRefreshTokensRepository, RefreshTokensRepository>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
             builder.Services.AddScoped<IMotorcyclesRepository, MotorcyclesRepository>();
+            builder.Services.AddScoped<IImagesService, ImagesService>();
+            builder.Services.AddScoped<IImagesRepository, ImagesRepository>();
             builder.Services.AddScoped<ISpecsService, SpecsService>();
             builder.Services.AddScoped<ISpecsRepository, SpecsRepository>();
             builder.Services.AddScoped<IJobsService, JobsService>();

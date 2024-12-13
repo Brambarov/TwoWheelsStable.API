@@ -5,6 +5,7 @@ using api.Models;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,42 +15,47 @@ using static api.Helpers.Constants.ErrorMessages;
 namespace api.Services
 {
     public class UsersService(IUsersRepository usersRepository,
-                        SignInManager<User> signInManager,
-                        IConfiguration configuration,
-                        IHttpContextAccessor httpContextAccessor) : IUsersService
+                              IRefreshTokensService refreshTokensService,
+                              SignInManager<User> signInManager,
+                              IConfiguration configuration,
+                              IHttpContextAccessor httpContextAccessor) : IUsersService
     {
         private readonly IUsersRepository _usersRepository = usersRepository;
+        private readonly IRefreshTokensService _refreshTokensService = refreshTokensService;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly IConfiguration _configuration = configuration;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly SymmetricSecurityKey _key = new(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException(JWTSigningKeyError)));
 
-        public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query)
+        public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query, IUrlHelper urlHelper)
         {
-            return (await _usersRepository.GetAllAsync(query)).Select(u => u.ToGetDTO());
+            return (await _usersRepository.GetAllAsync(query)).Select(u => u.ToGetDTO(urlHelper));
         }
 
-        public async Task<UserGetDTO?> GetByIdAsync(string id)
+        public async Task<UserGetDTO?> GetByIdAsync(string id, IUrlHelper urlHelper)
         {
-            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task<UserGetDTO?> GetByUserNameAsync(string userName)
+        public async Task<UserGetDTO?> GetByUserNameAsync(string userName, IUrlHelper urlHelper)
         {
-            return (await _usersRepository.GetByUserNameAsync(userName)).ToGetDTO();
+            return (await _usersRepository.GetByUserNameAsync(userName)).ToGetDTO(urlHelper);
         }
 
-        public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto)
+        public async Task<UserLoginGetDTO> RegisterAsync(UserRegisterPostDTO dto, IUrlHelper urlHelper)
         {
-            var model = await _usersRepository.GetByIdAsync(await _usersRepository.CreateAsync(dto.FromRegisterPostDTO(),
-                                                                                               dto.Password));
+            var id = await _usersRepository.CreateAsync(dto.FromRegisterPostDTO(), dto.Password);
 
-            var token = CreateToken(model);
+            var model = await _usersRepository.GetByIdAsync(id);
 
-            return model.ToLoginGetDTO(token);
+            var accessToken = GenerateAccessToken(model);
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                                 ?? throw new Exception("Unable to retrieve the remote IP address!"));
+
+            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token, urlHelper);
         }
 
-        public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto)
+        public async Task<UserLoginGetDTO> LoginAsync(UserLoginPostDTO dto, IUrlHelper urlHelper)
         {
             var model = await _usersRepository.GetByUserNameAsync(dto.UserName);
 
@@ -57,12 +63,14 @@ namespace api.Services
                                                                 dto.Password,
                                                                 false)).Succeeded) throw new ApplicationException(UserNameOrPasswordIncorrectError);
 
-            var token = CreateToken(model);
+            var accessToken = GenerateAccessToken(model);
+            var refreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                                 ?? throw new Exception("Unable to retrieve the remote IP address!"));
 
-            return model.ToLoginGetDTO(token);
+            return UserMapper.ToLoginGetDTO(model.Id, accessToken, refreshToken.Token, urlHelper);
         }
 
-        public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto)
+        public async Task<UserGetDTO?> UpdateAsync(string id, UserPutDTO dto, IUrlHelper urlHelper)
         {
             var model = await _usersRepository.GetByIdAsync(id);
 
@@ -70,9 +78,9 @@ namespace api.Services
 
             var update = dto.FromPutDTO(model);
 
-            await _usersRepository.UpdateAsync(model, update);
+            await _usersRepository.UpdateAsync(update);
 
-            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _usersRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
         public async Task DeleteAsync(string id)
@@ -90,7 +98,33 @@ namespace api.Services
                    ?? throw new ApplicationException(string.Format(NotFoundError, "Id"));
         }
 
-        private string CreateToken(User user)
+        public async Task<string[]> GetByRefreshTokenAsync(string refreshToken)
+        {
+            var model = await _usersRepository.GetByRefreshTokenAsync(refreshToken);
+
+            var storedRefreshToken = model.RefreshTokens.FirstOrDefault(rt => rt.Token.Equals(refreshToken));
+            if (storedRefreshToken == null || storedRefreshToken.IsRevoked || storedRefreshToken.IsUsed)
+            {
+                throw new ApplicationException("Invalid or expired refresh token!");
+            }
+
+            if (storedRefreshToken.Expires < DateTime.UtcNow)
+            {
+                throw new UnauthorizedAccessException("Refresh token has expired!");
+            }
+
+            storedRefreshToken.IsUsed = true;
+
+            var newAccessToken = GenerateAccessToken(model);
+            var newRefreshToken = await _refreshTokensService.CreateAsync(model.Id, _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                                                                                    ?? throw new Exception("Unable to retrieve the remote IP address!"));
+
+            await _usersRepository.UpdateAsync(model);
+
+            return [newAccessToken, newRefreshToken.Token];
+        }
+
+        private string GenerateAccessToken(User user)
         {
             var userName = user.UserName
                            ?? throw new ApplicationException(string.Format(TokenCreationError, "UserName"));
@@ -109,7 +143,7 @@ namespace api.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddMinutes(15),
                 SigningCredentials = credentials,
                 Issuer = _configuration["JWT:Issuer"],
                 Audience = _configuration["JWT:Audience"]

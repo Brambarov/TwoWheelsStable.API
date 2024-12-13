@@ -1,28 +1,32 @@
 ﻿using api.DTOs.Motorcycle;
 using api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Helpers.Mappers
 {
     public static class MotorcycleMapper
     {
-        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model)
+        public static MotorcycleGetDTO ToGetDTO(this Motorcycle model, IUrlHelper urlHelper)
         {
             return new MotorcycleGetDTO
             {
-                Id = model.Id,
+                Href = urlHelper.Link("GetMotorcycleById", new { id = model.Id })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Name = model.Name,
                 Make = model.Make,
                 Model = model.Model,
                 Year = model.Year,
                 Mileage = model.Mileage,
                 Specs = model.Specs?.ToGetDTO(),
-                Owner = model.User?.UserName,
-                Schedule = model.Schedule.Select(j => j.ToGetDTO()).ToList(),
-                Comments = model.Comments.Select(c => c.ToGetDTO()).ToList()
+                UserName = model.User?.UserName,
+                UserHref = urlHelper.Link("GetUserById", new { id = model.UserId })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
+                Jobs = model.Jobs.Select(j => j.ToGetDTO(urlHelper)).ToList(),
+                Comments = model.Comments.Select(c => c.ToGetDTO(urlHelper)).ToList()
             };
         }
 
-        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, int? specsId, string userId)
+        public static Motorcycle FromPostDTO(this MotorcyclePostDTO dto, Guid specsId, string userId)
         {
             return new Motorcycle
             {
@@ -36,7 +40,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, Motorcycle model, int? specsId)
+        public static Motorcycle FromPutDTO(this MotorcyclePutDTO dto, Motorcycle model, Guid specsId)
         {
             model.Name = dto.Name;
             model.Make = dto.Make;

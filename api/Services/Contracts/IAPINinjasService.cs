@@ -4,6 +4,6 @@ namespace api.Services.Contracts
 {
     public interface IAPINinjasService
     {
-        Task<Specs?> GetAsync(string make, string model, int year);
+        Task<Specs> GetAsync(string make, string model, int year);
     }
 }

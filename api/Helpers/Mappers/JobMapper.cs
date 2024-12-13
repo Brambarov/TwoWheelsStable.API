@@ -1,15 +1,17 @@
 ﻿using api.DTOs.Job;
 using api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Helpers.Mappers
 {
     public static class JobMapper
     {
-        public static JobGetDTO ToGetDTO(this Job model)
+        public static JobGetDTO ToGetDTO(this Job model, IUrlHelper urlHelper)
         {
             return new JobGetDTO
             {
-                Id = model.Id,
+                Href = urlHelper.Link("GetJobById", new { id = model.Id })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Title = model.Title,
                 Description = model.Description,
                 Cost = model.Cost,
@@ -20,7 +22,7 @@ namespace api.Helpers.Mappers
             };
         }
 
-        public static Job FromPostDTO(this JobPostDTO dto, string userId, int? motorcycleId)
+        public static Job FromPostDTO(this JobPostDTO dto, string userId, Guid motorcycleId)
         {
             return new Job
             {

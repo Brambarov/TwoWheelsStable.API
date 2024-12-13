@@ -3,59 +3,54 @@ using api.Helpers.Queries;
 using api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(IUsersService usersService) : ControllerBase
+    public class UsersController(IUsersService usersService,
+                                 IMotorcyclesService motorcyclesService,
+                                 IUrlHelperFactory urlHelperFactory) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;
+        private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
+        private readonly IUrlHelperFactory _urlHelperFactory = urlHelperFactory;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] UserQuery query)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.GetAllAsync(query));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _usersService.GetAllAsync(query, urlHelper));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUserById")]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.GetByIdAsync(id));
-        }
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterPostDTO dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _usersService.RegisterAsync(dto));
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginPostDTO dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(await _usersService.LoginAsync(dto));
+            return Ok(await _usersService.GetByIdAsync(id, urlHelper));
         }
 
         [Authorize]
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] string id,
                                                 [FromBody] UserPutDTO putDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(await _usersService.UpdateAsync(id, putDto));
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _usersService.UpdateAsync(id, putDto, urlHelper));
         }
 
         [Authorize]
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -63,6 +58,16 @@ namespace api.Controllers
             await _usersService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/motorcycles")]
+        public async Task<IActionResult> GetMotorcyclesByUserId([FromRoute] string id)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
+
+            return Ok(await _motorcyclesService.GetByUserIdAsync(id, urlHelper));
         }
     }
 }

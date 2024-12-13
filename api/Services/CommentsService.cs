@@ -3,6 +3,7 @@ using api.Helpers.Mappers;
 using api.Helpers.Queries;
 using api.Repositories.Contracts;
 using api.Services.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
@@ -15,22 +16,24 @@ namespace api.Services
         private readonly IMotorcyclesService _motorcyclesService = motorcyclesService;
         private readonly ICommentsRepository _commentsRepository = commentsRepository;
 
-        public async Task<IEnumerable<CommentGetDTO>> GetAllByMotorcycleIdAsync(int motorcycleId,
-                                                                                CommentQuery query)
+        public async Task<IEnumerable<CommentGetDTO>> GetByMotorcycleIdAsync(Guid motorcycleId,
+                                                                             CommentQuery query,
+                                                                             IUrlHelper urlHelper)
         {
-            return (await _commentsRepository.GetAllByMotorcycleIdAsync(motorcycleId,
-                                                                        query)).Select(c => c.ToGetDTO());
+            return (await _commentsRepository.GetByMotorcycleIdAsync(motorcycleId,
+                                                                        query)).Select(c => c.ToGetDTO(urlHelper));
         }
 
-        public async Task<CommentGetDTO?> GetByIdAsync(int id)
+        public async Task<CommentGetDTO?> GetByIdAsync(Guid id, IUrlHelper urlHelper)
         {
-            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task<CommentGetDTO?> CreateAsync(int motorcycleId,
-                                                      CommentPostDTO dto)
+        public async Task<CommentGetDTO?> CreateAsync(Guid motorcycleId,
+                                                      CommentPostDTO dto,
+                                                      IUrlHelper urlHelper)
         {
-            await _motorcyclesService.GetByIdAsync(motorcycleId);
+            await _motorcyclesService.GetByIdAsync(motorcycleId, urlHelper);
 
             var userId = _usersService.GetCurrentUserId() ?? throw new ApplicationException(UnauthorizedError);
 
@@ -38,10 +41,12 @@ namespace api.Services
 
             var model = await _commentsRepository.GetByIdAsync(id);
 
-            return model.ToGetDTO();
+            return model.ToGetDTO(urlHelper);
         }
 
-        public async Task<CommentGetDTO?> UpdateAsync(int id, CommentPutDTO dto)
+        public async Task<CommentGetDTO?> UpdateAsync(Guid id,
+                                                      CommentPutDTO dto,
+                                                      IUrlHelper urlHelper)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 
@@ -51,10 +56,10 @@ namespace api.Services
 
             await _commentsRepository.UpdateAsync(model, update);
 
-            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO();
+            return (await _commentsRepository.GetByIdAsync(id)).ToGetDTO(urlHelper);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var model = await _commentsRepository.GetByIdAsync(id);
 

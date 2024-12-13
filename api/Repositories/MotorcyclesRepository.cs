@@ -15,7 +15,7 @@ namespace api.Repositories
         {
             var models = _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
-                                             .Include(m => m.Schedule)
+                                             .Include(m => m.Jobs)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
                                              .AsQueryable();
@@ -51,26 +51,41 @@ namespace api.Repositories
             return await models.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Motorcycle> GetByIdAsync(int? id)
+        public async Task<IEnumerable<Motorcycle>> GetByUserIdAsync(string userId)
         {
             return await _context.Motorcycles.Include(m => m.Specs)
                                              .Include(m => m.User)
-                                             .Include(m => m.Schedule)
+                                             .Include(m => m.Jobs)
+                                             .Include(m => m.Comments)
+                                             .ThenInclude(c => c.User)
+                                             .Where(m => m.UserId.Equals(userId))
+                                             .ToListAsync()
+                   ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
+                                                                   "Motorcycle",
+                                                                   "UserId",
+                                                                   userId.ToString()));
+        }
+
+        public async Task<Motorcycle> GetByIdAsync(Guid id)
+        {
+            return await _context.Motorcycles.Include(m => m.Specs)
+                                             .Include(m => m.User)
+                                             .Include(m => m.Jobs)
                                              .Include(m => m.Comments)
                                              .ThenInclude(c => c.User)
                                              .FirstOrDefaultAsync(m => m.Id.Equals(id))
                    ?? throw new ApplicationException(string.Format(EntityWithPropertyDoesNotExistError,
                                                                    "Motorcycle",
                                                                    "Id",
-                                                                   id.ToString())); ;
+                                                                   id.ToString()));
         }
 
-        public async Task<int?> CreateAsync(Motorcycle model)
+        public async Task<Guid> CreateAsync(Motorcycle model)
         {
             await _context.Motorcycles.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            _context.Entry(model).CurrentValues.TryGetValue("Id", out int id);
+            _context.Entry(model).CurrentValues.TryGetValue("Id", out Guid id);
 
             return id;
         }

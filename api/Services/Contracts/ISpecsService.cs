@@ -2,6 +2,6 @@
 {
     public interface ISpecsService
     {
-        Task<int?> GetOrCreateAsync(string make, string model, int year);
+        Task<Guid> GetOrCreateAsync(string make, string model, int year);
     }
 }

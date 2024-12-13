@@ -9,12 +9,12 @@ namespace api.Helpers.Mappers
         {
             return new SpecsGetDTO
             {
-                Id = model.Id,
                 Type = model.Type,
                 Displacement = model.Displacement,
                 Engine = model.Engine,
                 Power = model.Power,
                 Torque = model.Torque,
+                TopSpeed = model.Top_speed,
                 Compression = model.Compression,
                 BoreStroke = model.Bore_stroke,
                 ValvesPerCylinder = model.Valves_per_cylinder,
@@ -35,6 +35,7 @@ namespace api.Helpers.Mappers
                 RearTire = model.Rear_tire,
                 FrontBrakes = model.Front_brakes,
                 RearBrakes = model.Rear_brakes,
+                DryWeight = model.Dry_weight,
                 TotalWeight = model.Total_weight,
                 SeatHeight = model.Seat_height,
                 TotalHeight = model.Total_height,
