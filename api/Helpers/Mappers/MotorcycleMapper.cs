@@ -18,7 +18,9 @@ namespace api.Helpers.Mappers
                 Year = model.Year,
                 Mileage = model.Mileage,
                 Specs = model.Specs?.ToGetDTO(),
-                Owner = model.User?.UserName,
+                UserName = model.User?.UserName,
+                UserHref = urlHelper.Link("GetUserById", new { id = model.UserId })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Jobs = model.Jobs.Select(j => j.ToGetDTO(urlHelper)).ToList(),
                 Comments = model.Comments.Select(c => c.ToGetDTO(urlHelper)).ToList()
             };
