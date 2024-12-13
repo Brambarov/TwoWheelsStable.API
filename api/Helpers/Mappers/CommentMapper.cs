@@ -10,7 +10,7 @@ namespace api.Helpers.Mappers
         {
             return new CommentGetDTO
             {
-                Href = urlHelper.Link("GetUserById", new { id = model.Id })
+                Href = urlHelper.Link("GetCommentById", new { id = model.Id })
                        ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!"),
                 Title = model.Title,
                 Content = model.Content,
