@@ -15,7 +15,9 @@ namespace api.Helpers.Mappers
                 Title = model.Title,
                 Content = model.Content,
                 CreatedOn = model.CreatedOn,
-                CreatedBy = model.User?.UserName
+                UserName = model.User?.UserName,
+                UserHref = urlHelper.Link("GetUserById", new { id = model.UserId })
+                       ?? throw new ArgumentNullException(nameof(urlHelper), "Resource address is null!")
             };
         }
 
