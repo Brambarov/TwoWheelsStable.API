@@ -19,6 +19,7 @@ namespace api
     {
         public static void Main(string[] args)
         {
+            var connectionString = string.Empty;
             var myCorsPolicy = "myCorsPolicy";
 
             var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +43,9 @@ namespace api
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "TwoWheelsStableAPI", Version = "v1" });
@@ -71,9 +74,18 @@ namespace api
                 });
             });
 
+            if (builder.Environment.IsDevelopment())
+            {
+                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            }
+            else
+            {
+                connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+            }
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
             });
 
             builder.Services.AddIdentity<User, IdentityRole>(options =>
