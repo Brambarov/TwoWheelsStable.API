@@ -1,12 +1,13 @@
 name: .NET Continiuous Deploy
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
+    
+env:
+  AZURE_WEBAPP_NAME: "app-twowheelsstable-api-dewc-dev-001"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +24,8 @@ jobs:
     - name: Build
       run: dotnet build --no-restore ./api/api.csproj
 
-  semantic-release:  
-    permissions: write-all
-    needs: build
-    
+  semantic-release:
+    needs: build    
     runs-on: ubuntu-latest
 
     steps:
@@ -49,3 +48,34 @@ jobs:
         tag: ${{ steps.tag_version.outputs.new_tag }}
         name: Release ${{ steps.tag_version.outputs.new_tag }}
         body: ${{ steps.tag_version.outputs.changelog }}
+    
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+  
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore ./api/api.csproj
+
+    - name: Publish
+      run: dotnet publish ./api/api.csproj --configuration Release --output ./publish
+      
+  deploy:
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.API_PUBLISH_PROFILE }}
+        package: ./publish
