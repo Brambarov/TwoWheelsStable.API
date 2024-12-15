@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
@@ -18,14 +17,15 @@ namespace api.Services
                               IRefreshTokensService refreshTokensService,
                               SignInManager<User> signInManager,
                               IConfiguration configuration,
-                              IHttpContextAccessor httpContextAccessor) : IUsersService
+                              IHttpContextAccessor httpContextAccessor,
+                              SymmetricSecurityKey key) : IUsersService
     {
         private readonly IUsersRepository _usersRepository = usersRepository;
         private readonly IRefreshTokensService _refreshTokensService = refreshTokensService;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly IConfiguration _configuration = configuration;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly SymmetricSecurityKey _key = new(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException(JWTSigningKeyError)));
+        private readonly SymmetricSecurityKey _key = key;
 
         public async Task<IEnumerable<UserGetDTO>> GetAllAsync(UserQuery query, IUrlHelper urlHelper)
         {

@@ -1,4 +1,5 @@
-﻿using api.Models;
+﻿using api.Helpers.Configs;
+using api.Models;
 using api.Services.Contracts;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
@@ -6,13 +7,14 @@ using static api.Helpers.Constants.ErrorMessages;
 
 namespace api.Services
 {
-    public class APINinjasService(HttpClient httpClient) : IAPINinjasService
+    public class APINinjasService(HttpClient httpClient, APINinjasConfig config) : IAPINinjasService
     {
         private readonly HttpClient _httpClient = httpClient;
+        private readonly string _apiKey = config.APIKey;
 
         public async Task<Specs> GetAsync(string make, string model, int year)
         {
-            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("APININJAS_KEY"));
+            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
 
             var specsList = await TryGetSpecsAsync(make, model)
                             ?? await TryGetSpecsAsync(make, NormalizeString(model))

@@ -1,17 +1,20 @@
 using api.Data;
+using api.Helpers.Configs;
 using api.Middleware;
 using api.Models;
 using api.Repositories;
 using api.Repositories.Contracts;
 using api.Services;
 using api.Services.Contracts;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using static api.Helpers.Constants.ErrorMessages;
 
 namespace api
 {
@@ -20,6 +23,9 @@ namespace api
         public static void Main(string[] args)
         {
             var myCorsPolicy = "myCorsPolicy";
+            var connectionString = string.Empty;
+            var jwtSigningKey = string.Empty;
+            var apiNinjasKey = string.Empty;
 
             var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +48,9 @@ namespace api
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "TwoWheelsStableAPI", Version = "v1" });
@@ -71,9 +79,40 @@ namespace api
                 });
             });
 
+
+            if (builder.Environment.IsProduction())
+            {
+                var keyVaultURL = builder.Configuration.GetSection("KeyVault:KeyVaultURL");
+                var keyVaultClientId = builder.Configuration.GetSection("KeyVault:ClientId");
+                var keyVaultClientSecret = builder.Configuration.GetSection("KeyVault:ClientSecret");
+                var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVault:DirectoryId");
+
+                var credential = new ClientSecretCredential(keyVaultDirectoryId.Value.ToString(),
+                                                            keyVaultClientId.Value.ToString(),
+                                                            keyVaultClientSecret.Value.ToString());
+
+                builder.Configuration.AddAzureKeyVault(keyVaultURL.Value.ToString(),
+                                                       keyVaultClientId.Value.ToString(),
+                                                       keyVaultClientSecret.Value.ToString(),
+                                                       new DefaultKeyVaultSecretManager());
+
+                var client = new SecretClient(new Uri(keyVaultURL.Value.ToString()), credential);
+
+                connectionString = client.GetSecret("AzureConnection").Value.Value.ToString();
+                jwtSigningKey = client.GetSecret("JWTSigningKey").Value.Value.ToString();
+                apiNinjasKey = client.GetSecret("APINinjasKey").Value.Value.ToString();
+            }
+
+            if (builder.Environment.IsDevelopment())
+            {
+                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
+                apiNinjasKey = Environment.GetEnvironmentVariable("APININJAS_KEY");
+            }
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
             });
 
             builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -95,8 +134,6 @@ namespace api
                 options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                var jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY") ?? throw new ApplicationException(string.Format(IsMissingError, "JWT Signing key"));
-
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -111,6 +148,9 @@ namespace api
             });
 
             builder.Services.AddHttpClient();
+
+            builder.Services.AddSingleton(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)));
+            builder.Services.AddSingleton(new APINinjasConfig { APIKey = apiNinjasKey });
 
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
@@ -132,11 +172,14 @@ namespace api
 
             app.UseMiddleware<ExceptionMiddleware>();
 
-            if (app.Environment.IsDevelopment())
+            /*if (app.Environment.IsDevelopment())
+            {*/
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "TwoWheelsStableAPI v1");
+            });
+            /*}*/
 
             app.UseHttpsRedirection();
 
