@@ -2,105 +2,69 @@ name: .NET Continuous Integration
 
 on:
   push:
-    branches: ["*"]
+    branches:
+      - "*"
   pull_request:
-    types: [opened, synchronize, repoened]
-  workflow_dispatch:
+    branches:
+      - "*"
 
 jobs:
-  versioning:
-    runs-on: ubuntu-latest
-    outputs:
-      new_tag: ${{ steps.tag_version.outputs.new_tag }}
-      
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-        
-    - name: Determine version bump type
-      id: version_type
-      run: |
-        if [[ "${{ github.event_name }}" == "push" ]]; then
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "type=major" >> $GITHUB_ENV
-          else
-            echo "type=path" >> $GITHUB_ENV
-          fi
-        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          echo "type=minor" >> $GITHUB_ENV
-        fi
-        echo "Version bump type is ${{ env.type }}"
-        
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v5.6
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        default_bump: ${{ env.type }}
-        custom_tag: false
-        tag_prefix: "v"
-        skip_on_draft: true
-        release_branches: "main"
-
-
   build:
-    needs: versioning
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-        
-    - name: Restore main project dependencies
-      run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
-    
-    - name: Build main project
-      run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+      - uses: actions/checkout@v3
       
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore main project dependencies
+        run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+
+      - name: Build main project
+        run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+
   test:
-    needs: build    
+    needs: build
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-          
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-        
-    - name: Restore test project dependencies
-      run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+      - uses: actions/checkout@v3
       
-    - name: Build test project
-      run: dotnet build --no-restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
-      
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
 
-  semantic-release:
-    needs: test    
+      - name: Restore test project dependencies
+        run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+
+      - name: Build test project
+        run: dotnet build --no-restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+
+  versioning:
+    needs: test
     runs-on: ubuntu-latest
-
+    env:
+      type: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'major' || 
+               github.event_name == 'pull_request' && 'minor' || 
+               'patch' }}
     steps:
-    - uses: actions/checkout@v3
-        
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-        
-    - name: Create a GitHub release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ needs.versioning.outputs.new_tag }}
-        name: Release ${{ needs.versioning.outputs.new_tag }}
-        body: Automatic release for version ${{ needs.versioning.outputs.new_tag }}
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: anothrnick/github-tag-action@1.41.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: ${{ env.type }}
+          tag_prefix: "v"
+          release_branches: "main"
