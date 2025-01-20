@@ -47,7 +47,7 @@ jobs:
 
   semantic-release:  
     permissions: write-all
-    needs: build
+    needs: test
     
     runs-on: ubuntu-latest
 
