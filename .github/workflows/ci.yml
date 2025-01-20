@@ -1,13 +1,6 @@
 name: .NET Continiuous Integration
 
 on:
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build:name: .NET Continiuous Deploy
-
-on:
   push:
     branches: [ "main" ]
 
@@ -65,28 +58,3 @@ jobs:
         tag: ${{ steps.tag_version.outputs.new_tag }}
         name: Release ${{ steps.tag_version.outputs.new_tag }}
         body: ${{ steps.tag_version.outputs.changelog }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-        
-    - name: Restore main project dependencies
-      run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
-    
-    - name: Build main project
-      run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
-      
-    - name: Restore test project dependencies
-      run: dotnet restore ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
-      
-    - name: Build test project
-      run: dotnet build --no-restore ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
-      
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj

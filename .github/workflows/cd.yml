@@ -1,4 +1,4 @@
-name: .NET Continiuous Integration
+name: .NET Continiuous Deploy
 
 on:
   pull_request:
