@@ -65,7 +65,7 @@ namespace TwoWheelsStable.Test.Controllers
 
             // Assert
             var result = Assert.IsType<OkObjectResult>(actionResult);
-            var motorcycle = Assert.IsType<MotorcycleGetDTO>(result.Value);
+            var motorcycle = Assert.IsType<MotorcycleGetDTO>(result.Value, false);
 
             Assert.NotNull(motorcycle);
         }
