@@ -1,7 +1,7 @@
-name: .NET Continiuous Deploy
+name: .NET Continiuous Integration
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -31,30 +31,3 @@ jobs:
       
     - name: Run tests
       run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
-
-  semantic-release:  
-    permissions: write-all
-    needs: build
-    
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-        
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Create a GitHub release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
