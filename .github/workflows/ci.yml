@@ -2,7 +2,7 @@ name: .NET Continiuous Integration
 
 on:
   push:
-    branches: [ * ]
+    branches: ["*"]
 
 jobs:
   build:
