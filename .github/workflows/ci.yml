@@ -18,10 +18,10 @@ jobs:
         dotnet-version: 9.0.x
         
     - name: Restore main project dependencies
-      run: dotnet restore ./api/api.csproj
+      run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
     
     - name: Build main project
-      run: dotnet build --no-restore ./api/api.csproj
+      run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
     # - name: Restore test project dependencies
       # run: dotnet restore ./Blog.API/Blog.Test/Blog.Test.csproj

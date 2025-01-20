@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{C755A5B2-5D49-4930-B71A-3BB97D46DAEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwoWheelsStable.API", "TwoWheelsStable.API\TwoWheelsStable.API.csproj", "{87A2D19E-930E-46FE-A7CA-87404AFD4502}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C755A5B2-5D49-4930-B71A-3BB97D46DAEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C755A5B2-5D49-4930-B71A-3BB97D46DAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C755A5B2-5D49-4930-B71A-3BB97D46DAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C755A5B2-5D49-4930-B71A-3BB97D46DAEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87A2D19E-930E-46FE-A7CA-87404AFD4502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87A2D19E-930E-46FE-A7CA-87404AFD4502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87A2D19E-930E-46FE-A7CA-87404AFD4502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87A2D19E-930E-46FE-A7CA-87404AFD4502}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

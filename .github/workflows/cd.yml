@@ -18,10 +18,10 @@ jobs:
         dotnet-version: 9.0.x
         
     - name: Restore dependencies
-      run: dotnet restore ./api/api.csproj
+      run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
     - name: Build
-      run: dotnet build --no-restore ./api/api.csproj
+      run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
 
   semantic-release:  
     permissions: write-all
