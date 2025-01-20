@@ -9,11 +9,13 @@ namespace TwoWheelsStable.Tests.Controllers
 {
     public class MotorcyclesControllerTests
     {
+        private readonly Random random = new();
+
         [Fact]
-        public async Task GetAll_Returns_OkResult_With_CorrectNumberOfMotorcycles()
+        public async Task GetAll_Returns_OkResult_With_AllMotorcycles()
         {
             // Arrange
-            var expectedCount = 3;
+            var expectedCount = random.Next(1, 100);
             var motorcycleDTOs = A.CollectionOfDummy<MotorcycleGetDTO>(expectedCount).AsEnumerable();
 
             var urlHelperFactory = A.Fake<IUrlHelperFactory>();
@@ -21,7 +23,7 @@ namespace TwoWheelsStable.Tests.Controllers
             var commentsService = A.Fake<ICommentsService>();
             var jobsService = A.Fake<IJobsService>();
 
-            A.CallTo(() => motorcyclesService.GetAllAsync(A<MotorcycleQuery>._, A<IUrlHelper>._)).ReturnsLazily(() => Task.FromResult(motorcycleDTOs));
+            A.CallTo(() => motorcyclesService.GetAllAsync(A<MotorcycleQuery>._, A<IUrlHelper>._)).Returns(motorcycleDTOs);
 
             var motorcyclesController = new MotorcyclesController(motorcyclesService,
                                                                   commentsService,
@@ -29,14 +31,42 @@ namespace TwoWheelsStable.Tests.Controllers
                                                                   urlHelperFactory);
 
             // Act
-            var actionResult = await motorcyclesController.GetAll(null);
+            var actionResult = await motorcyclesController.GetAll(new MotorcycleQuery());
 
             // Assert
             var result = Assert.IsType<OkObjectResult>(actionResult);
-            var motorcycles = Assert.IsType<IEnumerable<MotorcycleGetDTO>>(result.Value, false);
+            var motorcycles = Assert.IsType<List<MotorcycleGetDTO>>(result.Value);
 
             Assert.NotNull(motorcycles);
-            Assert.Equal(expectedCount, motorcycles.Count());
+            Assert.Equal(expectedCount, motorcycles.Count);
+        }
+
+        [Fact]
+        public async Task GetById_Returns_OkResult_With_Motorcycle()
+        {
+            // Arrange
+            var motorcycleDTO = A.Fake<MotorcycleGetDTO>();
+
+            var urlHelperFactory = A.Fake<IUrlHelperFactory>();
+            var motorcyclesService = A.Fake<IMotorcyclesService>();
+            var commentsService = A.Fake<ICommentsService>();
+            var jobsService = A.Fake<IJobsService>();
+
+            A.CallTo(() => motorcyclesService.GetByIdAsync(A<Guid>._, A<IUrlHelper>._)).Returns(motorcycleDTO);
+
+            var motorcyclesController = new MotorcyclesController(motorcyclesService,
+                                                                  commentsService,
+                                                                  jobsService,
+                                                                  urlHelperFactory);
+
+            // Act
+            var actionResult = await motorcyclesController.GetById(Guid.NewGuid());
+
+            // Assert
+            var result = Assert.IsType<OkObjectResult>(actionResult);
+            var motorcycle = Assert.IsType<MotorcycleGetDTO>(result.Value);
+
+            Assert.NotNull(motorcycle);
         }
     }
 }
