@@ -23,11 +23,11 @@ jobs:
     - name: Build main project
       run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
-    # - name: Restore test project dependencies
-      # run: dotnet restore ./Blog.API/Blog.Test/Blog.Test.csproj
+    - name: Restore test project dependencies
+      run: dotnet restore ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
       
-    # - name: Build test project
-      # run: dotnet build --no-restore ./Blog.API/Blog.Test/Blog.Test.csproj
+    - name: Build test project
+      run: dotnet build --no-restore ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
       
-    # - name: Run tests
-      # run: dotnet test --no-build --verbosity normal ./Blog.API/Blog.Test/Blog.Test.csproj
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
