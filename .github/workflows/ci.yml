@@ -37,13 +37,13 @@ jobs:
         dotnet-version: 9.0.x
         
     - name: Restore test project dependencies
-      run: dotnet restore ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
+      run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
       
     - name: Build test project
-      run: dotnet build --no-restore ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
+      run: dotnet build --no-restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
       
     - name: Run tests
-      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Tests/TwoWheelsStable.Tests.csproj
+      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
 
   semantic-release:  
     permissions: write-all

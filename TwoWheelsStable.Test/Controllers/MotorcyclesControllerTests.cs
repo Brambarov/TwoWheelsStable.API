@@ -5,6 +5,7 @@ using TwoWheelsStable.API.Controllers;
 using TwoWheelsStable.API.DTOs.Motorcycle;
 using TwoWheelsStable.API.Helpers.Queries;
 using TwoWheelsStable.API.Services.Contracts;
+
 namespace TwoWheelsStable.Tests.Controllers
 {
     public class MotorcyclesControllerTests
