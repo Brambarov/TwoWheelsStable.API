@@ -1,12 +1,54 @@
-name: .NET Continiuous Integration
+name: .NET Continuous Integration
 
 on:
   push:
     branches: ["*"]
+  pull_request:
+    types: [opened, synchronize, repoened]
+  workflow_dispatch:
 
 jobs:
-  build:
+  versioning:
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+      
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x
+        
+    - name: Determine version bump type
+      id: version_type
+      run: |
+        if [[ "${{ github.event_name }}" == "push" ]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "type=major" >> $GITHUB_ENV
+          else
+            echo "type=path" >> $GITHUB_ENV
+          fi
+        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          echo "type=minor" >> $GITHUB_ENV
+        fi
+        echo "Version bump type is ${{ env.type }}"
+        
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: ${{ env.type }}
+        custom_tag: false
+        tag_prefix: "v"
+        skip_on_draft: true
+        release_branches: "main"
 
+
+  build:
+    needs: versioning
     runs-on: ubuntu-latest
 
     steps:
@@ -24,8 +66,7 @@ jobs:
       run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
   test:
-    needs: build
-    
+    needs: build    
     runs-on: ubuntu-latest
     
     steps:
@@ -45,10 +86,8 @@ jobs:
     - name: Run tests
       run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
 
-  semantic-release:  
-    permissions: write-all
-    needs: test
-    
+  semantic-release:
+    needs: test    
     runs-on: ubuntu-latest
 
     steps:
@@ -59,25 +98,9 @@ jobs:
       with:
         dotnet-version: 9.0.x
         
-    - name: Determine version bump type
-      id: determine_version
-      run: |
-        if [[ "${{ github.ref_name }}" == "main" ]]; then
-          echo "bump=major" >> $GITHUB_ENV
-        else
-          echo "bump=minor" >> $GITHUB_ENV
-        fi
-
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        default_bump: ${{ env.bump }}
-
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        tag: ${{ needs.versioning.outputs.new_tag }}
+        name: Release ${{ needs.versioning.outputs.new_tag }}
+        body: Automatic release for version ${{ needs.versioning.outputs.new_tag }}
