@@ -77,6 +77,10 @@ namespace api.Services
                         formattedValue = formattedValue.Trim();
                         property.SetValue(specs, formattedValue);
                     }
+                    else
+                    {
+                        property.SetValue(specs, "");
+                    }
                 }
             }
 
