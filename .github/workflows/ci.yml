@@ -2,7 +2,7 @@ name: .NET Continiuous Integration
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ * ]
 
 jobs:
   build:
@@ -58,12 +58,22 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 9.0.x
+        
+    - name: Determine version bump type
+      id: determine_version
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "bump=major" >> $GITHUB_ENV
+        else
+          echo "bump=minor" >> $GITHUB_ENV
+        fi
 
     - name: Bump version and push tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: ${{ env.bump }}
 
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
