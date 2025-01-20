@@ -8,6 +8,9 @@ This is the API back-end for the Two Wheels Stable web application, which is des
 ![TWS_Swagger_API](https://github.com/user-attachments/assets/36575838-81a6-4932-a529-799ead4f58e6)
 
 # Getting started
+## Class diagram
+![image](https://github.com/user-attachments/assets/c4f65d6d-bde8-4459-a5d7-48bb53cb5b3f)
+
 # Functionality      
 # Technological highlights
 # Credits to external resources
