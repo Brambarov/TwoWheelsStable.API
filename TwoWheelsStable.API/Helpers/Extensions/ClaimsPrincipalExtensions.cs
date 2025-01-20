@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
-using static api.Helpers.Constants.ErrorMessages;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Helpers.Extensions
+namespace TwoWheelsStable.API.Helpers.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {

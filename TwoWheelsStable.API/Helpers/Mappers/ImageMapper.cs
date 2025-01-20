@@ -1,7 +1,7 @@
-﻿using api.DTOs.Image;
-using api.Models;
+﻿using TwoWheelsStable.API.DTOs.Image;
+using TwoWheelsStable.API.Models;
 
-namespace api.Helpers.Mappers
+namespace TwoWheelsStable.API.Helpers.Mappers
 {
     public static class ImageMapper
     {

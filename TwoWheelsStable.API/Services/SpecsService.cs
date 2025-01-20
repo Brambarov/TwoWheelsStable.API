@@ -1,8 +1,8 @@
-﻿using api.Repositories.Contracts;
-using api.Services.Contracts;
-using static api.Helpers.Constants.ErrorMessages;
+﻿using TwoWheelsStable.API.Repositories.Contracts;
+using TwoWheelsStable.API.Services.Contracts;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Services
+namespace TwoWheelsStable.API.Services
 {
     public class SpecsService(ISpecsRepository specsRepository,
                               IAPINinjasService apiNinjasService) : ISpecsService

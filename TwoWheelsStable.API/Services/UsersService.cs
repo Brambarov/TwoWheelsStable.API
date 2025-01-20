@@ -1,17 +1,17 @@
-﻿using api.DTOs.User;
-using api.Helpers.Mappers;
-using api.Helpers.Queries;
-using api.Models;
-using api.Repositories.Contracts;
-using api.Services.Contracts;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using static api.Helpers.Constants.ErrorMessages;
+using TwoWheelsStable.API.DTOs.User;
+using TwoWheelsStable.API.Helpers.Mappers;
+using TwoWheelsStable.API.Helpers.Queries;
+using TwoWheelsStable.API.Models;
+using TwoWheelsStable.API.Repositories.Contracts;
+using TwoWheelsStable.API.Services.Contracts;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Services
+namespace TwoWheelsStable.API.Services
 {
     public class UsersService(IUsersRepository usersRepository,
                               IRefreshTokensService refreshTokensService,

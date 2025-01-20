@@ -1,6 +1,6 @@
-﻿using static api.Helpers.Constants.ErrorMessages;
+﻿using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Middleware
+namespace TwoWheelsStable.API.Middleware
 {
     public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {

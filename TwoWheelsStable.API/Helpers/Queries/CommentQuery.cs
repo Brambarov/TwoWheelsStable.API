@@ -1,4 +1,4 @@
-﻿namespace api.Helpers.Queries
+﻿namespace TwoWheelsStable.API.Helpers.Queries
 {
     public class CommentQuery
     {

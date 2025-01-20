@@ -1,4 +1,4 @@
-﻿namespace api.DTOs.Job
+﻿namespace TwoWheelsStable.API.DTOs.Job
 {
     public class JobGetDTO
     {

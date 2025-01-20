@@ -1,8 +1,8 @@
-﻿using api.Helpers.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TwoWheelsStable.API.Helpers.Enums;
 
-namespace api.Models
+namespace TwoWheelsStable.API.Models
 {
     [Table("Images")]
     public class Image

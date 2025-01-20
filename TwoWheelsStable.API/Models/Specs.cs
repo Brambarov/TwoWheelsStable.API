@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Models
+namespace TwoWheelsStable.API.Models
 {
     [Table("Specs")]
     public class Specs

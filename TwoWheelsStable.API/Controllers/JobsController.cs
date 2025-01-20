@@ -1,10 +1,10 @@
-﻿using api.DTOs.Job;
-using api.Services.Contracts;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using TwoWheelsStable.API.DTOs.Job;
+using TwoWheelsStable.API.Services.Contracts;
 
-namespace api.Controllers
+namespace TwoWheelsStable.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,12 +1,12 @@
-﻿using api.DTOs.Job;
-using api.Helpers.Mappers;
-using api.Helpers.Queries;
-using api.Repositories.Contracts;
-using api.Services.Contracts;
-using Microsoft.AspNetCore.Mvc;
-using static api.Helpers.Constants.ErrorMessages;
+﻿using Microsoft.AspNetCore.Mvc;
+using TwoWheelsStable.API.DTOs.Job;
+using TwoWheelsStable.API.Helpers.Mappers;
+using TwoWheelsStable.API.Helpers.Queries;
+using TwoWheelsStable.API.Repositories.Contracts;
+using TwoWheelsStable.API.Services.Contracts;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Services
+namespace TwoWheelsStable.API.Services
 {
     public class JobsService(IUsersService usersService,
                              IJobsRepository jobsRepository) : IJobsService

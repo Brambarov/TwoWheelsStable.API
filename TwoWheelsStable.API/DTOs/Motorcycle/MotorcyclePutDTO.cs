@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.DTOs.Motorcycle
+namespace TwoWheelsStable.API.DTOs.Motorcycle
 {
     public class MotorcyclePutDTO
     {

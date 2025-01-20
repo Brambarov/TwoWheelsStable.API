@@ -1,8 +1,8 @@
-﻿using api.DTOs.User;
-using api.Helpers.Queries;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TwoWheelsStable.API.DTOs.User;
+using TwoWheelsStable.API.Helpers.Queries;
 
-namespace api.Services.Contracts
+namespace TwoWheelsStable.API.Services.Contracts
 {
     public interface IUsersService
     {

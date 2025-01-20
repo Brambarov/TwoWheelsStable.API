@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.DTOs.Job
+namespace TwoWheelsStable.API.DTOs.Job
 {
     public class JobPostDTO
     {

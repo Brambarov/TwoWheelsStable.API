@@ -1,11 +1,11 @@
-﻿using api.Helpers.Queries;
-using api.Models;
-using api.Repositories.Contracts;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static api.Helpers.Constants.ErrorMessages;
+using TwoWheelsStable.API.Helpers.Queries;
+using TwoWheelsStable.API.Models;
+using TwoWheelsStable.API.Repositories.Contracts;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Repositories
+namespace TwoWheelsStable.API.Repositories
 {
     public class UsersRepository(UserManager<User> userManager) : IUsersRepository
     {

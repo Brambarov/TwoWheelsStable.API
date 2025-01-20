@@ -1,4 +1,4 @@
-﻿namespace api.Helpers.Configs
+﻿namespace TwoWheelsStable.API.Helpers.Configs
 {
     public class APINinjasConfig
     {

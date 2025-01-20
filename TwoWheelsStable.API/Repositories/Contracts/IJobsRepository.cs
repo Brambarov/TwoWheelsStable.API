@@ -1,7 +1,7 @@
-﻿using api.Helpers.Queries;
-using api.Models;
+﻿using TwoWheelsStable.API.Helpers.Queries;
+using TwoWheelsStable.API.Models;
 
-namespace api.Repositories.Contracts
+namespace TwoWheelsStable.API.Repositories.Contracts
 {
     public interface IJobsRepository
     {

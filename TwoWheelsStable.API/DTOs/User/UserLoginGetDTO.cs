@@ -1,4 +1,4 @@
-﻿namespace api.DTOs.User
+﻿namespace TwoWheelsStable.API.DTOs.User
 {
     public class UserLoginGetDTO
     {

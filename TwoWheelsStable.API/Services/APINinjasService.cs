@@ -1,11 +1,11 @@
-﻿using api.Helpers.Configs;
-using api.Models;
-using api.Services.Contracts;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-using static api.Helpers.Constants.ErrorMessages;
+using TwoWheelsStable.API.Helpers.Configs;
+using TwoWheelsStable.API.Models;
+using TwoWheelsStable.API.Services.Contracts;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Services
+namespace TwoWheelsStable.API.Services
 {
     public class APINinjasService(HttpClient httpClient, APINinjasConfig config) : IAPINinjasService
     {

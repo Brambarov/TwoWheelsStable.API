@@ -1,6 +1,6 @@
-﻿using api.Models;
+﻿using TwoWheelsStable.API.Models;
 
-namespace api.Repositories.Contracts
+namespace TwoWheelsStable.API.Repositories.Contracts
 {
     public interface IRefreshTokensRepository
     {

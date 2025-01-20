@@ -1,4 +1,4 @@
-﻿namespace api.Helpers.Constants
+﻿namespace TwoWheelsStable.API.Helpers.Constants
 {
     public static class ErrorMessages
     {

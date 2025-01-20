@@ -1,4 +1,4 @@
-﻿namespace api.DTOs.Comment
+﻿namespace TwoWheelsStable.API.DTOs.Comment
 {
     public class CommentGetDTO
     {

@@ -1,8 +1,8 @@
-﻿using api.DTOs.Comment;
-using api.Helpers.Queries;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TwoWheelsStable.API.DTOs.Comment;
+using TwoWheelsStable.API.Helpers.Queries;
 
-namespace api.Services.Contracts
+namespace TwoWheelsStable.API.Services.Contracts
 {
     public interface ICommentsService
     {

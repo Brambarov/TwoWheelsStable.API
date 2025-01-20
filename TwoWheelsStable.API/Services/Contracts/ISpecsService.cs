@@ -1,4 +1,4 @@
-﻿namespace api.Services.Contracts
+﻿namespace TwoWheelsStable.API.Services.Contracts
 {
     public interface ISpecsService
     {

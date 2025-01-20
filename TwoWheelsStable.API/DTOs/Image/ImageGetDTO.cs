@@ -1,4 +1,4 @@
-﻿namespace api.DTOs.Image
+﻿namespace TwoWheelsStable.API.DTOs.Image
 {
     public class ImageGetDTO
     {

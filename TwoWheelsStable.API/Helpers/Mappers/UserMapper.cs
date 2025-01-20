@@ -1,9 +1,9 @@
-﻿using api.DTOs.User;
-using api.Models;
-using Microsoft.AspNetCore.Mvc;
-using static api.Helpers.Constants.ErrorMessages;
+﻿using Microsoft.AspNetCore.Mvc;
+using TwoWheelsStable.API.DTOs.User;
+using TwoWheelsStable.API.Models;
+using static TwoWheelsStable.API.Helpers.Constants.ErrorMessages;
 
-namespace api.Helpers.Mappers
+namespace TwoWheelsStable.API.Helpers.Mappers
 {
     public static class UserMapper
     {

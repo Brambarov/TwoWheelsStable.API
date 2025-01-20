@@ -1,10 +1,10 @@
-﻿using api.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using TwoWheelsStable.API.Models;
 
-namespace api.Data
+namespace TwoWheelsStable.API.Data
 {
     public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<User>(options)
     {

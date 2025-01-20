@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace api.Models
+namespace TwoWheelsStable.API.Models
 {
     public class User : IdentityUser
     {

@@ -1,9 +1,9 @@
-﻿using api.DTOs.Image;
-using api.Helpers.Mappers;
-using api.Repositories.Contracts;
-using api.Services.Contracts;
+﻿using TwoWheelsStable.API.DTOs.Image;
+using TwoWheelsStable.API.Helpers.Mappers;
+using TwoWheelsStable.API.Repositories.Contracts;
+using TwoWheelsStable.API.Services.Contracts;
 
-namespace api.Services
+namespace TwoWheelsStable.API.Services
 {
     public class ImagesService(IImagesRepository imagesRepository) : IImagesService
     {

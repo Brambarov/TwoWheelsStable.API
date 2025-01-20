@@ -1,9 +1,9 @@
-﻿using api.Data;
-using api.Models;
-using api.Repositories.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using TwoWheelsStable.API.Data;
+using TwoWheelsStable.API.Models;
+using TwoWheelsStable.API.Repositories.Contracts;
 
-namespace api.Repositories
+namespace TwoWheelsStable.API.Repositories
 {
     public class SpecsRepository(ApplicationDbContext context) : ISpecsRepository
     {

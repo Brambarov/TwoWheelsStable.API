@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.DTOs.Comment
+namespace TwoWheelsStable.API.DTOs.Comment
 {
     public class CommentPutDTO
     {

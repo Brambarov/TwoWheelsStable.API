@@ -1,6 +1,6 @@
-﻿using api.DTOs.Motorcycle;
+﻿using TwoWheelsStable.API.DTOs.Motorcycle;
 
-namespace api.DTOs.User
+namespace TwoWheelsStable.API.DTOs.User
 {
     public class UserGetDTO
     {

@@ -1,6 +1,6 @@
-﻿using api.DTOs.Image;
+﻿using TwoWheelsStable.API.DTOs.Image;
 
-namespace api.Services.Contracts
+namespace TwoWheelsStable.API.Services.Contracts
 {
     public interface IImagesService
     {

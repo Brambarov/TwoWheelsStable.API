@@ -1,8 +1,8 @@
-﻿using api.DTOs.Motorcycle;
-using api.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TwoWheelsStable.API.DTOs.Motorcycle;
+using TwoWheelsStable.API.Models;
 
-namespace api.Helpers.Mappers
+namespace TwoWheelsStable.API.Helpers.Mappers
 {
     public static class MotorcycleMapper
     {

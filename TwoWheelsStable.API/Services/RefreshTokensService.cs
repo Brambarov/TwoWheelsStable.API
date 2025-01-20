@@ -1,9 +1,9 @@
-﻿using api.Models;
-using api.Repositories.Contracts;
-using api.Services.Contracts;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
+using TwoWheelsStable.API.Models;
+using TwoWheelsStable.API.Repositories.Contracts;
+using TwoWheelsStable.API.Services.Contracts;
 
-namespace api.Services
+namespace TwoWheelsStable.API.Services
 {
     public class RefreshTokensService(IRefreshTokensRepository refreshTokensRepository) : IRefreshTokensService
     {

@@ -1,4 +1,4 @@
-﻿namespace api.DTOs.Specs
+﻿namespace TwoWheelsStable.API.DTOs.Specs
 {
     public class SpecsGetDTO
     {

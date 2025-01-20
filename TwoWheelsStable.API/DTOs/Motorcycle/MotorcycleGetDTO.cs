@@ -1,8 +1,8 @@
-﻿using api.DTOs.Comment;
-using api.DTOs.Job;
-using api.DTOs.Specs;
+﻿using TwoWheelsStable.API.DTOs.Comment;
+using TwoWheelsStable.API.DTOs.Job;
+using TwoWheelsStable.API.DTOs.Specs;
 
-namespace api.DTOs.Motorcycle
+namespace TwoWheelsStable.API.DTOs.Motorcycle
 {
     public class MotorcycleGetDTO
     {

@@ -1,4 +1,4 @@
-﻿namespace api.Helpers.Enums
+﻿namespace TwoWheelsStable.API.Helpers.Enums
 {
     public enum ResourceType
     {

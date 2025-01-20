@@ -1,13 +1,13 @@
-﻿using api.DTOs.Comment;
-using api.DTOs.Job;
-using api.DTOs.Motorcycle;
-using api.Helpers.Queries;
-using api.Services.Contracts;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using TwoWheelsStable.API.DTOs.Comment;
+using TwoWheelsStable.API.DTOs.Job;
+using TwoWheelsStable.API.DTOs.Motorcycle;
+using TwoWheelsStable.API.Helpers.Queries;
+using TwoWheelsStable.API.Services.Contracts;
 
-namespace api.Controllers
+namespace TwoWheelsStable.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

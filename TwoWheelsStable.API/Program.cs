@@ -1,11 +1,3 @@
-using api.Data;
-using api.Helpers.Configs;
-using api.Middleware;
-using api.Models;
-using api.Repositories;
-using api.Repositories.Contracts;
-using api.Services;
-using api.Services.Contracts;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,8 +7,16 @@ using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TwoWheelsStable.API.Data;
+using TwoWheelsStable.API.Helpers.Configs;
+using TwoWheelsStable.API.Middleware;
+using TwoWheelsStable.API.Models;
+using TwoWheelsStable.API.Repositories;
+using TwoWheelsStable.API.Repositories.Contracts;
+using TwoWheelsStable.API.Services;
+using TwoWheelsStable.API.Services.Contracts;
 
-namespace api
+namespace TwoWheelsStable.API
 {
     public class Program
     {

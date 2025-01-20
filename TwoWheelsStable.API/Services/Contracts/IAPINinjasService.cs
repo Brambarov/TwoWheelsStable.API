@@ -1,6 +1,6 @@
-﻿using api.Models;
+﻿using TwoWheelsStable.API.Models;
 
-namespace api.Services.Contracts
+namespace TwoWheelsStable.API.Services.Contracts
 {
     public interface IAPINinjasService
     {

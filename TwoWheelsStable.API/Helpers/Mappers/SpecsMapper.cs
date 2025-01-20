@@ -1,7 +1,7 @@
-﻿using api.DTOs.Specs;
-using api.Models;
+﻿using TwoWheelsStable.API.DTOs.Specs;
+using TwoWheelsStable.API.Models;
 
-namespace api.Helpers.Mappers
+namespace TwoWheelsStable.API.Helpers.Mappers
 {
     public static class SpecsMapper
     {
