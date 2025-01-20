@@ -1,12 +1,11 @@
-name: .NET Continiuous Integration
+name: .NET Continuous Integration
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "*" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -47,6 +46,7 @@ jobs:
 
   semantic-release:  
     permissions: write-all
+    
     needs: test
     
     runs-on: ubuntu-latest
