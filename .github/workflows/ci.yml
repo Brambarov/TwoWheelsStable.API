@@ -24,7 +24,8 @@ jobs:
       run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
   test:
-
+    needs: build
+    
     runs-on: ubuntu-latest
     
     steps:
