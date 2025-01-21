@@ -121,7 +121,7 @@ namespace TwoWheelsStable.Test.Controllers
             return expectedMotorcycleDTOs;
         }
 
-        private MotorcycleGetDTO GenerateMotorcycleGetDTO(Guid id)
+        private static MotorcycleGetDTO GenerateMotorcycleGetDTO(Guid id)
         {
             return new MotorcycleGetDTO
             {

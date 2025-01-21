@@ -12,7 +12,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0
+        dotnet-version: 9.0.x
         
     - name: Restore main project dependencies
       run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
@@ -21,7 +21,7 @@ jobs:
       run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
   Test:
-    needs: build
+    needs: Build
     
     runs-on: ubuntu-latest
     
@@ -31,7 +31,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0
+        dotnet-version: 9.0.x
         
     - name: Restore test project dependencies
       run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
@@ -45,7 +45,7 @@ jobs:
   Semantic-release:  
     permissions: write-all
     
-    needs: test
+    needs: Test
     
     runs-on: ubuntu-latest
 
@@ -55,11 +55,11 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0
+        dotnet-version: 9.0.x
 
     - name: Bump version and push tag
       id: tag_version
-      uses: mathieudutour/github-tag-action@v6.0
+      uses: mathieudutour/github-tag-action@v6.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
