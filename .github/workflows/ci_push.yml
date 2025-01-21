@@ -12,11 +12,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/package.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+        
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 9.0.x
-        
+
     - name: Restore main project dependencies
       run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
     
@@ -31,10 +39,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
           
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/package.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+        
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 9.0.x
+        
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/package.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
         
     - name: Restore test project dependencies
       run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
@@ -42,15 +66,15 @@ jobs:
     - name: Build test project
       run: dotnet build --no-restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
       
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+    - name: Run tests with coverage
+      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
-  semantic-release:  
-    permissions: write-all
-    
+  semantic-release:
     needs: test
     
     runs-on: ubuntu-latest
+
+    permissions: write-all
 
     steps:
     - uses: actions/checkout@v3
