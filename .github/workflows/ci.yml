@@ -1,18 +1,22 @@
-name: .NET Continuous Integration
+name: .NET CI
 
 on: [push]
 
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dotnet-version: [9.0.x]
 
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup .NET
+    - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Restore main project dependencies
       run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
@@ -20,18 +24,22 @@ jobs:
     - name: Build main project
       run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
-  Test:
-    needs: Build
+  test:
+    needs: build
+
+    strategy:
+      matrix:
+        dotnet-version: [9.0.x]
     
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
           
-    - name: Setup .NET
+    - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Restore test project dependencies
       run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
@@ -42,20 +50,24 @@ jobs:
     - name: Run tests
       run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
 
-  Semantic-release:  
+  semantic-release:  
     permissions: write-all
     
-    needs: Test
+    needs: test
+
+    strategy:
+      matrix:
+        dotnet-version: [9.0.x]
     
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
         
-    - name: Setup .NET
+    - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: ${{ matrix.dotnet-version }}
 
     - name: Bump version and push tag
       id: tag_version
