@@ -1,7 +1,11 @@
 name: .NET CI Branch
 
-on: [push]
+on: 
+  push:
+    branches-ignore:
+      - main
 
+  
 jobs:
   build:
     runs-on: ubuntu-latest
