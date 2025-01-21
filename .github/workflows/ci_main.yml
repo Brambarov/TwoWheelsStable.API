@@ -4,9 +4,35 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
+  check-pr-title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title format
+        id: pr_check
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "PR title: $PR_TITLE""
+          if [[! "$PR_TITLE" =~ ^([patch]|[minor]|[major]): ]]; then
+            echo "PR title must start with '[patch]:', '[minor]:', or '[major]:'"
+            exit 1
+          fi"
+          if [[ "$PR_TITLE" =~ ^([patch]): ]]; then
+            echo "::set-output name=version_bump::patch"
+          elif [[ "$PR_TITLE" =~ ^([minor]): ]]; then
+            echo "::set-output name=version_bump::minor"
+          elif [[ "$PR_TITLE" =~ ^([major]): ]]; then
+            echo "::set-output name=version_bump::major"
+          fi
+
   build:
+    needs: check-pr-title
+
     runs-on: ubuntu-latest
 
     steps:
