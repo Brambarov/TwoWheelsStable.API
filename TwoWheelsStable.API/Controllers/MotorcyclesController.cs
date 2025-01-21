@@ -38,7 +38,9 @@ namespace TwoWheelsStable.API.Controllers
 
             var urlHelper = _urlHelperFactory.GetUrlHelper(ControllerContext);
 
-            return Ok(await _motorcyclesService.GetByIdAsync(id, urlHelper));
+            var getDto = await _motorcyclesService.GetByIdAsync(id, urlHelper);
+
+            return getDto is null ? NotFound() : Ok(getDto);
         }
 
         [Authorize]
