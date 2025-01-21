@@ -1,9 +1,6 @@
 name: .NET CI Main
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types:
       - closed
