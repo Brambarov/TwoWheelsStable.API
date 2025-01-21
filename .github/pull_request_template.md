@@ -5,17 +5,15 @@
 
 ## PR Title Prefix
 Make sure the PR title includes one of the following prefixes:
-- `[Patch]` For bug fixes.
-- `[Minor]` For new features without breaking changes.
-- `[Major]` For breaking changes.
+- `fix:` For bug fixes.
+- `feat:` For new features.
+- `perf:` For performance improvements.
 
 ## Changes
 <!-- List key changes made in the PR -->
 1. 
-2. 
-3. 
 
 ## Checklist
-- [ ] The PR title starts with `[Major]`, `[Minor]`, or `[Patch]`.
+- [ ] The PR title starts with `fix:`, `feat:`, or `perf:`.
 - [ ] Tests have been added or updated (if applicable).
 - [ ] Documentation has been updated (if applicable).
