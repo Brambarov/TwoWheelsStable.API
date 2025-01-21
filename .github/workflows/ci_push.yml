@@ -1,22 +1,21 @@
-name: .NET CI
+name: .NET CI Push
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        dotnet-version: [9.0.x]
-
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     
-    - name: Setup .NET ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ matrix.dotnet-version }}
+        dotnet-version: 9.0.x
         
     - name: Restore main project dependencies
       run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
@@ -26,20 +25,16 @@ jobs:
       
   test:
     needs: build
-
-    strategy:
-      matrix:
-        dotnet-version: [9.0.x]
     
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
           
-    - name: Setup .NET ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ matrix.dotnet-version }}
+        dotnet-version: 9.0.x
         
     - name: Restore test project dependencies
       run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
@@ -54,24 +49,20 @@ jobs:
     permissions: write-all
     
     needs: test
-
-    strategy:
-      matrix:
-        dotnet-version: [9.0.x]
     
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
         
-    - name: Setup .NET ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ matrix.dotnet-version }}
+        dotnet-version: 9.0.x
 
     - name: Bump version and push tag
       id: tag_version
-      uses: mathieudutour/github-tag-action@v6.2
+      uses: mathieudutour/github-tag-action@v6.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
