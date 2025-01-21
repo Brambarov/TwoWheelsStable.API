@@ -8,7 +8,6 @@ using TwoWheelsStable.API.Services.Contracts;
 
 namespace TwoWheelsStable.Test.Controllers
 {
-    // Test
     public class MotorcyclesControllerTests
     {
         private readonly Mock<IMotorcyclesService> _mockMotorcyclesService;
@@ -121,7 +120,7 @@ namespace TwoWheelsStable.Test.Controllers
             return expectedMotorcycleDTOs;
         }
 
-        private MotorcycleGetDTO GenerateMotorcycleGetDTO(Guid id)
+        private static MotorcycleGetDTO GenerateMotorcycleGetDTO(Guid id)
         {
             return new MotorcycleGetDTO
             {

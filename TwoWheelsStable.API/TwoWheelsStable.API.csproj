@@ -1,5 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
+	<PropertyGroup>
+		<Company>Ivan Brambarov</Company>
+		<Authors>Ivan Brambarov</Authors>
+		<Copyright>Ivan Brambarov Copyright (c) 2025</Copyright>
+	</PropertyGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
