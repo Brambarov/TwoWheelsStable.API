@@ -1,11 +1,9 @@
 name: .NET Continuous Integration
 
-on:
-  push:
-    branches: [ "*" ]
+on: [push]
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +20,7 @@ jobs:
     - name: Build main project
       run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
       
-  test:
+  Test:
     needs: build
     
     runs-on: ubuntu-latest
@@ -44,7 +42,7 @@ jobs:
     - name: Run tests
       run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
 
-  semantic-release:  
+  Semantic-release:  
     permissions: write-all
     
     needs: test
