@@ -1,4 +1,4 @@
-name: Check PR Title
+name: .NET CI PR Title
 
 on:
   pull_request:
@@ -7,8 +7,9 @@ on:
       - edited
 
 jobs:
-  check-title:
+  check-pr-title:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check PR Title
         run: |

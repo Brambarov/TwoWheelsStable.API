@@ -18,17 +18,20 @@ jobs:
       - name: Check PR title format
         id: pr_check
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          echo "PR title: $PR_TITLE""
-          if [[! "$PR_TITLE" =~ ^([patch]|[minor]|[major]): ]]; then
-            echo "PR title must start with '[patch]:', '[minor]:', or '[major]:'"
+          pr_title="${{ github.event.pull_request.title }}"
+          echo "PR Title: $pr_title"
+          
+          shopt -s nocasematch
+
+          if [[! "$pr_title" =~ ^\[(patch|minor|major)\] ]]; then
+            echo "PR title must start with '[Major]', '[Minor]', or '[Patch]'"
             exit 1
-          fi"
-          if [[ "$PR_TITLE" =~ ^([patch]): ]]; then
+          fi
+          if [[ "$pr_title" =~ ^([patch]): ]]; then
             echo "::set-output name=version_bump::patch"
-          elif [[ "$PR_TITLE" =~ ^([minor]): ]]; then
+          elif [[ "$pr_title" =~ ^([minor]): ]]; then
             echo "::set-output name=version_bump::minor"
-          elif [[ "$PR_TITLE" =~ ^([major]): ]]; then
+          elif [[ "$pr_title" =~ ^([major]): ]]; then
             echo "::set-output name=version_bump::major"
           fi
 
