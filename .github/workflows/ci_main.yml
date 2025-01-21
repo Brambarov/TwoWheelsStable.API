@@ -1,0 +1,98 @@
+name: .NET CI Main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  build:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/package.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Restore main project dependencies
+      run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+    
+    - name: Build main project
+      run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+      
+  test:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    needs: build
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+          
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+        
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/package.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+        
+    - name: Restore test project dependencies
+      run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+      
+    - name: Build test project
+      run: dotnet build --no-restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+      
+    - name: Run tests with coverage
+      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+  semantic-release:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    needs: test
+    
+    runs-on: ubuntu-latest
+
+    permissions: write-all
+
+    steps:
+    - uses: actions/checkout@v4
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
