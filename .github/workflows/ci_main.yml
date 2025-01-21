@@ -1,4 +1,4 @@
-name: .NET CI PR
+name: .NET CI Main
 
 on:
   push:
