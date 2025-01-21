@@ -24,11 +24,11 @@ jobs:
             echo "PR title must start with '[Major]', '[Minor]', or '[Patch]'"
             exit 1
           fi
-          if [[ "$pr_title" =~ ^([patch]) ]]; then
+          if [[ "$pr_title" =~ ^\[(patch)\] ]]; then
             echo "version_bump=patch" >> $GITHUB_ENV
-          elif [[ "$pr_title" =~ ^([minor]) ]]; then
+          elif [[ "$pr_title" =~ ^\[(minor)\] ]]; then
             echo "version_bump=minor" >> $GITHUB_ENV
-          elif [[ "$pr_title" =~ ^([major]) ]]; then
+          elif [[ "$pr_title" =~ ^\[(major)\] ]]; then
             echo "version_bump=major" >> $GITHUB_ENV
           fi
 
