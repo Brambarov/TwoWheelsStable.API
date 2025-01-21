@@ -69,15 +69,22 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
 
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v6.2
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Get previous tag
+      id: previous_tag
+      uses: wyrihaximus/github-action-get-previous-tag@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create a GitHub release
-      uses: ncipollo/release-action@v1
+    - name: Get next minor version
+      id: semvers
+      uses: wyrihaximus/github-action-next-semvers@v1
       with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        version: ${{ steps.previous_tag.outputs.tag }}
+
+    - name: Create new milestone
+      id: create_milestone
+      uses: wyrihaximus/github-action-create-milestone@v1
+      with:
+        title: ${{ steps.semvers.outputs.patch }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
