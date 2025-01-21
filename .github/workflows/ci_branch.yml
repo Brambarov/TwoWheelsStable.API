@@ -1,0 +1,83 @@
+name: .NET CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dotnet-version: [9.0.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        
+    - name: Restore main project dependencies
+      run: dotnet restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+    
+    - name: Build main project
+      run: dotnet build --no-restore ./TwoWheelsStable.API/TwoWheelsStable.API.csproj
+      
+  test:
+    needs: build
+
+    strategy:
+      matrix:
+        dotnet-version: [9.0.x]
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+          
+    - name: Setup .NET ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        
+    - name: Restore test project dependencies
+      run: dotnet restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+      
+    - name: Build test project
+      run: dotnet build --no-restore ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+      
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal ./TwoWheelsStable.Test/TwoWheelsStable.Test.csproj
+
+  semantic-release:  
+    permissions: write-all
+    
+    needs: test
+
+    strategy:
+      matrix:
+        dotnet-version: [9.0.x]
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+        
+    - name: Setup .NET ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
