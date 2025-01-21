@@ -25,11 +25,11 @@ jobs:
             exit 1
           fi
           if [[ "$pr_title" =~ ^([patch]): ]]; then
-            echo "::set-output name=version_bump::patch"
+            echo "version_bump=patch" >> $GITHUB_ENV
           elif [[ "$pr_title" =~ ^([minor]): ]]; then
-            echo "::set-output name=version_bump::minor"
+            echo "version_bump=minor" >> $GITHUB_ENV
           elif [[ "$pr_title" =~ ^([major]): ]]; then
-            echo "::set-output name=version_bump::major"
+            echo "version_bump=major" >> $GITHUB_ENV
           fi
 
   build:
@@ -109,6 +109,7 @@ jobs:
       uses: mathieudutour/github-tag-action@v6.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: ${{ env.version_bump }}
 
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
