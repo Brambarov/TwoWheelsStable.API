@@ -3,7 +3,6 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -80,7 +79,7 @@ namespace TwoWheelsStable.API
             });
 
 
-            if (builder.Environment.IsProduction())
+            /*if (builder.Environment.IsProduction())
             {
                 var keyVaultURL = builder.Configuration.GetSection("KeyVault:KeyVaultURL");
                 var keyVaultClientId = builder.Configuration.GetSection("KeyVault:ClientId");
@@ -101,11 +100,12 @@ namespace TwoWheelsStable.API
                 connectionString = client.GetSecret("AzureConnection").Value.Value.ToString();
                 jwtSigningKey = client.GetSecret("JWTSigningKey").Value.Value.ToString();
                 apiNinjasKey = client.GetSecret("APINinjasKey").Value.Value.ToString();
-            }
+            }*/
 
             if (builder.Environment.IsDevelopment())
             {
-                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                //connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                connectionString = builder.Configuration.GetConnectionString("AzureConnection");
                 jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
                 apiNinjasKey = Environment.GetEnvironmentVariable("APININJAS_KEY");
             }
