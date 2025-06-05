@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "ConnectionStrings:TWS:KeyVault"
+    },
+    "secrets2": {
+      "type": "secrets",
+      "dynamicId": null
+    }
+  }
+}

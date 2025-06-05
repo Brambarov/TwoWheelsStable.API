@@ -1,9 +1,6 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -82,32 +79,16 @@ namespace TwoWheelsStable.API
 
             if (builder.Environment.IsProduction())
             {
-                var keyVaultURL = builder.Configuration.GetSection("KeyVault:KeyVaultURL");
-                var keyVaultClientId = builder.Configuration.GetSection("KeyVault:ClientId");
-                var keyVaultClientSecret = builder.Configuration.GetSection("KeyVault:ClientSecret");
-                var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVault:DirectoryId");
-
-                var credential = new ClientSecretCredential(keyVaultDirectoryId.Value.ToString(),
-                                                            keyVaultClientId.Value.ToString(),
-                                                            keyVaultClientSecret.Value.ToString());
-
-                builder.Configuration.AddAzureKeyVault(keyVaultURL.Value.ToString(),
-                                                       keyVaultClientId.Value.ToString(),
-                                                       keyVaultClientSecret.Value.ToString(),
-                                                       new DefaultKeyVaultSecretManager());
-
-                var client = new SecretClient(new Uri(keyVaultURL.Value.ToString()), credential);
-
-                connectionString = client.GetSecret("AzureConnection").Value.Value.ToString();
-                jwtSigningKey = client.GetSecret("JWTSigningKey").Value.Value.ToString();
-                apiNinjasKey = client.GetSecret("APINinjasKey").Value.Value.ToString();
+                connectionString = builder.Configuration["ConnectionStrings:TWS:AzureSqlDb"];
+                jwtSigningKey = builder.Configuration["JWTSigningKey"];
+                apiNinjasKey = builder.Configuration["APINinjasKey"];
             }
 
             if (builder.Environment.IsDevelopment())
             {
-                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-                jwtSigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
-                apiNinjasKey = Environment.GetEnvironmentVariable("APININJAS_KEY");
+                connectionString = builder.Configuration["ConnectionStrings:TWS:LocalSqlDb"];
+                jwtSigningKey = builder.Configuration["JWT_SIGNING_KEY"];
+                apiNinjasKey = builder.Configuration["APININJAS_KEY"];
             }
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
