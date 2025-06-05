@@ -397,3 +397,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /api/Migrations
+/TwoWheelsStable.API/Migrations
+/TwoWheelsStable.API/Properties/ServiceDependencies/local

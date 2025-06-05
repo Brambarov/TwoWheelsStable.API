@@ -44,7 +44,8 @@ namespace TwoWheelsStable.Test.Controllers.Motorcycles
                     Year = 2000 + i,
                     Mileage = 1000 * i
                 });
-            };
+            }
+            ;
 
             return expectedMotorcycleDTOs;
         }
