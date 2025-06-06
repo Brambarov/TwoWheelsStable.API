@@ -97,11 +97,11 @@ namespace TwoWheelsStable.API
 
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
-                //options.Password.RequireDigit = true;
-                //options.Password.RequireLowercase = true;
-                //options.Password.RequireUppercase = true;
-                //options.Password.RequireNonAlphanumeric = true;
-                //options.Password.RequiredLength = 12;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 10;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddAuthentication(options =>
@@ -152,14 +152,11 @@ namespace TwoWheelsStable.API
 
             app.UseMiddleware<ExceptionMiddleware>();
 
-            /*if (app.Environment.IsDevelopment())
-            {*/
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "TwoWheelsStableAPI v1");
             });
-            /*}*/
 
             app.UseHttpsRedirection();
 
