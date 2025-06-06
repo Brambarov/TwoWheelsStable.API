@@ -4,8 +4,7 @@
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings:TWS:KeyVault": "https://kv-tws-001.vault.azure.net/"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5000"
@@ -14,8 +13,7 @@
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings:TWS:KeyVault": "https://kv-tws-001.vault.azure.net/"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
@@ -24,8 +22,7 @@
       "commandName": "IISExpress",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings:TWS:KeyVault": "https://kv-tws-001.vault.azure.net/"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   },
