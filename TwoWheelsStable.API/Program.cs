@@ -79,17 +79,16 @@ namespace TwoWheelsStable.API
 
             if (builder.Environment.IsProduction())
             {
-                connectionString = builder.Configuration["ConnectionStrings:TWS:AzureSqlDb"];
-                jwtSigningKey = builder.Configuration["JWTSigningKey"];
-                apiNinjasKey = builder.Configuration["APINinjasKey"];
+                connectionString = builder.Configuration.GetConnectionString("AzureConnection");
             }
 
             if (builder.Environment.IsDevelopment())
             {
-                connectionString = builder.Configuration["ConnectionStrings:TWS:LocalSqlDb"];
-                jwtSigningKey = builder.Configuration["JWT_SIGNING_KEY"];
-                apiNinjasKey = builder.Configuration["APININJAS_KEY"];
+                connectionString = builder.Configuration.GetConnectionString("LocalConnection");
             }
+
+            jwtSigningKey = builder.Configuration["JWTSigningKey"];
+            apiNinjasKey = builder.Configuration["APINinjasKey"];
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
