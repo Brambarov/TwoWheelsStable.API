@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,12 +20,25 @@ namespace TwoWheelsStable.API
     {
         public static void Main(string[] args)
         {
-            var myCorsPolicy = "myCorsPolicy";
+
+            var builder = WebApplication.CreateBuilder(args);
+
+            ConfigureServices(builder);
+
+            var app = builder.Build();
+
+            ConfigureMiddleware(app);
+
+            app.Run();
+        }
+
+        private static void ConfigureServices(WebApplicationBuilder builder)
+        {
+            const string myCorsPolicy = "myCorsPolicy";
+
             var connectionString = string.Empty;
             var jwtSigningKey = string.Empty;
             var apiNinjasKey = string.Empty;
-
-            var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddHttpContextAccessor();
 
@@ -32,12 +46,11 @@ namespace TwoWheelsStable.API
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(name: myCorsPolicy,
-                                policy =>
+                options.AddPolicy(name: myCorsPolicy, policy =>
                                 {
-                                    policy.AllowAnyOrigin();
-                                    policy.AllowAnyMethod();
-                                    policy.AllowAnyHeader();
+                                    policy.AllowAnyOrigin()
+                                          .AllowAnyMethod()
+                                          .AllowAnyHeader();
                                 });
             });
 
@@ -76,16 +89,9 @@ namespace TwoWheelsStable.API
                 });
             });
 
-
-            if (builder.Environment.IsProduction())
-            {
-                connectionString = builder.Configuration.GetConnectionString("AzureConnection");
-            }
-
-            if (builder.Environment.IsDevelopment())
-            {
-                connectionString = builder.Configuration.GetConnectionString("LocalConnection");
-            }
+            connectionString = builder.Environment.IsProduction()
+                ? builder.Configuration.GetConnectionString("AzureConnection")
+                : builder.Configuration.GetConnectionString("LocalConnection");
 
             jwtSigningKey = builder.Configuration["JWTSigningKey"];
             apiNinjasKey = builder.Configuration["APINinjasKey"];
@@ -106,12 +112,7 @@ namespace TwoWheelsStable.API
 
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme =
-                options.DefaultChallengeScheme =
-                options.DefaultForbidScheme =
-                options.DefaultScheme =
-                options.DefaultSignInScheme =
-                options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -147,9 +148,10 @@ namespace TwoWheelsStable.API
             builder.Services.AddScoped<ICommentsService, CommentsService>();
             builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
             builder.Services.AddScoped<IAPINinjasService, APINinjasService>();
+        }
 
-            var app = builder.Build();
-
+        private static void ConfigureMiddleware(WebApplication app)
+        {
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseSwagger();
@@ -159,17 +161,14 @@ namespace TwoWheelsStable.API
             });
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
-            app.UseCors(myCorsPolicy);
+            app.UseCors("myCorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
-
-            app.Run();
         }
     }
 }
