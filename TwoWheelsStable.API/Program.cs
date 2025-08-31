@@ -92,8 +92,8 @@ namespace TwoWheelsStable.API
                 ? builder.Configuration.GetConnectionString("AzureConnection")
                 : builder.Configuration.GetConnectionString("LocalConnection");
 
-            jwtSigningKey = builder.Configuration["JWTSigningKey"];
-            apiNinjasKey = builder.Configuration["APINinjasKey"];
+            jwtSigningKey = builder.Configuration["JWTSigningKey"] ?? throw new ApplicationException("JWTSigningKey not found!");
+            apiNinjasKey = builder.Configuration["APINinjasKey"] ?? throw new ApplicationException("APINinjasKey not found!");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -111,6 +111,8 @@ namespace TwoWheelsStable.API
 
             builder.Services.AddAuthentication(options =>
             {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
@@ -124,6 +126,20 @@ namespace TwoWheelsStable.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)),
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine("Auth failed: " + context.Exception.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        Console.WriteLine("OnChallange triggered: " + context.Error);
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
