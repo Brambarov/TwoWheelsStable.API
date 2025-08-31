@@ -138,7 +138,7 @@ namespace TwoWheelsStable.API.Services
                 new(JwtRegisteredClaimNames.Email, email)
             };
 
-            var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+            var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
