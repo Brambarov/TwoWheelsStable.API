@@ -127,20 +127,6 @@ namespace TwoWheelsStable.API
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
-
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        Console.WriteLine("Auth failed: " + context.Exception.Message);
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = context =>
-                    {
-                        Console.WriteLine("OnChallange triggered: " + context.Error);
-                        return Task.CompletedTask;
-                    }
-                };
             });
 
             builder.Services.AddHttpClient();
